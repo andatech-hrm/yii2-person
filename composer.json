@@ -1,0 +1,35 @@
+{
+    "name": "hryala/yii2-organizational-structure",
+    "description": "Yii 2 for Organizational Structure",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "GPL-3.0",
+    "minimum-stability": "stable",
+    "support": {
+        "source": "https://github.com/hryala/yii2-organizational-structure.git",
+        "issues": "https://github.com/hryala/yii2-organizational-structure/issues"
+    },
+    "authors": [
+        {
+            "name": "Surakit Choodet",
+            "email": "kuakling@gmail.com",
+            "role" : "Developer"
+        },
+        {
+            "name": "Ahamad Jedhu",
+            "email": "ahamad.jedu@gmail.com",
+            "role" : "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "hryala\\structure\\": ""
+        }
+    },
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
