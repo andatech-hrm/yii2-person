@@ -8,6 +8,7 @@ use andahrm\person\models\PersonSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\rbac\DbManager;
 
 /**
  * DefaultController implements the CRUD actions for Person model.
@@ -63,17 +64,40 @@ class DefaultController extends Controller
      */
     public function actionCreate()
     {
+//         $this->layout = 'x_panel';
         $model = new Person();
+        $userClass = Yii::$app->user->identityClass;
+        $modelUser = new $userClass();
+        $modelUser->scenario = 'create';
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $modelUser->load(Yii::$app->request->post());
+            $modelUser->setPassword($modelUser->newPassword);
+            $modelUser->generateAuthKey();
+            $modelUser->save();
+            
+            
+            $model->user_id = $modelUser->id;
+            $model->save();
+            
+            $auth = new DbManager;
+            $role = $auth->getRole(Yii::$app->request->post('role'));
+            $auth->assign($role, $modelUser->id);
+            
+            $modelUser->profile->firstname = $model->firstname_th;
+            $modelUser->profile->lastname = $model->lastname_th;
+            $modelUser->profile->save();
+            
             Yii::$app->getSession()->setFlash('saved',[
                 'type' => 'success',
                 'msg' => Yii::t('andahrm', 'Save operation completed.')
             ]);
             return $this->redirect(['view', 'id' => $model->user_id]);
         } else {
+            print_r($model->getErrors());
             return $this->render('create', [
                 'model' => $model,
+                'modelUser' => $modelUser
             ]);
         }
     }

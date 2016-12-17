@@ -3,6 +3,9 @@
 namespace andahrm\person\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "person".
@@ -32,6 +35,18 @@ class Person extends \yii\db\ActiveRecord
     {
         return 'person';
     }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+            ],
+            [
+                'class' => TimestampBehavior::className(),
+            ]
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -39,7 +54,7 @@ class Person extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'phone', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
+            [['user_id', 'citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'phone'], 'required'],
             [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['gender'], 'string'],
             [['birthday'], 'safe'],
@@ -58,15 +73,15 @@ class Person extends \yii\db\ActiveRecord
     {
         return [
             'user_id' => Yii::t('andahrm/person', 'User ID'),
-            'citizen_id' => Yii::t('andahrm/person', 'รหัสบัตรประชาชน'),
+            'citizen_id' => Yii::t('andahrm/person', 'Citizen ID'),
             'title_id' => Yii::t('andahrm/person', 'Title ID'),
-            'firstname_th' => Yii::t('andahrm/person', 'ชื่อ'),
-            'lastname_th' => Yii::t('andahrm/person', 'นามสกุล'),
+            'firstname_th' => Yii::t('andahrm/person', 'Firstname'),
+            'lastname_th' => Yii::t('andahrm/person', 'Lastname'),
             'firstname_en' => Yii::t('andahrm/person', 'Firstname En'),
             'lastname_en' => Yii::t('andahrm/person', 'Lastname En'),
-            'gender' => Yii::t('andahrm/person', 'เพศ'),
-            'tel' => Yii::t('andahrm/person', 'เบอร์ติดต่อ'),
-            'phone' => Yii::t('andahrm/person', 'เบอร์มือถือ'),
+            'gender' => Yii::t('andahrm/person', 'Gender'),
+            'tel' => Yii::t('andahrm/person', 'Tel'),
+            'phone' => Yii::t('andahrm/person', 'Phone'),
             'birthday' => Yii::t('andahrm/person', 'Birthday'),
             'created_at' => Yii::t('andahrm/person', 'Created At'),
             'created_by' => Yii::t('andahrm/person', 'Created By'),
@@ -81,5 +96,15 @@ class Person extends \yii\db\ActiveRecord
             return $this->firstname_th.' '.$this->lastname_th;
         }
         return $this->firstname_en.' '.$this->lastname_en;
+    }
+    
+    public static function getRoleList()
+    {
+        $list = [];
+        foreach(Yii::$app->authManager->getRoles() as $role) {
+            $list[$role->name] = (!empty($role->description)) ? $role->description : ucfirst($role->name);
+        }
+        
+        return $list;
     }
 }
