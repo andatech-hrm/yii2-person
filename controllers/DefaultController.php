@@ -1,14 +1,11 @@
 <?php
-
 namespace andahrm\person\controllers;
 
 use Yii;
-use andahrm\person\models\Person;
-use andahrm\person\models\PersonSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\rbac\DbManager;
+use andahrm\person\models\Person;
 
 /**
  * DefaultController implements the CRUD actions for Person model.
@@ -31,111 +28,21 @@ class DefaultController extends Controller
     }
 
     /**
-     * Lists all Person models.
+     * Get Person models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id = null)
     {
-        $searchModel = new PersonSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Person model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Creates a new Person model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-//         $this->layout = 'x_panel';
-        $model = new Person();
-        $userClass = Yii::$app->user->identityClass;
-        $modelUser = new $userClass();
-        $modelUser->scenario = 'create';
-
-        if ($model->load(Yii::$app->request->post())) {
-            $modelUser->load(Yii::$app->request->post());
-            $modelUser->setPassword($modelUser->newPassword);
-            $modelUser->generateAuthKey();
-            $modelUser->save();
-            
-            
-            $model->user_id = $modelUser->id;
-            $model->save();
-            
-            $auth = new DbManager;
-            $role = $auth->getRole(Yii::$app->request->post('role'));
-            $auth->assign($role, $modelUser->id);
-            
-            $modelUser->profile->firstname = $model->firstname_th;
-            $modelUser->profile->lastname = $model->lastname_th;
-            $modelUser->profile->save();
-            
-            Yii::$app->getSession()->setFlash('saved',[
-                'type' => 'success',
-                'msg' => Yii::t('andahrm', 'Save operation completed.')
-            ]);
-            return $this->redirect(['view', 'id' => $model->user_id]);
-        } else {
-            print_r($model->getErrors());
-            return $this->render('create', [
-                'model' => $model,
-                'modelUser' => $modelUser
-            ]);
+        if(is_null($id)) { 
+            $id = Yii::$app->user->id;
+        }else{
+            if(!Yii::$app->user->can('manage-person')){
+                throw new \yii\web\ForbiddenHttpException('You are not allowed to access this page.');
+            }
         }
-    }
-
-    /**
-     * Updates an existing Person model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->getSession()->setFlash('saved',[
-                'type' => 'success',
-                'msg' => Yii::t('andahrm', 'Save operation completed.')
-            ]);
-            return $this->redirect(['view', 'id' => $model->user_id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Deletes an existing Person model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        
+        return $this->render('index', ['model' => $model]);
     }
 
     /**

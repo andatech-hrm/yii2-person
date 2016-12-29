@@ -5,12 +5,12 @@ namespace andahrm\person\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use andahrm\person\models\Person;
+use andahrm\person\models\Photo;
 
 /**
- * PersonSearch represents the model behind the search form about `andahrm\person\models\Person`.
+ * PhotoSearch represents the model behind the search form about `andahrm\person\models\Photo`.
  */
-class PersonSearch extends Person
+class PhotoSearch extends Photo
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class PersonSearch extends Person
     public function rules()
     {
         return [
-            [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'tel', 'phone', 'birthday'], 'safe'],
+            [['user_id', 'created_at', 'created_by', 'update_at', 'update_by'], 'integer'],
+            [['year', 'image', 'image_original'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class PersonSearch extends Person
      */
     public function search($params)
     {
-        $query = Person::find();
+        $query = Photo::find();
 
         // add conditions that should always apply here
 
@@ -60,22 +60,15 @@ class PersonSearch extends Person
         // grid filtering conditions
         $query->andFilterWhere([
             'user_id' => $this->user_id,
-            'title_id' => $this->title_id,
-            'birthday' => $this->birthday,
+            'year' => $this->year,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
-            'updated_at' => $this->updated_at,
-            'updated_by' => $this->updated_by,
+            'update_at' => $this->update_at,
+            'update_by' => $this->update_by,
         ]);
 
-        $query->andFilterWhere(['like', 'citizen_id', $this->citizen_id])
-            ->andFilterWhere(['like', 'firstname_th', $this->firstname_th])
-            ->andFilterWhere(['like', 'lastname_th', $this->lastname_th])
-            ->andFilterWhere(['like', 'firstname_en', $this->firstname_en])
-            ->andFilterWhere(['like', 'lastname_en', $this->lastname_en])
-            ->andFilterWhere(['like', 'gender', $this->gender])
-            ->andFilterWhere(['like', 'tel', $this->tel])
-            ->andFilterWhere(['like', 'phone', $this->phone]);
+        $query->andFilterWhere(['like', 'image', $this->photo])
+            ->andFilterWhere(['like', 'image_original', $this->photo_original]);
 
         return $dataProvider;
     }
