@@ -6,6 +6,11 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use andahrm\setting\models\Helper;
+
+use andahrm\leave\models\LeavePermission; #mad
+use andahrm\positionSalary\models\PersonPositionSalary; #mad
+use andahrm\leave\models\LeaveRelatedPerson; #mad
 
 /**
  * This is the model class for table "person".
@@ -28,6 +33,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Person extends \yii\db\ActiveRecord
 {
+    const GENDER_MALE = 'm';
+    const GENDER_FEMAIL = 'f';
     /**
      * @inheritdoc
      */
@@ -54,7 +61,7 @@ class Person extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'phone'], 'required'],
+            [['user_id', 'citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'phone'], 'required'],
             [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['gender'], 'string'],
             [['birthday'], 'safe'],
@@ -90,6 +97,53 @@ class Person extends \yii\db\ActiveRecord
         ];
     }
     
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $date = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday);
+            $this->birthday = $date->format(Helper::DB_DATE_FORMAT);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public function afterFind()
+    {
+        $date = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday);
+        $this->birthday = $date->format(Helper::UI_DATE_FORMAT);
+    }
+    
+    public function getUser()
+    {
+        return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'user_id']);
+    }
+    
+    public function getPerson()
+    {
+        return $this->hasOne(Yii::$app->user->identityClass, ['user_id' => 'user_id']);
+    }
+    
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'created_by']);
+    }
+    
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'updated_by']);
+    }
+    
+    public function getTitle()
+    {
+        return $this->hasOne(Title::className(), ['id' => 'title_id']);
+    }
+    
+    public function getDetail()
+    {
+        return $this->hasOne(Detail::className(), ['user_id' => 'user_id']);
+    }
+    
     public function getFullname($lang = 'th')
     {
         if($lang === 'th'){
@@ -107,4 +161,89 @@ class Person extends \yii\db\ActiveRecord
         
         return $list;
     }
+    
+    public static function getGenders()
+    {
+        return [
+            self::GENDER_MALE => Yii::t('app', 'Male'),
+            self::GENDER_FEMAIL => Yii::t('app', 'Female'),
+        ];
+    }
+    
+    public function getGenderText()
+    {
+        $genders = self::getGenders();
+        if(array_key_exists($this->gender, $genders)){
+            return $genders[$this->gender];
+        }
+        return null;
+    }
+  
+  # Create by mad
+    public static function getList(){
+      return ArrayHelper::map(self::find()->all(),'user_id','fullname');
+    }
+  
+  # Create by mad
+  public $year;
+  
+  /**
+  *  Create by mad
+  * ข้อมูลสิทธิลา
+  */
+  public function getLeavePermission()
+    {
+        return $this->hasOne(LeavePermission::className(), ['user_id' => 'user_id'])
+          ->orderBy(['year'=>SORT_DESC]);
+    } 
+  
+   /**
+  *  Create by mad
+  * ข้อมูลสิทธิลา
+  */
+   public function getLeavePermissionByYear()
+    {
+        $year = date('Y');
+      $get = Yii::$app->request->get();
+      $year=isset($get['PersonSearch']['year'])?$get['PersonSearch']['year']:$year;
+        return $this->hasOne(LeavePermission::className(), ['user_id' => 'user_id'])
+          ->where('leave_permission.year = :year', [':year' => $year]);
+          //->orderBy('leave_permission.year');
+    } 
+  
+  /**
+  *  Create by mad
+  * ผู้ที่เกี่ยวข้องกับการลาของฉัน
+  */
+  public function getLeaveRelatedPerson()
+    {
+        return $this->hasOne(LeaveRelatedPerson::className(), ['user_id' => 'user_id']);
+    }
+  
+  /**
+  *  Create by mad
+  * เงินเดือนและตำแหน่ง
+  */
+   public function getPositionSalary()
+    {
+        return $this->hasOne(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_DESC]);
+    }
+  
+  /**
+  *  Create by mad
+  * ตำแหน่ง
+  */
+  public function getPosition()
+    {
+        return $this->positionSalary?$this->positionSalary->position:null;
+    }
+  
+   public function getPositionTitle()
+    {
+        return $this->position?$this->position->title:null;
+    }
+  
+
+  
+  
 }

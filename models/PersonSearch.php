@@ -12,6 +12,7 @@ use andahrm\person\models\Person;
  */
 class PersonSearch extends Person
 {
+    public $fullname;
     /**
      * @inheritdoc
      */
@@ -19,7 +20,7 @@ class PersonSearch extends Person
     {
         return [
             [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'tel', 'phone', 'birthday'], 'safe'],
+            [['citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'tel', 'phone', 'birthday', 'fullname'], 'safe'],
         ];
     }
 
@@ -76,6 +77,11 @@ class PersonSearch extends Person
             ->andFilterWhere(['like', 'gender', $this->gender])
             ->andFilterWhere(['like', 'tel', $this->tel])
             ->andFilterWhere(['like', 'phone', $this->phone]);
+        
+        $query->andFilterWhere(['like', 'firstname_th', $this->fullname])
+            ->orFilterWhere(['like', 'lastname_th', $this->fullname])
+            ->orFilterWhere(['like', 'firstname_en', $this->fullname])
+            ->orFilterWhere(['like', 'lastname_en', $this->fullname]);
 
         return $dataProvider;
     }

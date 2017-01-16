@@ -78,13 +78,14 @@ $fullExportMenu = ExportMenu::widget([
 //         ],
         'panel' => [
             'heading'=>'<h3 class="panel-title"><i class="fa fa-th"></i> '.Html::encode($this->title).'</h3>',
+//             'heading' => false,
 //             'type'=>'primary',
             'before'=> '<div class="btn-group">'.
                 Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm', 'Create'), ['create'], [
                     'class' => 'btn btn-success btn-flat',
                     'data-pjax' => 0
                 ]) . ' '.
-                Html::a('<i class="glyphicon glyphicon-repeat"></i> '.Yii::t('andahrm', 'Reload'), '#!', [
+                Html::a('<i class="glyphicon glyphicon-repeat"></i> '.Yii::t('andahrm', 'Reload'), '', [
                     'class' => 'btn btn-info btn-flat btn-reload',
                     'title' => 'Reload',
                     'id' => 'btn-reload-grid'
@@ -94,6 +95,7 @@ $fullExportMenu = ExportMenu::widget([
                     'data-pjax' => 0
                 ]) . ' '.
                 '</div>',
+            'after' => false,
         ],
         'toolbar' => [
             '{export}',

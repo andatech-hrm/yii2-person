@@ -7,6 +7,7 @@ namespace andahrm\person;
  */
 class Module extends \yii\base\Module
 {
+    //public $layout = '@andahrm/person/views/layouts/main';
     /**
      * @inheritdoc
      */
@@ -17,7 +18,7 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
-        $this->layout = '@andahrm/person/views/layouts/main';
+//         $this->layout = '@andahrm/person/views/layouts/main';
         parent::init();
 
         // custom initialization code goes here

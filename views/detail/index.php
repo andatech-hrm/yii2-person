@@ -1,46 +1,46 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\Url;
 use kartik\grid\GridView;
 use kartik\export\ExportMenu;
+
 /* @var $this yii\web\View */
-/* @var $searchModel andahrm\person\models\PersonSearch */
+/* @var $searchModel andahrm\person\models\DetailSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Persons');
+$this->title = Yii::t('andahrm/person', 'Details');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <?php
 $columns = [
     'user_id' => 'user_id',
-    'citizen_id' => 'citizen_id',
-    'title_id' => 'title_id',
-    'fullname' => 'fullname',
-    'gender' => 'gender',
-    'tel' => 'tel',
-    'phone' => 'phone',
-    'birthday' => 'birthday',
-    'created_at' => 'created_at',
-    'created_by' => 'created_by',
-    'updated_at' => 'updated_at',
-    'updated_by' => 'updated_by',
+    'nationality_id' => 'nationality_id',
+    'race_id' => 'race_id',
+    'religion_id' => 'religion_id',
+    'blood_group' => 'blood_group',
+    'address_contact_id' => 'address_contact_id',
+    'address_birth_place_id' => 'address_birth_place_id',
+    'address_register_id' => 'address_register_id',
+    'mother_name' => 'mother_name',
+    'father_name' => 'father_name',
+    'married_status' => 'married_status',
+    'people_spouse_id' => 'people_spouse_id',
 ];
 
 $gridColumns = [
-    $columns['user_id'],
-    $columns['citizen_id'],
-    $columns['fullname'],
-    $columns['tel'],
-    [
-        'class' => '\kartik\grid\ActionColumn',
-        'template' => '{update} {delete}',
-        'urlCreator' => function ($action, $model, $key, $index) {
-            $params = Yii::$app->request->getQueryParams();
-            unset($params['id'], $params['_pjax']);
-            return Url::to(array_merge(['default/'.$action], ['id' => $model->user_id], $params));
-        }
-    ]
+    $columns['nationality_id'],
+    $columns['race_id'],
+    $columns['religion_id'],
+    $columns['blood_group'],
+    $columns['address_contact_id'],
+    //$columns['address_birth_place_id'],
+    //$columns['address_register_id'],
+    //$columns['mother_name'],
+    //$columns['father_name'],
+    $columns['married_status'],
+    $columns['people_spouse_id'],
+    ['class' => '\kartik\grid\ActionColumn',]
 ];
 
 $fullExportMenu = ExportMenu::widget([
@@ -60,8 +60,8 @@ $fullExportMenu = ExportMenu::widget([
     ],
 ]);
 ?>
-<div class="person-index">
 
+<div class="detail-index">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -114,6 +114,7 @@ $fullExportMenu = ExportMenu::widget([
         'columns' => $gridColumns,
     ]); ?>
 </div>
+
 <?php
 $js[] = "
 $(document).on('click', '#btn-reload-grid', function(e){

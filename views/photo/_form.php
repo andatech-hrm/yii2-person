@@ -13,7 +13,7 @@ use anda\core\widgets\cropimageupload\CropImageUpload;
 <div class="photo-form">
 
     <?php $form = ActiveForm::begin([
-        'action' => ($model->isNewRecord) ? ['create'] : ['update', 'user_id' => $model->user_id, 'year' => $model->year],
+//         'action' => ($model->isNewRecord) ? ['create'] : ['update', 'user_id' => $model->user_id, 'year' => $model->year],
         'options' => [
             'enctype' => 'multipart/form-data',
         ]
