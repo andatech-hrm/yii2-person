@@ -17,6 +17,17 @@ $columns = [
     'citizen_id' => 'citizen_id',
     'title_id' => 'title_id',
     'fullname' => 'fullname',
+    'contact' => [
+        'attribute' => 'contact',
+        'format' => 'html',
+        'value' => function($model) {
+            if ($model->addressContact === null) { return null; }
+            $res = $model->getAddressText('contact', ['number' => true]);
+            $res .= '<br />โทร. ';
+            $res .= $model->addressContact->phone;
+            return $res;
+        },
+    ],
     'gender' => 'gender',
     'tel' => 'tel',
     'phone' => 'phone',
@@ -30,16 +41,27 @@ $columns = [
 $gridColumns = [
     $columns['user_id'],
     $columns['citizen_id'],
-    $columns['fullname'],
-    $columns['tel'],
+    [
+        'attribute' => 'fullname',
+        'format' => 'html',
+        'value' => function($model) {
+            $res = '<div class="media"> <div class="media-left"> ' . 
+                '<img class="media-object img-circle" src="'.$model->photoLast.'" style="width: 32px; height: 32px;"> </div> ' . 
+                '<div class="media-body"> ' . 
+                '<p class="media-heading">'.$model->fullname.'</p> ' . 
+                '<small>'.$model->positionTitle.'<small></div> </div>';
+            return $res;
+        }
+    ],
+    $columns['contact'],
     [
         'class' => '\kartik\grid\ActionColumn',
-        'template' => '{update} {delete}',
-        'urlCreator' => function ($action, $model, $key, $index) {
-            $params = Yii::$app->request->getQueryParams();
-            unset($params['id'], $params['_pjax']);
-            return Url::to(array_merge(['default/'.$action], ['id' => $model->user_id], $params));
-        }
+//         'template' => '{update} {delete}',
+//         'urlCreator' => function ($action, $model, $key, $index) {
+//             $params = Yii::$app->request->getQueryParams();
+//             unset($params['id'], $params['_pjax']);
+//             return Url::to(array_merge(['default/'.$action], ['id' => $model->user_id], $params));
+//         }
     ]
 ];
 
@@ -66,6 +88,7 @@ $fullExportMenu = ExportMenu::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'id' => 'data-grid',
+        'tableOptions' => ['class' => 'jambo_table'],
         'pjax'=>true,
 //        'resizableColumns'=>true,
 //        'resizeStorageKey'=>Yii::$app->user->id . '-' . date("m"),

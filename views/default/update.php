@@ -7,16 +7,15 @@ use yii\helpers\Html;
 
 $this->title = Yii::t('app', 'Update {modelClass}: ', [
     'modelClass' => 'Default',
-]) . $model->fullname;
+]) . $models['person']->fullname;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'People'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->user_id, 'url' => ['view', 'id' => $model->user_id]];
+$this->params['breadcrumbs'][] = ['label' => $models['person']->user_id, 'url' => ['view', 'id' => $models['person']->user_id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>
 <div class="person-update">
 
     <?= $this->render('_form', [
-        'model' => $model,
-        'modelUser' => $modelUser,
+        'models' => $models,
     ]) ?>
 
 </div>

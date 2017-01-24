@@ -27,6 +27,17 @@ use Yii;
  */
 class AddressBirthPlace extends Address
 {
+    
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $this->type = parent::TYPE_BIRTH_PLACE;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     /**
      * @return \yii\db\ActiveQuery
      */

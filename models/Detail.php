@@ -57,12 +57,8 @@ class Detail extends \yii\db\ActiveRecord
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'nationality_id', 'race_id', 'religion_id', 'address_contact_id', 'address_birth_place_id', 'address_register_id', 'married_status', 'people_spouse_id'], 'integer'],
+            [['user_id', 'nationality_id', 'race_id', 'religion_id', 'married_status'], 'integer'],
             [['blood_group'], 'string', 'max' => 2],
-            [['mother_name', 'father_name'], 'string', 'max' => 100],
-            [['address_birth_place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::className(), 'targetAttribute' => ['address_birth_place_id' => 'id']],
-            [['address_register_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::className(), 'targetAttribute' => ['address_register_id' => 'id']],
-            [['address_contact_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::className(), 'targetAttribute' => ['address_contact_id' => 'id']],
             [['nationality_id'], 'exist', 'skipOnError' => true, 'targetClass' => Nationality::className(), 'targetAttribute' => ['nationality_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['user_id' => 'user_id']],
             [['race_id'], 'exist', 'skipOnError' => true, 'targetClass' => Race::className(), 'targetAttribute' => ['race_id' => 'id']],
@@ -81,13 +77,7 @@ class Detail extends \yii\db\ActiveRecord
             'race_id' => Yii::t('andahrm/person', 'เชื้อชาติ'),
             'religion_id' => Yii::t('andahrm/person', 'ศาสนา'),
             'blood_group' => Yii::t('andahrm/person', 'กรุ๊ปเลือด'),
-            'address_contact_id' => Yii::t('andahrm/person', 'ที่อยู่ที่สามารติต่อได้'),
-            'address_birth_place_id' => Yii::t('andahrm/person', 'สถานที่เกิด'),
-            'address_register_id' => Yii::t('andahrm/person', 'สถานที่ตามทะเบียนบ้าน'),
-            'mother_name' => Yii::t('andahrm/person', 'Mother Name'),
-            'father_name' => Yii::t('andahrm/person', 'Father Name'),
             'married_status' => Yii::t('andahrm/person', 'สถานะ'),
-            'people_spouse_id' => Yii::t('andahrm/person', 'คู่สมรส'),
         ];
     }
 
@@ -96,7 +86,7 @@ class Detail extends \yii\db\ActiveRecord
      */
     public function getAddressBirthPlace()
     {
-        return $this->hasOne(AddressBirthPlace::className(), ['id' => 'address_birth_place_id']);
+        return $this->hasOne(AddressBirthPlace::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_BIRTH_PLACE]);
     }
 
     /**
@@ -104,7 +94,7 @@ class Detail extends \yii\db\ActiveRecord
      */
     public function getAddressRegister()
     {
-        return $this->hasOne(AddressRegister::className(), ['id' => 'address_register_id']);
+        return $this->hasOne(AddressRegister::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_REGISTER]);
     }
 
     /**
@@ -112,7 +102,7 @@ class Detail extends \yii\db\ActiveRecord
      */
     public function getAddressContact()
     {
-        return $this->hasOne(AddressContact::className(), ['id' => 'address_contact_id']);
+        return $this->hasOne(AddressContact::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_CONTACT]);
     }
 
     /**
@@ -158,6 +148,15 @@ class Detail extends \yii\db\ActiveRecord
         ];
     }
     
+    public function getBloodGroupText()
+    {
+        $arr = self::getBloodGroups();
+        if(array_key_exists($this->blood_group, $arr)) {
+            return $arr[$this->blood_group];
+        }
+        return null;
+    }
+    
     public static function getStatuses()
     {
         return [
@@ -170,9 +169,9 @@ class Detail extends \yii\db\ActiveRecord
     
     public function getStatusText()
     {
-        $statuses = self::getStatuses();
-        if(array_key_exists($this->married_status)) {
-            return $statuses[$this->married_status];
+        $arr = self::getStatuses();
+        if(array_key_exists($this->married_status, $arr)) {
+            return $arr[$this->married_status];
         }
         return null;
     }

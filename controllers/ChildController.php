@@ -4,14 +4,17 @@ namespace andahrm\person\controllers;
 
 use Yii;
 use andahrm\person\models\Person;
-use andahrm\person\models\Child;
-use andahrm\person\models\ChildSearch;
 use andahrm\person\models\People;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\base\ErrorException;
 use yii\filters\VerbFilter;
 use andahrm\setting\models\Helper;
+use andahrm\person\models\Nationality;
+use andahrm\person\models\Race;
+
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * ChildController implements the CRUD actions for Child model.
@@ -19,6 +22,10 @@ use andahrm\setting\models\Helper;
 class ChildController extends Controller
 {
     public $modelPerson;
+    
+    public $races;
+    
+    public $nationalities;
     /**
      * @inheritdoc
      */
@@ -85,59 +92,45 @@ class ChildController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Child([
-            'user_id' => $this->modelPerson->user_id,
-        ]);
-        $modelPeople = new People([
-            'nationality_id' => People::DEFAULT_NATIONALITY,
-            'race_id' => People::DEFAULT_RACE,
-        ]);
-        
-        if($modelPeople->load(Yii::$app->request->post()) && $model->load(Yii::$app->request->post())){
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                $errorMassages = [];
-                if (!$modelPeople->save()) {
-                    $errorMassages = array_merge($errorMassages, $modelPeople->getErrors());
-                }
+        $modelPerson = new Person;
+        $modelsPeople = [new People(['user_id' => 3])];
 
-                $model->people_id = $modelPeople->id;
-                if (!$model->save()) {
-                    $errorMassages = array_merge($errorMassages, $model->getErrors());
-                }
-                print_r($errorMassages);
-                if(count($errorMassages) > 0){
-                    $msg = '<ul>';
-                    foreach($errorMassages as $key => $fields){
-                        $msg .= '<li>'.implode("<br />", $fields).'</li>';
+        if ($modelPerson->load(Yii::$app->request->post())) {
+
+            $modelsPeople = Model::createMultiple(Address::classname());
+            Model::loadMultiple($modelsPeople, Yii::$app->request->post());
+
+            // validate all models
+            $valid = $modelPerson->validate();
+            $valid = Model::validateMultiple($modelsPeople) && $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+
+                try {
+                    if ($flag = $modelPerson->save(false)) {
+                        foreach ($modelsPeople as $modelPeople) {
+                            $modelPeople->user_id = $modelPerson->user_id;
+                            if (! ($flag = $modelPeople->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
                     }
-                    $msg .= '</ul>';
-                    throw new ErrorException($msg);
-                }else{
-                    Yii::$app->getSession()->setFlash('saved',[
-                        'type' => 'success',
-                        'msg' => Yii::t('andahrm', 'Save operation completed.')
-                    ]);
 
-                    $transaction->commit();
-
-                    return $this->redirect(Helper::urlParams('index'));
+                    if ($flag) {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $modelPerson->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
                 }
-
-            } catch(ErrorException $e) {
-                Yii::$app->getSession()->setFlash('saved',[
-                    'type' => 'error',
-                    'title' => Yii::t('andahrm', 'Unable to save record.'),
-                    'msg' => $e->getMessage()
-                ]);
-                $transaction->rollback();
             }
         }
 
         return $this->render('create', [
-            'model' => $model,
-            'modelPeople' => $modelPeople,
-            'modelPerson' => $this->modelPerson,
+            //'modelPerson' => $modelPerson,
+            'modelsPeople' => $modelsPeople
         ]);
     }
 
@@ -149,57 +142,51 @@ class ChildController extends Controller
      * @param string $relation
      * @return mixed
      */
-    public function actionUpdate($id, $people_id, $relation)
+    public function actionUpdate($id)
     {
-        $model = $this->findModel($id, $people_id, $relation);
-        $modelPeople = $model->people;
+        $modelPerson = $this->findModel($id);
+        $modelsPeople = $modelPerson->peopleChilds;
 
-        if($modelPeople->load(Yii::$app->request->post()) && $model->load(Yii::$app->request->post())){
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                $errorMassages = [];
-                if (!$modelPeople->save()) {
-                    $errorMassages = array_merge($errorMassages, $modelPeople->getErrors());
-                }
+        if ($modelPerson->load(Yii::$app->request->post())) {
 
-                $model->people_id = $modelPeople->id;
-                if (!$model->save()) {
-                    $errorMassages = array_merge($errorMassages, $model->getErrors());
-                }
-                print_r($errorMassages);
-                if(count($errorMassages) > 0){
-                    $msg = '<ul>';
-                    foreach($errorMassages as $key => $fields){
-                        $msg .= '<li>'.implode("<br />", $fields).'</li>';
+            $oldIDs = ArrayHelper::map($modelsPeople, 'user_id', 'user_id');
+            $modelsPeople = Model::createMultiple(Address::classname(), $modelsPeople);
+            Model::loadMultiple($modelsPeople, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsPeople, 'id', 'id')));
+
+            // validate all models
+            $valid = $modelPerson->validate();
+            $valid = Model::validateMultiple($modelsPeople) && $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $modelPerson->save(false)) {
+                        if (!empty($deletedIDs)) {
+                            Address::deleteAll(['id' => $deletedIDs]);
+                        }
+                        foreach ($modelsPeople as $modelPeople) {
+                            $modelPeople->customer_id = $modelPerson->user_id;
+                            if (! ($flag = $modelPeople->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
                     }
-                    $msg .= '</ul>';
-                    throw new ErrorException($msg);
-                }else{
-                    Yii::$app->getSession()->setFlash('saved',[
-                        'type' => 'success',
-                        'msg' => Yii::t('andahrm', 'Save operation completed.')
-                    ]);
-
-                    $transaction->commit();
-
-                    return $this->redirect(Helper::urlParams('index'));
+                    if ($flag) {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $modelPerson->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
                 }
-
-            } catch(ErrorException $e) {
-                Yii::$app->getSession()->setFlash('saved',[
-                    'type' => 'error',
-                    'title' => Yii::t('andahrm', 'Unable to save record.'),
-                    'msg' => $e->getMessage()
-                ]);
-                $transaction->rollback();
             }
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-                'modelPeople' => $model->people,
-                'modelPerson' => $this->modelPerson,
-            ]);
         }
+
+        return $this->render('update', [
+            'modelPerson' => $modelPerson,
+            'modelsPeople' => (empty($modelsPeople)) ? [new People] : $modelsPeople
+        ]);
     }
 
     /**
@@ -226,12 +213,19 @@ class ChildController extends Controller
      * @return Child the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($user_id, $people_id, $relation)
+    protected function findModel($user_id)
     {
-        if (($model = Child::findOne(['user_id' => $user_id, 'people_id' => $people_id, 'relation' => $relation])) !== null) {
+        if (($model = Person::findOne(['user_id' => $user_id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+    
+    public function prepareData()
+    {
+        $this->races = Race::find()->all();
+        
+        $this->nationalities = Nationality::find()->all();
     }
 }

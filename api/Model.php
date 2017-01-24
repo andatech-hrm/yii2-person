@@ -1,0 +1,101 @@
+<?php
+namespace andahrm\person\api;
+
+
+use Yii;
+use andahrm\person\models\Address;
+
+class Model extends \yii\base\Object
+{
+    public $_model;
+    
+    public function __construct($arg)
+    {
+        foreach ($arg as $key => $value) {
+            if(property_exists($this, $key)){
+                $this->$key = $value;
+            }
+        }
+    }
+    
+    public function getModel()
+    {
+        return $this->_model;
+    }
+    
+    public function getFullname($lang = 'th')
+    {
+        switch ($lang) {
+            case 'en' : $fullname = $this->_model->firstname_en.' '.$this->_model->lastname_en;
+                break;
+            default : $fullname = $this->_model->firstname_th.' '.$this->_model->lastname_th;
+                break;
+        }
+        return $fullname;
+    }
+    
+    public function getAddress($type = Address::TYPE_CONTACT)
+    {
+        switch ($type) {
+            case Address::TYPE_BIRTH_PLACE : $address = $this->_model->addressBirthPlace;
+                break;
+            case Address::TYPE_REGISTER : $address = $this->_model->addressRegister;
+                break;
+            default : $address = $this->_model->addressContact;
+                break;
+        }
+        if($address === null) {
+            return null;
+        }
+        
+        $arr[] = $address->number;
+        $arr[] .= (!empty($address->sub_road)) ? 'ซ.'.$address->sub_road : '';
+        $arr[] .= (!empty($address->road)) ? 'ถ.'.$address->road : '';
+        $arr[] .= (!empty($address->tambol_id)) ? 'ต.'.$address->tambol->name : '';
+        $arr[] .= (!empty($address->amphur_id)) ? 'อ.'.$address->amphur->name : '';
+        $arr[] .= (!empty($address->province_id)) ? 'จ.'.$address->province->name : '';
+        
+        return implode(" ", $arr);
+    }
+    
+    public function getPhotoLast($original=false)
+    {
+        $photoLast = \andahrm\person\models\Photo::find()
+            ->where(['user_id' => $this->_model->user_id])
+            ->orderBy(['year' => SORT_DESC])
+            ->one();
+        
+        if ($photoLast === null) {
+            return null;
+        }
+        
+        if($original){
+            return $photoLast->getUploadUrl('image');
+        }
+        
+        return $photoLast->getUploadUrl('image_cropped');
+    }
+    
+    public function getRoles()
+    {
+        $roles = [];
+        foreach (Yii::$app->authManager->getRolesByUser($this->_model->user_id) as $key => $role) {
+            $roles[$key] = ucfirst($role->description);
+        }
+        
+        return $roles;
+    }
+  
+    public function getPosition()
+    {
+        return $this->_model->positionSalary?$this->_model->positionSalary->position->title:null;
+    }
+  
+    public function getSection()
+    {
+        return $this->_model->positionSalary?$this->_model->positionSalary->position->section->title:null;
+    }
+  
+   
+}
+

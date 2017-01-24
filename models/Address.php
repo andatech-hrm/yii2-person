@@ -28,6 +28,9 @@ use andahrm\setting\models\Helper;
  */
 class Address extends \yii\db\ActiveRecord
 {
+    const TYPE_CONTACT = 1;
+    const TYPE_REGISTER = 2;
+    const TYPE_BIRTH_PLACE = 3;
     
     public $localRegion;
     /**
@@ -45,7 +48,7 @@ class Address extends \yii\db\ActiveRecord
     {
         return [
             [['tambol_id', 'amphur_id', 'province_id', 'postcode'], 'integer'],
-//             [['move_in_date'], 'required'],
+            [['move_in_date'], 'required'],
             [['tambol_id', 'amphur_id', 'province_id', 'postcode', 'move_in_date', 'move_out_date'], 'safe'],
             [['sub_road', 'road'], 'string', 'max' => 50],
             [['number_registration'], 'string', 'max' => 20],

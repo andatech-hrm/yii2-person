@@ -26,6 +26,21 @@ class People extends \yii\db\ActiveRecord
     
     const LIVE_STATUS_YES = 1;
     const LIVE_STATUS_NO = 0;
+    
+    const TYPE_FATHER = 1;
+    const TYPE_MOTHER = 2;
+    const TYPE_SPOUSE = 3;
+    const TYPE_CHILD = 4;
+    
+    public function init()
+    {
+        parent::init();
+        
+        //if($this->isNewRecord) {
+            $this->race_id = self::DEFAULT_RACE;
+            $this->nationality_id = self::DEFAULT_NATIONALITY;
+        //}
+    }
     /**
      * @inheritdoc
      */
@@ -41,10 +56,11 @@ class People extends \yii\db\ActiveRecord
     {
         return [
             [['birthday'], 'safe'],
-            [['nationality_id', 'race_id'], 'integer'],
+            [['nationality_id', 'race_id', 'user_id', 'type'], 'integer'],
             [['citizen_id'], 'string', 'max' => 20],
             [['name', 'surname', 'live_status'], 'string', 'max' => 255],
             [['occupation'], 'string', 'max' => 100],
+//             [['birthday'], 'default', 'value' => null],
         ];
     }
 
@@ -55,6 +71,8 @@ class People extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('andahrm/person', 'ID'),
+            'user_id' => Yii::t('andahrm/person', 'User ID'),
+            'type' => Yii::t('andahrm/person', 'Type'),
             'citizen_id' => Yii::t('andahrm/person', 'Citizen ID'),
             'name' => Yii::t('andahrm/person', 'Name'),
             'surname' => Yii::t('andahrm/person', 'Surname'),
@@ -69,8 +87,10 @@ class People extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            $date = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday);
-            $this->birthday = $date->format(Helper::DB_DATE_FORMAT);
+            if($this->birthday) {
+                $birthday = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday);
+                $this->birthday = $birthday->format(Helper::DB_DATE_FORMAT);
+            }
             return true;
         } else {
             return false;
@@ -79,8 +99,10 @@ class People extends \yii\db\ActiveRecord
     
     public function afterFind()
     {
-        $date = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday);
-        $this->birthday = $date->format(Helper::UI_DATE_FORMAT);
+        if($this->birthday) {
+            $birthday = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday);
+            $this->birthday = $birthday->format(Helper::UI_DATE_FORMAT);
+        }
     }
 
     /**
@@ -89,6 +111,30 @@ class People extends \yii\db\ActiveRecord
     public function getChild()
     {
         return $this->hasOne(Child::className(), ['people_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNationality()
+    {
+        return $this->hasOne(Nationality::className(), ['id' => 'nationality_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPerson()
+    {
+        return $this->hasOne(Person::className(), ['user_id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRace()
+    {
+        return $this->hasOne(Race::className(), ['id' => 'race_id']);
     }
     
     public static function getLiveStatuses()
@@ -99,12 +145,11 @@ class People extends \yii\db\ActiveRecord
         ];
     }
     
-    public function getLiveStatus()
+    public function getLiveStatusText()
     {
         $liveStatus = self::getLiveStatuses();
-        if(array_key_exists($this->live_status, $liveStatus)){
-            $liveStatus[$this->live_status];
-        }
-        return null;
+        $status = intval($this->live_status);
+        
+        return (isset($liveStatus[$status])) ? $liveStatus[$status] : null;
     }
 }

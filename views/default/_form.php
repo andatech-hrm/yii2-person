@@ -1,112 +1,153 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
-use andahrm\person\models\Title;
-use kartik\widgets\DatePicker;
-use andahrm\setting\models\WidgetSettings;
 
 /* @var $this yii\web\View */
 /* @var $model andahrm\person\models\Person */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="person-form">
 <?php $form = ActiveForm::begin(); ?>
-    <div class="pull-right">
-    <?= Html::a('<i class="fa fa-times"></i> Discard', ['index'], ['class' => 'btn btn-default']) ?>
-    <?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-check"></i> '.Yii::t('app', 'Create') : '<i class="fa fa-check"></i> '.Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+<!-- Begin Step 1 -->
+<div class="row">
+    <div class="col-sm-6">
+        <!-- Begin Person -->
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Basic info</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+            <?php
+                echo $this->render('_form-person', ['model' => $models['person'], 'modelUser' => $models['user'], 'form' => $form]);    
+            ?>
+            </div>
+        </div>
+        <!-- End Person -->
     </div>
-    <h4><?= $model->isNewRecord ? Yii::t('andahrm', 'Create Person') : $model->fullname; ?></h4>
-    <hr>
-    
-    
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>Default <small>Hover to view</small></h2>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
+    <div class="col-sm-6">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>User Account</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+            <?php
+                echo $this->render('_signup', ['model' => $models['user'], 'form' => $form]);    
+            ?>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Step 1 -->
+
+<!-- Begin Step 2 - Detail -->
+<div class="x_panel">
+    <div class="x_title">
+        <h2>Detail</h2>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <?php echo $this->render('_form-detail', ['model' => $models['detail'], 'modelSpouse' => $models['people-spouse'], 'form' => $form]);    ?>
+    </div>
+</div>
+<!-- End Step 2 - Detail -->
+
+<!-- Begin Step 3 Addresses-->
+<div class="x_panel">
+    <div class="x_title">
+        <h2>Addresses</h2>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <!-- Begin Address Contact -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4 class="page-header green" style="margin-top: 0">Contact</h4>
+                <?php echo $this->render('_form-address', ['model' => $models['address-contact'], 'form' => $form]); ?>
+            </div>
+        </div>
+        <!-- End Address Contact -->
+    </div>
+         
+    <div class="x_content">   
+        <!-- Begin Address Register -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4 class="page-header green" style="margin-top: 0">Register</h4>
+                <?php echo $this->render('_form-address', ['model' => $models['address-register'], 'form' => $form]); ?>
+            </div>
+        </div>
+        <!-- End Address Register -->
+    </div>
+         
+    <div class="x_content"> 
             
-                    <?= $form->field($model, 'citizen_id')->textInput(['maxlength' => true]) ?>
-
-                    <?= $form->field($model, 'title_id')->dropDownList(ArrayHelper::map(Title::find()->all(), 'id', 'name')) ?>
-
-                    <?= $form->field($model, 'firstname_th')->textInput(['maxlength' => true]) ?>
-
-                    <?= $form->field($model, 'lastname_th')->textInput(['maxlength' => true]) ?>
-
-                    <?= $form->field($model, 'firstname_en')->textInput(['maxlength' => true]) ?>
-
-                    <?= $form->field($model, 'lastname_en')->textInput(['maxlength' => true]) ?>
-                    
-                    <?= $form->field($model, 'gender')->inline()->radioList($model->getGenders()) ?>
-
-                    <?= $form->field($model, 'tel')->textInput(['maxlength' => true]) ?>
-
-                    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
-
-                    <?= $form->field($model, 'birthday')->widget(DatePicker::className(), WidgetSettings::DatePicker()) ?>
-
-                </div>
+        <!-- Begin Address Birth Place -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4 class="page-header green" style="margin-top: 0">Birth Place</h4>
+                <?php echo $this->render('_form-address', ['model' => $models['address-birth-place'], 'form' => $form]); ?>
             </div>
         </div>
+        <!-- Begin Address Birth Place -->
+        <?php $this->render('_form-address-js'); ?>
+    </div> 
+</div>
+<!-- End Step 3 Addresses-->
+
+<!-- Begin Step 4 Parent-->
+<div class="x_panel">
+    <div class="x_title">
+        <h2>Parent</h2>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <!-- Begin People Father -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4 class="page-header green" style="margin-top: 0">Father</h4>
+               <?php echo $this->render('_form-people', ['model' => $models['people-father'], 'form' => $form]); ?>
+            </div>
+        </div>
+        <!-- End People Father -->
+            
+        <!-- Begin People Mother -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4 class="page-header green" style="margin-top: 0">Mother</h4>
+               <?php echo $this->render('_form-people', ['model' => $models['people-mother'], 'form' => $form]); ?>
+            </div>
+        </div>
+        <!-- End People Mother -->
+    </div>
+</div>
+<!-- End Step 4 Parent-->
+
+<!-- Begin Step 5 Childs-->
+<?php echo $this->render('_form-people-childs', ['models' => $models['people-childs'], 'form' => $form]); ?>
+
+<!-- End Step 5 Childs-->
+
+
+<div class="ln_solid"></div>
+<div class="form-group">
+    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+        <button type="submit" class="btn btn-primary">Cancel</button>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+</div>
+<?php ActiveForm::end(); ?>
+
+
+<div class="x_panel">
+    <div class="x_title">
+        <h2>Person</h2>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
         
-        <div class="col-sm-6">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>User Account <small>Hover to view</small></h2>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                    <?php 
-                    echo $this->render('_signup', [
-                        'model' => $modelUser,
-                        'form' => $form,
-                        'roleList' => $model->getRoleList()
-                    ]); 
-                    ?>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div>
-        <?php 
-        if($model->isNewRecord) {
-            echo Yii::$app->runAction('/person/detail/create', ['form' => $form]);
-        }else{
-            echo Yii::$app->runAction('/person/detail/update', ['id' => $model->user_id, 'form' => $form]);
-        }
-        ?>
     </div>
 </div>
-
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
-
-    <?php ActiveForm::end(); ?>
-
-</div>
-
-<?php
-if($model->isNewRecord) {
-$firstname_en_id = Html::getInputId($model, "firstname_en");
-$username_id = Html::getInputId($modelUser, "username");
-
-$citizen_id_id =  Html::getInputId($model, "citizen_id");
-$password_id = Html::getInputId($modelUser, "newPassword");
-$passwordConfirm_id = Html::getInputId($modelUser, "newPasswordConfirm");
-$js[] = <<< JS
-$(document).on('change', '#{$firstname_en_id}', function(event){ var val = $(this).val().toLowerCase(); $('#$username_id').val(val); });
-$(document).on('change', '#{$citizen_id_id}', function(event){ var val = $(this).val().toLowerCase(); $('#$password_id').val(val); $('#$passwordConfirm_id').val(val); });
-JS;
-
-
-$this->registerJs(implode("\n", $js));
-}
-?>

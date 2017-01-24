@@ -100,8 +100,10 @@ class Person extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            $date = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday);
-            $this->birthday = $date->format(Helper::DB_DATE_FORMAT);
+            $birthday = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday);
+            $this->birthday = $birthday->format(Helper::DB_DATE_FORMAT);
+//             print_r($this->attributes);
+//             Yii::$app->end();
             return true;
         } else {
             return false;
@@ -117,11 +119,6 @@ class Person extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'user_id']);
-    }
-    
-    public function getPerson()
-    {
-        return $this->hasOne(Yii::$app->user->identityClass, ['user_id' => 'user_id']);
     }
     
     public function getCreatedBy()
@@ -142,6 +139,109 @@ class Person extends \yii\db\ActiveRecord
     public function getDetail()
     {
         return $this->hasOne(Detail::className(), ['user_id' => 'user_id']);
+    }
+    
+    public function getAddressContact()
+    {
+        return $this->hasOne(AddressContact::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_CONTACT]);
+    }
+    
+    public function getAddressText($type = Address::TYPE_CONTACT, $fields = [])
+    {
+        switch ($type) {
+            case Address::TYPE_BIRTH_PLACE : $address = $this->addressBirthPlace;
+                break;
+            case Address::TYPE_REGISTER : $address = $this->addressRegister;
+                break;
+            default : $address = $this->addressContact;
+                break;
+        }
+        if($address === null) { return null; }
+        
+        
+        $defaultFields = [
+            'number_registration' => false,
+            'number' => true,
+            'sub_road' => true,
+            'road' => true,
+            'tambol' => true,
+            'amphur' => true,
+            'province' => true,
+            'postcode' => false,
+            'phone' => false,
+            'fax' => false,
+            'move_in_date' => false,
+            'move_out_date' => false
+        ];
+        
+        $showFields = array_merge($defaultFields, $fields);
+        $arr[] = ($showFields['number_registration']) ? $address->number_registration : '';
+        $arr[] .= ($showFields['number']) ? $address->number : '';
+        $arr[] .= ($showFields['sub_road']) ? 'ซ.'.$address->sub_road : '';
+        $arr[] .= ($showFields['road']) ? 'ถ.'.$address->road : '';
+        $arr[] .= ($showFields['tambol']) ? 'ต.'.$address->tambol->name : '';
+        $arr[] .= ($showFields['amphur']) ? 'อ.'.$address->amphur->name : '';
+        $arr[] .= ($showFields['province']) ? 'จ.'.$address->province->name : '';
+        $arr[] .= ($showFields['postcode']) ? $address->postcode : '';
+        $arr[] .= ($showFields['phone']) ? 'โทร.'.$address->phone : '';
+        $arr[] .= ($showFields['fax']) ? 'แฟกซ์.'.$address->fax : '';
+        $arr[] .= ($showFields['move_in_date']) ? 'วันที่ย้ายเข้า '.$address->move_in_date : '';
+        $arr[] .= ($showFields['move_out_date']) ? 'วันที่ย้ายออก '.$address->move_out_date : '';
+        
+        return implode(" ", $arr);
+    }
+    
+    public function getAddressRegister()
+    {
+        return $this->hasOne(AddressRegister::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_REGISTER]);
+    }
+    
+    public function getAddressBirthPlace()
+    {
+        return $this->hasOne(AddressBirthPlace::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_BIRTH_PLACE]);
+    }
+    
+    public function getPeopleFather()
+    {
+        return $this->hasOne(PeopleFather::className(), ['user_id' => 'user_id'])->where(['type' => People::TYPE_FATHER]);
+    }
+    
+    public function getPeopleMother()
+    {
+        return $this->hasOne(PeopleMother::className(), ['user_id' => 'user_id'])->where(['type' => People::TYPE_MOTHER]);
+    }
+    
+    public function getPeopleSpouse()
+    {
+        return $this->hasOne(PeopleSpouse::className(), ['user_id' => 'user_id'])->where(['type' => People::TYPE_SPOUSE]);
+    }
+    
+    public function getPeopleChilds()
+    {
+        return $this->hasMany(PeopleChild::className(), ['user_id' => 'user_id'])->andOnCondition(['type' => People::TYPE_CHILD]);
+    }
+    
+    public function getPhotos()
+    {
+        return $this->hasMany(Photo::className(), ['user_id' => 'user_id']);
+    }
+    
+    public function getPhotoLast($original=false)
+    {
+        $photoLast = Photo::find()
+            ->where(['user_id' => $this->user_id])
+            ->orderBy(['year' => SORT_DESC])
+            ->one();
+        
+        if ($photoLast === null) {
+            return null;
+        }
+        
+        if($original){
+            return $photoLast->getUploadUrl('image');
+        }
+        
+        return $photoLast->getUploadUrl('image_cropped');
     }
     
     public function getFullname($lang = 'th')
@@ -178,38 +278,17 @@ class Person extends \yii\db\ActiveRecord
         }
         return null;
     }
+    
   
   # Create by mad
     public static function getList(){
-      return ArrayHelper::map(self::find()->all(),'user_id','fullname');
+      return ArrayHelper::map(self::find()->all(),'user_id','fullname','positionTitle');
     }
   
   # Create by mad
   public $year;
   
-  /**
-  *  Create by mad
-  * ข้อมูลสิทธิลา
-  */
-  public function getLeavePermission()
-    {
-        return $this->hasOne(LeavePermission::className(), ['user_id' => 'user_id'])
-          ->orderBy(['year'=>SORT_DESC]);
-    } 
   
-   /**
-  *  Create by mad
-  * ข้อมูลสิทธิลา
-  */
-   public function getLeavePermissionByYear()
-    {
-        $year = date('Y');
-      $get = Yii::$app->request->get();
-      $year=isset($get['PersonSearch']['year'])?$get['PersonSearch']['year']:$year;
-        return $this->hasOne(LeavePermission::className(), ['user_id' => 'user_id'])
-          ->where('leave_permission.year = :year', [':year' => $year]);
-          //->orderBy('leave_permission.year');
-    } 
   
   /**
   *  Create by mad

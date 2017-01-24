@@ -1,6 +1,7 @@
 <?php
 use yii\bootstrap\Html;
 ?>
+<?php $roleList = \andahrm\person\models\Person::getRoleList(); ?>
 
         <?= $form->field($model, 'username');?>
 

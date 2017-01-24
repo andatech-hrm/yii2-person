@@ -27,6 +27,17 @@ use Yii;
  */
 class AddressRegister extends Address
 {
+    
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $this->type = parent::TYPE_REGISTER;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     /**
      * @return \yii\db\ActiveQuery
      */
