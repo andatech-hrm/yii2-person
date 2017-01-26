@@ -15,6 +15,9 @@ use andahrm\person\models\PeopleMother;
 use andahrm\person\models\PeopleSpouse;
 use andahrm\person\models\PeopleChild;
 use andahrm\person\models\ChildModel;
+
+use andahrm\edoc\models\Edoc;
+
 use andahrm\setting\models\Helper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -174,6 +177,7 @@ class DefaultController extends Controller
         $models['people-mother'] = new PeopleMother();
         $models['people-spouse'] = new PeopleSpouse();
         $models['people-childs'] = [new PeopleChild()];
+        // $models['edoc'] = new Edoc(['scenario' => 'insert']);
         
         if($post){
             $errorMassages = [];
