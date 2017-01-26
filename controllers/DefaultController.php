@@ -177,7 +177,7 @@ class DefaultController extends Controller
         $models['people-mother'] = new PeopleMother();
         $models['people-spouse'] = new PeopleSpouse();
         $models['people-childs'] = [new PeopleChild()];
-        $models['edoc'] = new Edoc(['scenario' => 'insert']);
+        // $models['edoc'] = new Edoc(['scenario' => 'insert']);
         
         if($post){
             $errorMassages = [];
