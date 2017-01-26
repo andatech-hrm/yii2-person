@@ -3,6 +3,8 @@
 namespace andahrm\person\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "person_detail".
@@ -48,6 +50,18 @@ class Detail extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'person_detail';
+    }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+            ],
+            [
+                'class' => TimestampBehavior::className(),
+            ]
+        ];
     }
 
     /**

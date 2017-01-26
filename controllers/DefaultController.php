@@ -24,6 +24,7 @@ use yii\rbac\DbManager;
 
 use andahrm\person\models\Nationality;
 use andahrm\person\models\Race;
+use andahrm\setting\models\LocalRegion;
 
 /**
  * DefaultController implements the CRUD actions for Person model.
@@ -37,12 +38,14 @@ class DefaultController extends Controller
     public $races;
     
     public $nationalities;
+  
+    public $localReligions;
     
     public $formSteps = [
-        1 => ['name' =>'1', 'desc' => 'Basic and User account', 'models' => ['Person', 'User']],
-        2 => ['name' =>'2', 'desc' => 'Detail', 'models' => ['Detail', 'AddressContact', 'AddressRegister', 'AddressBirthPlace']],
-        3 => ['name' =>'3', 'desc' => 'Parents', 'models' => ['PeopleFather', 'PeopleMother']],
-        4 => ['name' =>'4', 'desc' => 'Childs', 'models' => ['PeopleChild']],
+        1 => ['name' =>'1', 'desc' => 'Basic and User account', 'icon' => 'fa fa-info-circle', 'models' => ['Person', 'User']],
+        2 => ['name' =>'2', 'desc' => 'Detail', 'icon' => 'fa fa-address-card', 'models' => ['Detail', 'AddressContact', 'AddressRegister', 'AddressBirthPlace']],
+        3 => ['name' =>'3', 'desc' => 'Parents', 'icon' => 'fa fa-user-secret', 'models' => ['PeopleFather', 'PeopleMother']],
+        4 => ['name' =>'4', 'desc' => 'Childs', 'icon' => 'fa fa-child', 'models' => ['PeopleChild']],
         //'confirm' => ['name' =>'5', 'desc' => 'Confirm', 'models' => []],
     ];
     
@@ -87,9 +90,63 @@ class DefaultController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $models['person'] = $this->findModel($id);
+//         $models['user'] = $models['person']->user;
+        $models['detail'] = ($models['person']->detail !== null ) ? $models['person']->detail : new Detail(['user_id' => $id]);
+        $models['address-contact'] = ($models['person']->addressContact !== null ) ? $models['person']->addressContact : new AddressContact(['user_id' => $id]);
+        $models['address-birth-place'] = ($models['person']->addressBirthPlace !== null ) ? $models['person']->addressBirthPlace : new AddressBirthPlace(['user_id' => $id]);
+        $models['address-register'] = ($models['person']->addressRegister !== null ) ? $models['person']->addressRegister : new AddressRegister(['user_id' => $id]);
+        $models['people-father'] = ($models['person']->peopleFather !== null ) ? $models['person']->peopleFather : new PeopleFather(['user_id' => $id]);
+        $models['people-mother'] = ($models['person']->peopleMother !== null ) ? $models['person']->peopleMother : new PeopleMother(['user_id' => $id]);
+        $models['people-spouse'] = ($models['person']->peopleSpouse !== null ) ? $models['person']->peopleSpouse : new PeopleSpouse(['user_id' => $id]);
+//         $models['people-childs'] = $models['person']->peopleChilds;
+        
+        $post = Yii::$app->request->post();
+        if($post) {
+            $errorMassages = [];
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                foreach ($models as $key => $model) {
+                    if (array_key_exists($model->formName(), $post)) {
+                        if($model->load($post) && $model->save()) {
+
+                        }else{
+                            $errorMassages[] = $model->getErrors();
+                        }
+                    }
+                }
+                
+                if(count($errorMassages) > 0){
+                    $msg = '<ul>';
+                        foreach($errorMassages as $key => $fields){
+                            $msg .= '<li>'.implode("<br />", $fields).'</li>';
+                        }
+                    $msg .= '</ul>';
+                    throw new ErrorException($msg);
+                }else{
+                    Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+
+                    $transaction->commit();
+
+                    return $this->redirect(['view', 'id' => $id]);
+                }
+            
+            }catch(ErrorException $e) {
+                Yii::$app->getSession()->setFlash('saved',[
+                    'type' => 'error',
+                    'title' => Yii::t('andahrm', 'Unable to save record.'),
+                    'msg' => $e->getMessage()
+                ]);
+                $transaction->rollback();
+            }
+        }
+        
+        $this->prepareData();
+        
+        return $this->render('view', ['models' => $models]);
     }
 
     /**
@@ -350,11 +407,20 @@ class DefaultController extends Controller
         }
     }
     
+    public function detailViewAttributes($view, $params)
+    {
+        extract($params);
+        $dir = realpath(__DIR__.'/../views/'.$this->id.'/detail-view');
+        return require($dir.'/'.$view.'.php');
+    }
+    
     public function prepareData()
     {
         $this->races = Race::find()->all();
         
         $this->nationalities = Nationality::find()->all();
+        
+        $this->localReligions = LocalRegion::find()->all();
     }
     
     public function getStep($point='current')

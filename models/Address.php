@@ -4,6 +4,8 @@ namespace andahrm\person\models;
 
 use Yii;
 use andahrm\setting\models\Helper;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "person_address".
@@ -39,6 +41,18 @@ class Address extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'person_address';
+    }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+            ],
+            [
+                'class' => TimestampBehavior::className(),
+            ]
+        ];
     }
 
     /**

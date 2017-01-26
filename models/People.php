@@ -4,6 +4,8 @@ namespace andahrm\person\models;
 
 use Yii;
 use andahrm\setting\models\Helper;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "people".
@@ -17,6 +19,10 @@ use andahrm\setting\models\Helper;
  * @property integer $race_id
  * @property string $occupation
  * @property string $live_status
+ * @property integer $created_by
+ * @property integer $created_at
+ * @property integer $updated_by
+ * @property integer $updated_at
  */
 class People extends \yii\db\ActiveRecord
 {
@@ -48,6 +54,18 @@ class People extends \yii\db\ActiveRecord
     {
         return 'people';
     }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+            ],
+            [
+                'class' => TimestampBehavior::className(),
+            ]
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -56,7 +74,7 @@ class People extends \yii\db\ActiveRecord
     {
         return [
             [['birthday'], 'safe'],
-            [['nationality_id', 'race_id', 'user_id', 'type'], 'integer'],
+            [['nationality_id', 'race_id', 'user_id', 'type', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'integer'],
             [['citizen_id'], 'string', 'max' => 20],
             [['name', 'surname', 'live_status'], 'string', 'max' => 255],
             [['occupation'], 'string', 'max' => 100],
