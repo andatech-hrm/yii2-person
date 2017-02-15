@@ -172,4 +172,16 @@ class Address extends \yii\db\ActiveRecord
     {
         return $this->hasOne(\andahrm\setting\models\LocalProvince::className(), ['id' => 'province_id']);
     }
+    
+    public function getAddressText()
+    {
+        $arr[] = $this->number;
+        $arr[] = 'ซ.'.$this->sub_road;
+        $arr[] = 'ถ.'.$this->road;
+        $arr[] = 'ต.'.$this->tambol->name;
+        $arr[] = 'อ.'.$this->amphur->name;
+        $arr[] = 'จ.'.$this->province->name;
+        
+        return implode(" ", $arr);
+    }
 }

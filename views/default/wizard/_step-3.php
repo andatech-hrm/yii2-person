@@ -19,3 +19,6 @@
     </div>
 </div>
 <!-- End People Mother -->
+
+<h4 class="page-header">Childs</h4>
+<?php echo $this->render('_form-people-childs', ['models' => $models['people-childs'], 'form' => $form]); ?>

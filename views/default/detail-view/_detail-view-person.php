@@ -14,22 +14,29 @@ return [
                 'value'=>'<kbd>'.$model->user_id.'</kbd>',
                 'displayOnly'=>true
             ],[
-                'attribute' => 'fullname',
+                'attribute' => 'citizen_id',
+            ],[
+                'attribute' => 'title_id',
+                'value' => $model->getGenderText(),
+                'type' => DetailView::INPUT_DROPDOWN_LIST,
+                'items' => ArrayHelper::map(Title::find()->all(), 'id', 'name'),
+            ],[
+                'attribute' => 'fullname_th',
                 'value' => $model->getFullname('th'),
                 'updateMarkup' => function($form, $widget) {
                 $model = $widget->model;
-                return '<div class="row">'.$form->field($model, 'title_id', ['options' => ['class' => 'form-group col-sm-2']])->dropDownList(ArrayHelper::map(Title::find()->all(), 'id', 'name')) . ' ' . 
-                    $form->field($model, 'firstname_th', ['options' => ['class' => 'form-group col-sm-5']]) . ' ' .
-                    $form->field($model, 'lastname_th', ['options' => ['class' => 'form-group col-sm-5']]) . '</div>';
+                return '<div class="row">'. 
+                    $form->field($model, 'firstname_th', ['options' => ['class' => 'form-group col-sm-6']]) . ' ' .
+                    $form->field($model, 'lastname_th', ['options' => ['class' => 'form-group col-sm-6']]) . '</div>';
                 }
             ],[
-                'attribute' => 'fullname',
+                'attribute' => 'fullname_en',
                 'value' => $model->getFullname('en'),
                 'updateMarkup' => function($form, $widget) {
                 $model = $widget->model;
-                return '<div class="row">'.$form->field($model, 'title_id', ['options' => ['class' => 'form-group col-sm-2']])->dropDownList(ArrayHelper::map(Title::find()->all(), 'id', 'name')) . ' ' . 
-                    $form->field($model, 'firstname_en', ['options' => ['class' => 'form-group col-sm-5']]) . ' ' .
-                    $form->field($model, 'lastname_en', ['options' => ['class' => 'form-group col-sm-5']]) . '</div>';
+                return '<div class="row">'. 
+                    $form->field($model, 'firstname_en', ['options' => ['class' => 'form-group col-sm-6']]) . ' ' .
+                    $form->field($model, 'lastname_en', ['options' => ['class' => 'form-group col-sm-6']]) . '</div>';
                 }
             ],[
                 'attribute' => 'gender',

@@ -16,18 +16,17 @@ if($model->isNewRecord) {
 ?>
     <?= Html::activeHiddenInput($model, 'user_id'); ?>
 <div class="row">
-    <?= $form->field($model, 'nationality_id', ['options' => ['class' => 'form-group col-sm-6']])->widget(Select2::classname(), array_replace_recursive(WidgetSettings::Select2(), [
+    <?= $form->field($model, 'nationality_id', ['options' => ['class' => 'form-group col-sm-3']])->widget(Select2::classname(), array_replace_recursive(WidgetSettings::Select2(), [
         'data' => ArrayHelper::map($this->context->nationalities, 'id', 'title'),
     ])) ?>
 
-    <?= $form->field($model, 'race_id', ['options' => ['class' => 'form-group col-sm-6']])->widget(Select2::classname(), array_replace_recursive(WidgetSettings::Select2(), [
+    <?= $form->field($model, 'race_id', ['options' => ['class' => 'form-group col-sm-3']])->widget(Select2::classname(), array_replace_recursive(WidgetSettings::Select2(), [
         'data' => ArrayHelper::map($this->context->races, 'id', 'title'),
     ])) ?>
-</div>
-<div class="row">
-    <?= $form->field($model, 'religion_id', ['options' => ['class' => 'form-group col-sm-6']])->inline()->radioList(ArrayHelper::map(Religion::find()->all(), 'id', 'title')) ?>
+    
+    <?= $form->field($model, 'religion_id', ['options' => ['class' => 'form-group col-sm-3']])->dropDownList(ArrayHelper::map(Religion::find()->all(), 'id', 'title')) ?>
 
-    <?= $form->field($model, 'blood_group', ['options' => ['class' => 'form-group col-sm-6']])->inline()->radioList($model->getBloodGroups()) ?>
+    <?= $form->field($model, 'blood_group', ['options' => ['class' => 'form-group col-sm-3']])->inline()->radioList($model->getBloodGroups()) ?>
 
 </div>
     <?= $form->field($model, 'married_status')->inline()->radioList($model->getStatuses()) ?>

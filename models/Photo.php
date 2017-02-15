@@ -61,7 +61,7 @@ class Photo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-//             [['user_id', 'year', 'image'], 'required'],
+            [['year', 'image'], 'required'],
             [['user_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['year', 'image_crop', 'image_cropped'], 'safe'],
 //             [['image', 'image_original'], 'string', 'max' => 255],
@@ -94,5 +94,11 @@ class Photo extends \yii\db\ActiveRecord
         } else {
             return false;
         }
+    }
+    
+    
+    public function getPerson()
+    {
+        return $this->hasOne(Person::className(), ['user_id' => 'user_id']);
     }
 }

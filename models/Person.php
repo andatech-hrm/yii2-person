@@ -3,6 +3,7 @@
 namespace andahrm\person\models;
 
 use Yii;
+use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -99,10 +100,9 @@ class Person extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            $birthday = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday);
-            $this->birthday = $birthday->format(Helper::DB_DATE_FORMAT);
-//             print_r($this->attributes);
-//             Yii::$app->end();
+            if($birthday = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday)) {
+                $this->birthday = $birthday->format(Helper::DB_DATE_FORMAT);
+            }
             return true;
         } else {
             return false;
@@ -111,8 +111,9 @@ class Person extends \yii\db\ActiveRecord
     
     public function afterFind()
     {
-        $date = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday);
-        $this->birthday = $date->format(Helper::UI_DATE_FORMAT);
+        if($birthday = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday)){
+            $this->birthday = $birthday->format(Helper::UI_DATE_FORMAT);
+        }
     }
     
     public function getUser()
@@ -220,6 +221,11 @@ class Person extends \yii\db\ActiveRecord
         return $this->hasMany(PeopleChild::className(), ['user_id' => 'user_id'])->andOnCondition(['type' => People::TYPE_CHILD]);
     }
     
+    public function getEducations()
+    {
+        return $this->hasMany(Education::className(), ['user_id' => 'user_id']);
+    }
+    
     public function getPhotos()
     {
         return $this->hasMany(Photo::className(), ['user_id' => 'user_id']);
@@ -251,6 +257,31 @@ class Person extends \yii\db\ActiveRecord
         return $this->firstname_en.' '.$this->lastname_en;
     }
     
+    public function getInfoMedia($link = '#', $options = [])
+    {
+        $options = array_replace_recursive([
+            'wrapper' => true,
+            'wrapperTag' => 'div'
+        ], $options);
+        
+        $inner = '<a class="pull-left border-dark profile_thumb" style="padding:0;">' . 
+            '<img src="' .$this->getPhotoLast() . '" class="img-circle" style="width:100%;">' .
+            '</a>' .
+            '<div class="media-body">' .
+            Html::a($this->fullname, $link, ['class' => 'title']) .
+            //'<p><strong>$2300. </strong> ' . current($this->getRoles()) . ' </p>' .
+            '<p class="position">' . $this->positionTitle . '</p>' .
+            '<p> <small>12 Sales Today</small></p>' .
+            '</div>' . 
+            '<div class="clearfix"></div>';
+        
+        if($options['wrapper']) {
+            return Html::tag($options['wrapperTag'], $inner, ['class' => 'media event']);
+        }
+        
+        return $inner;
+    }
+    
     public static function getRoleList()
     {
         $list = [];
@@ -261,11 +292,23 @@ class Person extends \yii\db\ActiveRecord
         return $list;
     }
     
+    
+    public function getRoles()
+    {
+        $roles = [];
+        foreach (Yii::$app->authManager->getRolesByUser($this->user_id) as $key => $role) {
+            $roles[$key] = ucfirst($role->description);
+        }
+        
+        return $roles;
+    }
+    
+    
     public static function getGenders()
     {
         return [
-            self::GENDER_MALE => Yii::t('app', 'Male'),
-            self::GENDER_FEMAIL => Yii::t('app', 'Female'),
+            self::GENDER_MALE => Yii::t('andahrm/person', 'Male'),
+            self::GENDER_FEMAIL => Yii::t('andahrm/person', 'Female'),
         ];
     }
     
@@ -285,7 +328,7 @@ class Person extends \yii\db\ActiveRecord
     }
   
   # Create by mad
-  public $year;
+  //public $year;
   
   
   
@@ -302,23 +345,28 @@ class Person extends \yii\db\ActiveRecord
   *  Create by mad
   * เงินเดือนและตำแหน่ง
   */
-   public function getPositionSalary()
+    public function getPositionSalary()
     {
         return $this->hasOne(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_DESC]);
     }
   
-  /**
-  *  Create by mad
-  * ตำแหน่ง
-  */
-  public function getPosition()
+    /**
+    *  Create by mad
+    * ตำแหน่ง
+    */
+    public function getPosition()
     {
         return $this->positionSalary?$this->positionSalary->position:null;
     }
   
-   public function getPositionTitle()
+    public function getPositionTitle()
     {
         return $this->position?$this->position->title:null;
+    }
+  
+    public function getSectionTitle()
+    {
+        return $this->positionSalary?$this->positionSalary->position->section->title:null;
     }
   
 

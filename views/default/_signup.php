@@ -3,19 +3,26 @@ use yii\bootstrap\Html;
 ?>
 <?php $roleList = \andahrm\person\models\Person::getRoleList(); ?>
 
-        <?= $form->field($model, 'username');?>
+        <?= $form->field($model, 'username')->label(Yii::t('andahrm/person', 'Username'));?>
 
-        <?= $form->field($model, 'email');?>
+        <?= $form->field($model, 'email')->label(Yii::t('andahrm/person', 'Email'));?>
         <?php if($model->isNewRecord) : ?>
-        <?= $form->field($model, 'newPassword')->passwordInput();?>
+        <?= $form->field($model, 'newPassword')->passwordInput()->label(Yii::t('andahrm/person', 'Password'));?>
 
-        <?= $form->field($model, 'newPasswordConfirm')->passwordInput();?>
+        <?= $form->field($model, 'newPasswordConfirm')->passwordInput()->label(Yii::t('andahrm/person', 'Confirm password'));?>
         <?php endif; ?>
-        <?= $form->field($model, 'status')->dropDownList($model->getStatusList());?>
+        <?= $form->field($model, 'status')->inline()->radioList($model->getStatusList())->label(Yii::t('andahrm/person', 'Status'));?>
         
+        
+            <?php 
+            $roles = Yii::$app->authManager->getRolesByUser($model->id);
+            ?>
         <div class="form-group required">
-            <label class="control-label" for="role">Role</label>
-            <?= Html::dropDownList('role', null, $roleList, ['class'=>'form-control', 'id' => 'role']); ?>
+            <label class="control-label" for="role"><?= Yii::t('andahrm/person', 'Roles'); ?></label>
+            <div class="well">
+            <?= Html::checkBoxList('Roles', array_keys($roles), $roleList, ['separator' => '<br>']); ?>
+            </div>
+            <?php //echo Html::dropDownList('role', null, $roleList, ['class'=>'form-control', 'id' => 'role']); ?>
         </div>
         <?php
         if(!$model->isNewRecord) {

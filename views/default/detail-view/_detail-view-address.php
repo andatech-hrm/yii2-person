@@ -150,5 +150,10 @@ return [
         'updateMarkup' => function($form, $widget) use ($model) {
             return $form->field($model, 'move_out_date')->widget(DatePicker::className(), WidgetSettings::DatePicker());
         }
-    ]
+    ],[
+        'attribute'=>'updated_at',
+        'format'=>'raw',
+        'value'=>'<span class="label label-primary">'.Yii::$app->formatter->asDateTime($model->updated_at).'</soan>',
+        'displayOnly'=>true
+    ],
 ];

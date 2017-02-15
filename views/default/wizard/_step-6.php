@@ -1,0 +1,1 @@
+<?php echo $this->render('../_signup', ['model' => $models['user'], 'form' => $form]); ?>

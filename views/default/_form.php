@@ -9,7 +9,20 @@ use yii\bootstrap\ActiveForm;
 /* @var $model andahrm\person\models\Person */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<?php $form = ActiveForm::begin(); ?>
+<?php
+$modal['edoc'] = Modal::begin([
+    'header' => Yii::t('andahrm/person', 'Edoc'),
+]);
+echo 'sdkjfhskjdfs';
+            
+Modal::end();
+?>
+
+<?php $form = ActiveForm::begin([
+    'options' => [
+        'enctype' => 'multipart/form-data',
+    ]
+]); ?>
 <!-- Begin Step 1 -->
 <div class="row">
     <div class="col-sm-6">

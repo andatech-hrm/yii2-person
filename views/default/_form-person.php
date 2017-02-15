@@ -6,26 +6,31 @@ use kartik\widgets\DatePicker;
 use andahrm\setting\models\WidgetSettings;
 ?>
 <div class="form-person">
-            
-<?= $form->field($model, 'citizen_id')->textInput(['maxlength' => true]) ?>
-
-<?= $form->field($model, 'title_id')->dropDownList(ArrayHelper::map(Title::find()->all(), 'id', 'name')) ?>
-
-<?= $form->field($model, 'firstname_th')->textInput(['maxlength' => true]) ?>
-
-<?= $form->field($model, 'lastname_th')->textInput(['maxlength' => true]) ?>
-
-<?= $form->field($model, 'firstname_en')->textInput(['maxlength' => true]) ?>
-
-<?= $form->field($model, 'lastname_en')->textInput(['maxlength' => true]) ?>
-                    
-<?= $form->field($model, 'gender')->inline()->radioList($model->getGenders()) ?>
-
-<?= $form->field($model, 'tel')->textInput(['maxlength' => true]) ?>
-
-<?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
-
-<?= $form->field($model, 'birthday')->widget(DatePicker::className(), WidgetSettings::DatePicker()) ?>
+    <div class="row">
+        <?= $form->field($model, 'citizen_id', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($model, 'title_id', ['options' => ['class' => 'form-group col-sm-3']])->dropDownList(ArrayHelper::map(Title::find()->all(), 'id', 'name')) ?>
+        
+        <?= $form->field($model, 'firstname_th', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($model, 'lastname_th', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+    </div>
+    
+    <div class="row">
+        <?= $form->field($model, 'firstname_en', ['options' => ['class' => 'form-group col-sm-3 col-sm-offset-6']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($model, 'lastname_en', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+    </div>
+    
+    <div class="row">
+        <?= $form->field($model, 'gender', ['options' => ['class' => 'form-group col-sm-3']])->inline()->radioList($model->getGenders()) ?>
+        
+        <?= $form->field($model, 'tel', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($model, 'phone', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($model, 'birthday', ['options' => ['class' => 'form-group col-sm-3']])->widget(DatePicker::className(), WidgetSettings::DatePicker()) ?>
+    </div>
 </div>
 
 <?php

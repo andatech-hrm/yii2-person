@@ -5,6 +5,7 @@ namespace andahrm\person\controllers;
 use Yii;
 use yii\helpers\ArrayHelper;
 use andahrm\person\models\Person;
+use andahrm\person\models\Photo;
 use andahrm\person\models\PersonSearch;
 use andahrm\person\models\Detail;
 use andahrm\person\models\AddressContact;
@@ -15,6 +16,11 @@ use andahrm\person\models\PeopleMother;
 use andahrm\person\models\PeopleSpouse;
 use andahrm\person\models\PeopleChild;
 use andahrm\person\models\ChildModel;
+use andahrm\person\models\Education;
+use andahrm\person\models\EducationModel;
+use andahrm\person\models\EducationLevel;
+use andahrm\person\models\LeaveAssign; #mad
+use andahrm\positionSalary\models\PersonPositionSalary;
 
 use andahrm\edoc\models\Edoc;
 
@@ -44,13 +50,11 @@ class DefaultController extends Controller
   
     public $localReligions;
     
-    public $formSteps = [
-        1 => ['name' =>'1', 'desc' => 'Basic and User account', 'icon' => 'fa fa-info-circle', 'models' => ['Person', 'User']],
-        2 => ['name' =>'2', 'desc' => 'Detail', 'icon' => 'fa fa-address-card', 'models' => ['Detail', 'AddressContact', 'AddressRegister', 'AddressBirthPlace']],
-        3 => ['name' =>'3', 'desc' => 'Parents', 'icon' => 'fa fa-user-secret', 'models' => ['PeopleFather', 'PeopleMother']],
-        4 => ['name' =>'4', 'desc' => 'Childs', 'icon' => 'fa fa-child', 'models' => ['PeopleChild']],
-        //'confirm' => ['name' =>'5', 'desc' => 'Confirm', 'models' => []],
-    ];
+    public $educationLevels;
+    
+    public $formSteps = [];
+    
+    protected $modelMany = ['user', 'people-childs', 'educations', 'photos'];
     
     public $sessionKey = 'person-form-data';
     
@@ -64,6 +68,24 @@ class DefaultController extends Controller
                 ],
             ],
         ];
+    }
+    
+    public function beforeAction($action)
+    {
+        $this->formSteps = [
+            1 => ['name' =>'1', 'desc' => Yii::t('andahrm/person', 'Information'), 'icon' => 'fa fa-info-circle', 'models' => ['Person', 'User']],
+            2 => ['name' =>'2', 'desc' => Yii::t('andahrm/person', 'Educations'), 'icon' => 'fa fa-graduation-cap', 'models' => ['Detail', 'AddressContact', 'AddressRegister', 'AddressBirthPlace']],
+            3 => ['name' =>'3', 'desc' => Yii::t('andahrm/person', 'Family'), 'icon' => 'fa fa-user-secret', 'models' => ['PeopleFather', 'PeopleMother']],
+            4 => ['name' =>'4', 'desc' => Yii::t('andahrm/person', 'Position'), 'icon' => 'fa fa-ticket', 'models' => ['PeopleChild']],
+            5 => ['name' =>'5', 'desc' => Yii::t('andahrm/person', 'Leave'), 'icon' => 'fa fa-bed', 'models' => ['PeopleChild']],
+            6 => ['name' =>'6', 'desc' => Yii::t('andahrm/person', 'User Account'), 'icon' => 'fa fa-key', 'models' => ['PeopleChild']],
+        ];
+    
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+    
+        return true; // or false to not run the action
     }
 
     /**
@@ -95,6 +117,7 @@ class DefaultController extends Controller
     {
         $models['person'] = $this->findModel($id);
 //         $models['user'] = $models['person']->user;
+        $models['photos'] = $models['person']->photos;
         $models['detail'] = ($models['person']->detail !== null ) ? $models['person']->detail : new Detail(['user_id' => $id]);
         $models['address-contact'] = ($models['person']->addressContact !== null ) ? $models['person']->addressContact : new AddressContact(['user_id' => $id]);
         $models['address-birth-place'] = ($models['person']->addressBirthPlace !== null ) ? $models['person']->addressBirthPlace : new AddressBirthPlace(['user_id' => $id]);
@@ -102,15 +125,17 @@ class DefaultController extends Controller
         $models['people-father'] = ($models['person']->peopleFather !== null ) ? $models['person']->peopleFather : new PeopleFather(['user_id' => $id]);
         $models['people-mother'] = ($models['person']->peopleMother !== null ) ? $models['person']->peopleMother : new PeopleMother(['user_id' => $id]);
         $models['people-spouse'] = ($models['person']->peopleSpouse !== null ) ? $models['person']->peopleSpouse : new PeopleSpouse(['user_id' => $id]);
-//         $models['people-childs'] = $models['person']->peopleChilds;
+        $models['people-childs'] = $models['person']->peopleChilds;
+        $models['educations'] = $models['person']->educations;
         
         $post = Yii::$app->request->post();
         if($post) {
             $errorMassages = [];
             $transaction = Yii::$app->db->beginTransaction();
             try {
+                
                 foreach ($models as $key => $model) {
-                    if (array_key_exists($model->formName(), $post)) {
+                    if (!in_array($key, $this->modelMany) && array_key_exists($model->formName(), $post)) {
                         if($model->load($post) && $model->save()) {
 
                         }else{
@@ -147,6 +172,11 @@ class DefaultController extends Controller
             }
         }
         
+        
+        $models['photos'] = (empty($models['photos'])) ? [new Photo(['user_id' => $models['person']->user_id])] : $models['photos'];
+        $models['people-childs'] = (empty($models['people-childs'])) ? [new PeopleChild] : $models['people-childs'];
+        $models['educations'] = (empty($models['educations'])) ? [new Education] : $models['educations'];
+        
         $this->prepareData();
         
         return $this->render('view', ['models' => $models]);
@@ -168,7 +198,8 @@ class DefaultController extends Controller
         $models['user'] = new $userClass();
         $models['user']->scenario = 'create';
         
-        $models['person'] = new Person();     
+        $models['person'] = new Person();
+        $models['photo'] = new Photo(['scenario' => 'insert']);
         $models['detail'] = new Detail();
         $models['address-contact'] = new AddressContact();
         $models['address-birth-place'] = new AddressBirthPlace();
@@ -177,7 +208,9 @@ class DefaultController extends Controller
         $models['people-mother'] = new PeopleMother();
         $models['people-spouse'] = new PeopleSpouse();
         $models['people-childs'] = [new PeopleChild()];
-        // $models['edoc'] = new Edoc(['scenario' => 'insert']);
+        $models['educations'] = [new Education()];
+        $models['position-salary'] = new PersonPositionSalary(['scenario' => 'new-person']);
+        $models['leave'] = new LeaveAssign(); #madone
         
         if($post){
             $errorMassages = [];
@@ -189,9 +222,11 @@ class DefaultController extends Controller
                 $models['user']->setPassword($models['user']->newPassword);
                 $models['user']->generateAuthKey();
                 
+                $skipModel = ['user', 'people-childs', 'educations'];
                 if ($models['user']->save()){
                     foreach($models as $key => $model) {
-                        if($key !== 'people-childs' && $key !== 'user'){
+                        // if($key !== 'people-childs' && $key !== 'user'){
+                        if(!in_array($key, $skipModel)){
                             $model->load($post);
                             $model->user_id = $models['user']->id;
                             if (!$model->save()){
@@ -204,22 +239,32 @@ class DefaultController extends Controller
                     $errorMassages[] = $models['user']->getErrors();
                 }
                 
-                $models['people-childs'] = ChildModel::createMultiple(PeopleChild::classname(), $models['people-childs']);
-                ChildModel::loadMultiple($models['people-childs'], $post);
+                // $models['people-childs'] = ChildModel::createMultiple(PeopleChild::classname(), $models['people-childs']);
+                // ChildModel::loadMultiple($models['people-childs'], $post);
 
-                // validate all models
-                $valid = $models['user']->validate();
-                $valid = ChildModel::validateMultiple($models['people-childs']) && $valid;
-                if($valid){
-                    foreach ($models['people-childs'] as $modelChild) {
-                        $modelChild->user_id = $models['user']->id;
-                        if (! ($flag = $modelChild->save(false))) {
-                            $errorMassages[] = $modelChild->getErrors();
-                            break;
-                        }
-                    }
-                }else{
-                    $errorMassages[] = ['Child in valid.'];
+                // // validate all models
+                // $valid = $models['user']->validate();
+                // $valid = ChildModel::validateMultiple($models['people-childs']) && $valid;
+                // if($valid){
+                //     foreach ($models['people-childs'] as $modelChild) {
+                //         $modelChild->user_id = $models['user']->id;
+                //         if (! ($flag = $modelChild->save(false))) {
+                //             $errorMassages[] = $modelChild->getErrors();
+                //             break;
+                //         }
+                //     }
+                // }else{
+                //     $errorMassages[] = ['Child in valid.'];
+                // }
+                
+                $saveChilds = $this->createDynamicForm($models['people-childs'], ChildModel::className(), $models['user']);
+                if($saveChilds[0] === false) {
+                    $errorMassages[] = $saveChilds[1];
+                }
+                
+                $saveEducations = $this->createDynamicForm($models['educations'], EducationModel::className(), $models['user']);
+                if($saveEducations[0] === false) {
+                    $errorMassages[] = $saveEducations[1];
                 }
                 
                 if(count($errorMassages) > 0){
@@ -230,14 +275,16 @@ class DefaultController extends Controller
                     $msg .= '</ul>';
                     throw new ErrorException($msg);
                 }else{
+                    $this->setRoles($models['user']->id, $request->post('Roles', []));
+                    
                     Yii::$app->getSession()->setFlash('saved',[
                         'type' => 'success',
                         'msg' => Yii::t('andahrm', 'Save operation completed.')
                     ]);
-
+                    
                     $transaction->commit();
 
-                    return $this->redirect(['update', 'id' => $models['user']->id]);
+                    return $this->redirect(['view', 'id' => $models['user']->id]);
                 }
                 
             }catch(ErrorException $e) {
@@ -258,6 +305,34 @@ class DefaultController extends Controller
         //เลือกเปิดเอาว่าชอบแบบใหน
         
     }
+    
+    protected function createDynamicForm($models, $multipleModel, $mainModel)
+    {
+        $errorMassages = [];
+        $success = true;
+        
+        $post = Yii::$app->request->post();
+        
+        $models = $multipleModel::createMultiple($models[0]::className(), $models);
+        $multipleModel::loadMultiple($models, $post);
+
+        // validate all models
+        $valid = $mainModel->validate();
+        $valid = $multipleModel::validateMultiple($models) && $valid;
+        if($valid){
+            foreach ($models as $model) {
+                $model->user_id = $mainModel->id;
+                if (! ($flag = $model->save(false))) {
+                    $errorMassages[] = $model->getErrors();
+                    break;
+                }
+            }
+        }else{
+            $errorMassages[] = ['Child in valid.'];
+        }
+        
+        return [$success, $errorMassages];
+    }
 
     /**
      * Updates an existing Person model.
@@ -269,10 +344,11 @@ class DefaultController extends Controller
     {
         $request = Yii::$app->request;
         $post = $request->post();
-        $session = Yii::$app->session;
+        // $session = Yii::$app->session;
 
         $models['person'] = $this->findModel($id);
         $models['user'] = $models['person']->user;
+        $models['photos'] = $models['person']->photos;
         $models['detail'] = ($models['person']->detail !== null ) ? $models['person']->detail : new Detail(['user_id' => $id]);
         $models['address-contact'] = ($models['person']->addressContact !== null ) ? $models['person']->addressContact : new AddressContact(['user_id' => $id]);
         $models['address-birth-place'] = ($models['person']->addressBirthPlace !== null ) ? $models['person']->addressBirthPlace : new AddressBirthPlace(['user_id' => $id]);
@@ -282,6 +358,7 @@ class DefaultController extends Controller
         $models['people-spouse'] = ($models['person']->peopleSpouse !== null ) ? $models['person']->peopleSpouse : new PeopleSpouse(['user_id' => $id]);
 //         $models['people-childs'] = (!empty($models['person']->peopleChilds)) ? $models['person']->peopleChilds : [new PeopleChild(['user_id' => $id])];
         $models['people-childs'] = $models['person']->peopleChilds;
+        $models['educations'] = $models['person']->educations;
 
         
         if($post){
@@ -290,9 +367,11 @@ class DefaultController extends Controller
             try {
                 $models['user']->load($post);
                 
+                $skipModel = ['user', 'people-childs', 'educations', 'photo'];
                 if ($models['user']->save()){
                     foreach($models as $key => $model) {
-                        if($key !== 'people-childs' && $key !== 'user'){
+                        if(!in_array($key, $skipModel)){
+                            // echo $key . ' = ' . $model->attributes."<br />";
                             $model->load($post);
                             if (!$model->save()){
                                 $errorMassages[] = $model->getErrors();
@@ -303,27 +382,17 @@ class DefaultController extends Controller
                     $errorMassages[] = $models['user']->getErrors();
                 }
                 
-                $oldIDs = ArrayHelper::map($models['people-childs'], 'id', 'id');
-                $models['people-childs'] = ChildModel::createMultiple(PeopleChild::classname(), $models['people-childs']);
-                ChildModel::loadMultiple($models['people-childs'], $post);
-                $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($models['people-childs'], 'id', 'id')));
-
-                // validate all models
-                $valid = $models['user']->validate();
-                $valid = ChildModel::validateMultiple($models['people-childs']) && $valid;
-                if($valid){
-                    if (!empty($deletedIDs)) {
-                        PeopleChild::deleteAll(['id' => $deletedIDs]);
-                    }
-                    foreach ($models['people-childs'] as $modelChild) {
-                        $modelChild->user_id = $models['user']->id;
-                        if (! ($flag = $modelChild->save(false))) {
-                            $errorMassages[] = $modelChild->getErrors();
-                            break;
-                        }
-                    }
-                }else{
-                    $errorMassages[] = ['Child in valid.'];
+                
+                $models['people-childs'] = (empty($models['people-childs'])) ? [new PeopleChild] : $models['people-childs'];
+                $saveChilds = $this->updateDynamicForm($models['people-childs'], ChildModel::className(), $models['user']);
+                if($saveChilds[0] === false) {
+                    $errorMassages[] = $saveChilds[1];
+                }
+                
+                $models['educations'] = (empty($models['educations'])) ? [new Education] : $models['educations'];
+                $saveEducations = $this->updateDynamicForm($models['educations'], EducationModel::className(), $models['user']);
+                if($saveEducations[0] === false) {
+                    $errorMassages[] = $saveEducations[1];
                 }
                 
                 if(count($errorMassages) > 0){
@@ -334,6 +403,8 @@ class DefaultController extends Controller
                     $msg .= '</ul>';
                     throw new ErrorException($msg);
                 }else{
+                    $this->setRoles($models['user']->id, $request->post('Roles', []));
+                    
                     Yii::$app->getSession()->setFlash('saved',[
                         'type' => 'success',
                         'msg' => Yii::t('andahrm', 'Save operation completed.')
@@ -356,6 +427,7 @@ class DefaultController extends Controller
         }
     
         $models['people-childs'] = (empty($models['people-childs'])) ? [new PeopleChild] : $models['people-childs'];
+        $models['educations'] = (empty($models['educations'])) ? [new Education] : $models['educations'];
         
         $this->prepareData();
         
@@ -363,6 +435,41 @@ class DefaultController extends Controller
         return $this->render('wizard/update', ['models' => $models]); //แสดงแบบ Wizard
         //เลือกเปิดเอาว่าชอบแบบใหน
         
+    }
+    
+    protected function updateDynamicForm($models, $multipleModel, $mainModel)
+    {
+        $errorMassages = [];
+        $success = true;
+        $oldIDs = array_filter(ArrayHelper::map($models, 'id', 'id'));
+        $post = Yii::$app->request->post();
+        
+        $models = $multipleModel::createMultiple($models[0]::className(), $models);
+        $multipleModel::loadMultiple($models, $post);
+        $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($models, 'id', 'id')));
+        // print_r($oldIDs);
+        // Yii::$app->end();
+
+        // validate all models
+        $valid = $mainModel->validate();
+        $valid = $multipleModel::validateMultiple($models) && $valid;
+        if($valid){
+            if (!empty($deletedIDs)) {
+                $modelClass = $models[0]->className();
+                $modelClass::deleteAll(['id' => $deletedIDs]);
+            }
+            foreach ($models as $model) {
+                $model->user_id = $mainModel->id;
+                if (! ($flag = $model->save(false))) {
+                    $errorMassages[] = $model->getErrors();
+                    break;
+                }
+            }
+        }else{
+            $errorMassages[] = ['Child in valid.'];
+        }
+        
+        return [$success, $errorMassages];
     }
 
     /**
@@ -394,23 +501,6 @@ class DefaultController extends Controller
         }
     }
     
-    protected function saveModels()
-    {
-        $post = Yii::$app->request->post();
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            return true;
-
-        } catch(ErrorException $e) {
-            Yii::$app->getSession()->setFlash('saved',[
-                'type' => 'error',
-                'title' => Yii::t('andahrm', 'Unable to save record.'),
-                'msg' => $e->getMessage()
-            ]);
-            $transaction->rollback();
-        }
-    }
-    
     public function detailViewAttributes($view, $params)
     {
         extract($params);
@@ -425,38 +515,263 @@ class DefaultController extends Controller
         $this->nationalities = Nationality::find()->all();
         
         $this->localReligions = LocalRegion::find()->all();
+        
+        $this->educationLevels = EducationLevel::find()->all();
     }
     
-    public function getStep($point='current')
-    {
-        $currentStep = Yii::$app->request->get('step');
-        if($currentStep === null){
-            return null;
-        }
-        $formSteps = $this->formSteps;
-        unset($formSteps[0]);
-        $keys = array_keys($formSteps);
-        while (current($keys) != $currentStep) next($keys);
+    // public function getStep($point='current')
+    // {
+    //     $currentStep = Yii::$app->request->get('step');
+    //     if($currentStep === null){
+    //         return null;
+    //     }
+    //     $formSteps = $this->formSteps;
+    //     unset($formSteps[0]);
+    //     $keys = array_keys($formSteps);
+    //     while (current($keys) != $currentStep) next($keys);
 
-        if ($point === 'prev') {
-            return prev($keys);
-        } elseif ($point === 'next') {
-            return next($keys);
+    //     if ($point === 'prev') {
+    //         return prev($keys);
+    //     } elseif ($point === 'next') {
+    //         return next($keys);
+    //     }
+    //     return current($keys);
+    // }
+    
+    protected function setRoles($id, $checkedRoles=[])
+    {
+        $auth = Yii::$app->authManager;
+            
+        $systemRoles = $auth->getRoles();
+        $keyUserRoles = array_keys($auth->getRolesByUser($id));
+        foreach($systemRoles as $key => $systemRole) {
+            //echo $key;
+            if(in_array($key, $checkedRoles)){
+                // echo ' Checked';
+                if(in_array($key, $keyUserRoles)){
+                    //echo ' No action';
+                }else{
+                    //echo ' Add this';
+                    $role = $auth->getRole($key);
+                    $auth->assign($role, $id);
+                }
+            }else{
+                //echo ' No Check';
+                if(in_array($key, $keyUserRoles)){
+                    //echo ' Remove this';
+                    $role = $auth->getRole($key);
+                    $auth->revoke($role, $id);
+                }
+            }
         }
-        return current($keys);
+        // Yii::$app->end();
     }
     
-//     private function getModelDetail($model)
-//     {
-//         if (is_null($model->detail)) {
-//             $modelDetail = new Detail();
-//             $modelDetail->user_id = $model->user_id;
-//             $modelDetail->nationality_id = Detail::DEFAULT_NATIONALITY;
-//             $modelDetail->race_id = Detail::DEFAULT_RACE;
-//             $modelDetail->blood_group = Detail::BLOOD_GRUOP_A;
-//         }else{ 
-//             $modelDetail = $model->detail;
-//         }
-//         return $modelDetail;
-//     }
+    
+    public function actionChildCreate($person_id)
+    {
+        $model = new PeopleChild();
+        $model->user_id = $person_id;
+        if(Yii::$app->request->post()){
+            if($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->getSession()->setFlash('saved',[
+                    'type' => 'success',
+                    'msg' => Yii::t('andahrm', 'Save operation completed.')
+                ]);
+                return $this->redirect(['view', 'id' => $person_id]);
+            }else{
+                Yii::$app->getSession()->setFlash('error',[
+                    'type' => 'error',
+                    'title' => Yii::t('andahrm', 'Unable to save record.'),
+                    'msg' => $e->getMessage()
+                ]);
+            }
+        }
+        
+        $this->prepareData();
+        return $this->renderAjax('child-create', ['model' => $model]);
+    }
+    
+    public function actionChildUpdate($id, $person_id)
+    {
+        $model = PeopleChild::findOne($id);
+        if(Yii::$app->request->post()){
+            if($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->getSession()->setFlash('saved',[
+                    'type' => 'success',
+                    'msg' => Yii::t('andahrm', 'Save operation completed.')
+                ]);
+                return $this->redirect(['view', 'id' => $person_id]);
+            }else{
+                Yii::$app->getSession()->setFlash('error',[
+                    'type' => 'error',
+                    'title' => Yii::t('andahrm', 'Unable to save record.'),
+                    'msg' => $e->getMessage()
+                ]);
+            }
+        }
+        
+        $this->prepareData();
+        return $this->renderAjax('child-update', ['model' => $model]);
+    }
+    
+    public function actionChildDelete($id, $person_id)
+    {
+        $model = PeopleChild::findOne($id);
+        if($model->delete()){
+            Yii::$app->getSession()->setFlash('deleted',[
+                'type' => 'success',
+                'msg' => Yii::t('andahrm', 'Delete operation completed.')
+            ]);
+        }else{
+            Yii::$app->getSession()->setFlash('error',[
+                'type' => 'error',
+                'msg' => Yii::t('andahrm', 'Unable to delete record.'),
+            ]);
+        }
+        
+        return $this->redirect(['view', 'id' => $person_id]);
+    }
+    
+    
+    
+    
+    
+    public function actionEducationCreate($person_id)
+    {
+        $model = new Education();
+        $model->user_id = $person_id;
+        if(Yii::$app->request->post()){
+            if($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->getSession()->setFlash('saved',[
+                    'type' => 'success',
+                    'msg' => Yii::t('andahrm', 'Save operation completed.')
+                ]);
+                return $this->redirect(['view', 'id' => $person_id]);
+            }else{
+                Yii::$app->getSession()->setFlash('error',[
+                    'type' => 'error',
+                    'title' => Yii::t('andahrm', 'Unable to save record.'),
+                    'msg' => $e->getMessage()
+                ]);
+            }
+        }
+        
+        $this->prepareData();
+        return $this->renderAjax('education-create', ['model' => $model]);
+    }
+    
+    public function actionEducationUpdate($id, $person_id)
+    {
+        $model = Education::findOne($id);
+        if(Yii::$app->request->post()){
+            if($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->getSession()->setFlash('saved',[
+                    'type' => 'success',
+                    'msg' => Yii::t('andahrm', 'Save operation completed.')
+                ]);
+                return $this->redirect(['view', 'id' => $person_id]);
+            }else{
+                Yii::$app->getSession()->setFlash('error',[
+                    'type' => 'error',
+                    'title' => Yii::t('andahrm', 'Unable to save record.'),
+                    'msg' => $e->getMessage()
+                ]);
+            }
+        }
+        
+        $this->prepareData();
+        return $this->renderAjax('education-update', ['model' => $model]);
+    }
+    
+    public function actionEducationDelete($id, $person_id)
+    {
+        $model = Education::findOne($id);
+        if($model->delete()){
+            Yii::$app->getSession()->setFlash('deleted',[
+                'type' => 'success',
+                'msg' => Yii::t('andahrm', 'Delete operation completed.')
+            ]);
+        }else{
+            Yii::$app->getSession()->setFlash('error',[
+                'type' => 'error',
+                'msg' => Yii::t('andahrm', 'Unable to delete record.'),
+            ]);
+        }
+        
+        return $this->redirect(['view', 'id' => $person_id]);
+    }
+    
+    
+    
+    
+    
+    public function actionPhotoCreate($id)
+    {
+        $model = new Photo();
+        $model->scenario = 'insert';
+        $model->user_id = $id;
+        if(Yii::$app->request->post()){
+            if($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->getSession()->setFlash('saved',[
+                    'type' => 'success',
+                    'msg' => Yii::t('andahrm', 'Save operation completed.')
+                ]);
+            }else{
+                Yii::$app->getSession()->setFlash('error',[
+                    'type' => 'error',
+                    'msg' => Yii::t('andahrm', 'Unable to save record.'),
+                ]);
+            }
+            
+            return $this->redirect(['view', 'id' => $id]);
+        }
+        
+        $this->prepareData();
+        return $this->renderAjax('photo-create', ['model' => $model, 'modelPerson' => $models['person']]);
+    }
+    
+    public function actionPhotoUpdate($id, $year)
+    {
+        $model = Photo::find()->where(['user_id' => $id])->andWhere(['year' => $year])->one();
+        $model->scenario = 'update';
+        if(Yii::$app->request->post()){
+            if($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->getSession()->setFlash('saved',[
+                    'type' => 'success',
+                    'msg' => Yii::t('andahrm', 'Save operation completed.')
+                ]);
+            }else{
+                Yii::$app->getSession()->setFlash('error',[
+                    'type' => 'error',
+                    'title' => Yii::t('andahrm', 'Unable to save record.'),
+                    'msg' => $e->getMessage()
+                ]);
+            }
+            
+            return $this->redirect(['view', 'id' => $id]);
+        }
+        
+        $this->prepareData();
+        return $this->renderAjax('photo-update', ['model' => $model]);
+    }
+    
+    public function actionPhotoDelete($id, $person_id)
+    {
+        $model = Education::findOne($id);
+        if($model->delete()){
+            Yii::$app->getSession()->setFlash('deleted',[
+                'type' => 'success',
+                'msg' => Yii::t('andahrm', 'Delete operation completed.')
+            ]);
+        }else{
+            Yii::$app->getSession()->setFlash('error',[
+                'type' => 'error',
+                'msg' => Yii::t('andahrm', 'Unable to delete record.'),
+            ]);
+        }
+        
+        return $this->redirect(['view', 'id' => $person_id]);
+    }
+
 }

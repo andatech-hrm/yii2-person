@@ -170,4 +170,9 @@ class People extends \yii\db\ActiveRecord
         
         return (isset($liveStatus[$status])) ? $liveStatus[$status] : null;
     }
+    
+    public function getFullname()
+    {
+        return $this->name . ' ' . $this->surname;
+    }
 }
