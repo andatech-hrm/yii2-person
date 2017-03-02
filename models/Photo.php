@@ -3,8 +3,11 @@
 namespace andahrm\person\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use andahrm\setting\models\Helper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use kuakling\datepicker\behaviors\YearBuddhistBehavior;
 // use karpoff\icrop\CropImageUploadBehavior;
 use anda\core\widgets\cropimageupload\CropImageUploadBehavior;
 /**
@@ -19,7 +22,7 @@ use anda\core\widgets\cropimageupload\CropImageUploadBehavior;
  * @property integer $updated_at
  * @property integer $updated_by
  */
-class Photo extends \yii\db\ActiveRecord
+class Photo extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -52,6 +55,20 @@ class Photo extends \yii\db\ActiveRecord
                 'crop_field' => 'image_crop',
                 'cropped_field' => 'image_cropped',
             ],
+            // 'year' =>[
+            //     'class' => AttributeBehavior::className(),
+            //     'attributes' => [
+            //         ActiveRecord::EVENT_BEFORE_INSERT => 'year',
+            //         ActiveRecord::EVENT_BEFORE_UPDATE => 'year',
+            //     ],
+            //     'value' => function($event) {
+            //         return intval($this->year) - Helper::YEAR_TH_ADD;
+            //     },
+            // ],
+            'year' => [
+                'class' => YearBuddhistBehavior::className(),
+                'attribute' => 'year',
+            ],
         ];
     }
 
@@ -75,16 +92,17 @@ class Photo extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => Yii::t('andahrm/person', 'บุคลากร'),
+            'user_id' => Yii::t('andahrm/person', 'User'),
             'year' => Yii::t('andahrm/person', 'Year'),
-            'image' => Yii::t('andahrm/person', 'รูปประจำตัว'),
-            'image_original' => Yii::t('andahrm/person', 'รูปต้นฉบับ'),
-            'created_at' => Yii::t('andahrm/person', 'Created At'),
-            'created_by' => Yii::t('andahrm/person', 'Created By'),
-            'updated_at' => Yii::t('andahrm/person', 'Updated At'),
-            'updated_by' => Yii::t('andahrm/person', 'Updated By'),
+            'image' => Yii::t('andahrm/person', 'Image'),
+            'image_original' => Yii::t('andahrm/person', 'Original Image'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
         ];
     }
+    
     
     public function beforeDelete()
     {
@@ -100,5 +118,11 @@ class Photo extends \yii\db\ActiveRecord
     public function getPerson()
     {
         return $this->hasOne(Person::className(), ['user_id' => 'user_id']);
+    }
+    
+    public function getYearBuddhist()
+    {
+        $yearDistance = $this->getBehavior('year')->yearDistance;
+        return (intval($this->year) + $yearDistance);
     }
 }

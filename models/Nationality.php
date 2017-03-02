@@ -47,11 +47,11 @@ class Nationality extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('andahrm/person', 'ID'),
             'title' => Yii::t('andahrm/person', 'Title'),
-            'country' => Yii::t('andahrm/person', 'ประเทศ'),
-            'created_at' => Yii::t('andahrm/person', 'Created At'),
-            'created_by' => Yii::t('andahrm/person', 'Created By'),
-            'updated_at' => Yii::t('andahrm/person', 'Updated At'),
-            'updated_by' => Yii::t('andahrm/person', 'Updated By'),
+            'country' => Yii::t('andahrm/person', 'Country'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
         ];
     }
 

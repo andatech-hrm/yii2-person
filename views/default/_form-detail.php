@@ -6,7 +6,7 @@ use andahrm\person\models\Religion;
 
 use andahrm\setting\models\WidgetSettings;
 use kartik\widgets\Select2;
-use kartik\widgets\DatePicker;
+use kuakling\datepicker\DatePicker;
 ?>
 <?php
 if($model->isNewRecord) {
@@ -31,7 +31,7 @@ if($model->isNewRecord) {
 </div>
     <?= $form->field($model, 'married_status')->inline()->radioList($model->getStatuses()) ?>
 <div id="group_spouse" style="display:none;">
-    <h4>Spouse</h4>
+    <h4 class="page-header"><i class="fa fa-heart"></i> <?= Yii::t('andahrm/person', 'Spouse'); ?></h4>
     <div class="row">
         <?= $form->field($modelSpouse, 'citizen_id', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
     

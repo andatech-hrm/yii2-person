@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use andahrm\person\models\Title;
-use kartik\widgets\DatePicker;
+use kuakling\datepicker\DatePicker;
 use andahrm\setting\models\WidgetSettings;
 ?>
 <div class="form-person">
@@ -29,7 +29,8 @@ use andahrm\setting\models\WidgetSettings;
         
         <?= $form->field($model, 'phone', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
         
-        <?= $form->field($model, 'birthday', ['options' => ['class' => 'form-group col-sm-3']])->widget(DatePicker::className(), WidgetSettings::DatePicker()) ?>
+        <?= $form->field($model, 'birthday', ['options' => ['class' => 'form-group col-sm-3']])->widget(DatePicker::className()) ?>
+        
     </div>
 </div>
 

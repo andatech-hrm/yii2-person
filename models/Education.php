@@ -3,8 +3,11 @@
 namespace andahrm\person\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use andahrm\setting\models\Helper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use kuakling\datepicker\behaviors\YearBuddhistBehavior;
 use andahrm\person\models\Nationality as Country;
 
 /**
@@ -27,7 +30,7 @@ use andahrm\person\models\Nationality as Country;
  * @property Person $user
  * @property PersonEducationLevel $level
  */
-class Education extends \yii\db\ActiveRecord
+class Education extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -45,7 +48,15 @@ class Education extends \yii\db\ActiveRecord
             ],
             [
                 'class' => TimestampBehavior::className(),
-            ]
+            ],
+            'year_start' => [
+                'class' => YearBuddhistBehavior::className(),
+                'attribute' => 'year_start',
+            ],
+            'year_end' => [
+                'class' => YearBuddhistBehavior::className(),
+                'attribute' => 'year_end',
+            ],
         ];
     }
 
@@ -57,7 +68,7 @@ class Education extends \yii\db\ActiveRecord
         return [
             [['year_start', 'year_end', 'level_id', 'degree', 'branch', 'institution', 'country_id'], 'required'],
             [['user_id', 'level_id', 'country_id', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'integer'],
-            [['year_start', 'year_end'], 'safe'],
+            [['year_start', 'year_end', 'year_start_th', 'year_end_th'], 'safe'],
             [['degree', 'branch', 'institution', 'province'], 'string', 'max' => 128],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['user_id' => 'user_id']],
             [['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => EducationLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
@@ -74,18 +85,31 @@ class Education extends \yii\db\ActiveRecord
             'user_id' => Yii::t('andahrm/person', 'User ID'),
             'year_start' => Yii::t('andahrm/person', 'Year Start'),
             'year_end' => Yii::t('andahrm/person', 'Year End'),
-            'level_id' => Yii::t('andahrm/person', 'Level ID'),
+            'level_id' => Yii::t('andahrm/person', 'Level'),
             'degree' => Yii::t('andahrm/person', 'Degree'),
             'branch' => Yii::t('andahrm/person', 'Branch'),
             'institution' => Yii::t('andahrm/person', 'Institution'),
             'province' => Yii::t('andahrm/person', 'Province'),
-            'country_id' => Yii::t('andahrm/person', 'Country ID'),
-            'created_by' => Yii::t('andahrm/person', 'Created By'),
-            'created_at' => Yii::t('andahrm/person', 'Created At'),
-            'updated_by' => Yii::t('andahrm/person', 'Updated By'),
-            'updated_at' => Yii::t('andahrm/person', 'Updated At'),
+            'country_id' => Yii::t('andahrm/person', 'Country'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'year_start_th' => Yii::t('andahrm/person', 'Year Start'),
+            'year_end_th' => Yii::t('andahrm/person', 'Year End'),
         ];
     }
+    
+    // public function afterFind()
+    // {
+    //     if(!empty($this->year_start)) {
+    //         $this->year_start = intval($this->year_start)+Helper::YEAR_TH_ADD;
+    //     }
+        
+    //     if(!empty($this->year_end)) {
+    //         $this->year_end = intval($this->year_end)+Helper::YEAR_TH_ADD;
+    //     }
+    // }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -117,5 +141,17 @@ class Education extends \yii\db\ActiveRecord
     public function getCountry()
     {
         return $this->hasOne(Country::className(), ['id' => 'country_id']);
+    }
+    
+    public function getYearStartBuddhist()
+    {
+        $yearDistance = $this->getBehavior('year_start')->yearDistance;
+        return (intval($this->year_start) + $yearDistance);
+    }
+    
+    public function getYearEndBuddhist()
+    {
+        $yearDistance = $this->getBehavior('year_end')->yearDistance;
+        return (intval($this->year_end) + $yearDistance);
     }
 }

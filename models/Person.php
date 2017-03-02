@@ -3,10 +3,13 @@
 namespace andahrm\person\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeBehavior;
+use kuakling\datepicker\behaviors\DateBuddhistBehavior;
 use andahrm\setting\models\Helper;
 
 use andahrm\leave\models\LeavePermission; #mad
@@ -32,10 +35,12 @@ use andahrm\leave\models\LeaveRelatedPerson; #mad
  * @property integer $updated_at
  * @property integer $updated_by
  */
-class Person extends \yii\db\ActiveRecord
+class Person extends ActiveRecord
 {
     const GENDER_MALE = 'm';
     const GENDER_FEMAIL = 'f';
+    
+    public $full_address_contact;
     /**
      * @inheritdoc
      */
@@ -52,7 +57,20 @@ class Person extends \yii\db\ActiveRecord
             ],
             [
                 'class' => TimestampBehavior::className(),
-            ]
+            ],
+            'birthday' => [
+                'class' => DateBuddhistBehavior::className(),
+                'dateAttribute' => 'birthday',
+            ],
+            'full_address_contact' =>[
+                'class' => AttributeBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_AFTER_FIND => 'full_address_contact',
+                ],
+                'value' => function($event) {
+                    return $this->addressContact->addressText;
+                },
+            ],
         ];
     }
 
@@ -70,6 +88,7 @@ class Person extends \yii\db\ActiveRecord
             [['tel', 'phone'], 'string', 'max' => 50],
             [['citizen_id'], 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Yii::$app->user->identityClass, 'targetAttribute' => ['user_id' => 'id']],
+            [['full_address_contact'], 'safe']
         ];
     }
 
@@ -90,31 +109,36 @@ class Person extends \yii\db\ActiveRecord
             'tel' => Yii::t('andahrm/person', 'Tel'),
             'phone' => Yii::t('andahrm/person', 'Phone'),
             'birthday' => Yii::t('andahrm/person', 'Birthday'),
-            'created_at' => Yii::t('andahrm/person', 'Created At'),
-            'created_by' => Yii::t('andahrm/person', 'Created By'),
-            'updated_at' => Yii::t('andahrm/person', 'Updated At'),
-            'updated_by' => Yii::t('andahrm/person', 'Updated By'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
+            'fullname' => Yii::t('andahrm/person', 'Fullname'),
+            'fullname_th' => Yii::t('andahrm/person', 'Fullname TH'),
+            'fullname_en' => Yii::t('andahrm/person', 'Fullname EN'),
+            'full_address_contact' => Yii::t('andahrm/person', 'full_address_contact'),
         ];
     }
     
-    public function beforeSave($insert)
-    {
-        if (parent::beforeSave($insert)) {
-            if($birthday = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday)) {
-                $this->birthday = $birthday->format(Helper::DB_DATE_FORMAT);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // public function beforeSave($insert)
+    // {
+    //     if (parent::beforeSave($insert)) {
+    //         if($birthday = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday)) {
+    //             $this->birthday = $birthday->format(Helper::DB_DATE_FORMAT);
+    //         }
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
     
-    public function afterFind()
-    {
-        if($birthday = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday)){
-            $this->birthday = $birthday->format(Helper::UI_DATE_FORMAT);
-        }
-    }
+    // public function afterFind()
+    // {
+    //     if($birthday = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday)){
+    //         $this->birthday = Helper::dateBuddhist($birthday);
+    //         //$this->birthday = $birthday->format(Helper::UI_DATE_FORMAT);
+    //     }
+    // }
     
     public function getUser()
     {

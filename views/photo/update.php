@@ -10,7 +10,7 @@ $this->title = Yii::t('andahrm/structure', 'Update {modelClass}: ', [
 ]) . $model->user_id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/structure', 'Photos'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->user_id, 'url' => ['view', 'user_id' => $model->user_id, 'year' => $model->year]];
-$this->params['breadcrumbs'][] = Yii::t('andahrm/structure', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
 ?>
 <div class="photo-update">
 

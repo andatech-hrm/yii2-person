@@ -36,11 +36,11 @@ class LeaveAssign extends Model
     public function attributeLabels()
     {
         return [
-           // 'user_id' => Yii::t('andahrm/leave', 'ผู้ยื่นลา'),
-            'leave_related_id' => Yii::t('andahrm/leave', 'ผู้ที่เกี่ยวข้อง'),
-            'year' => Yii::t('andahrm/leave', 'ปีงบประมาณ'),
-            'number_day' => Yii::t('andahrm/leave', 'จำนวนวัน'),
-            'leave_condition_id' => Yii::t('andahrm/leave', 'Leave Condition ID'),
+           // 'user_id' => Yii::t('andahrm/leave', 'Sender'),
+            'leave_related_id' => Yii::t('andahrm/leave', 'Related'),
+            'year' => Yii::t('andahrm/leave', 'Year'),
+            'number_day' => Yii::t('andahrm/leave', 'Number Day'),
+            'leave_condition_id' => Yii::t('andahrm/leave', 'Leave Condition'),
         ];
     }
 

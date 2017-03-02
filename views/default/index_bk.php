@@ -7,7 +7,7 @@ use kartik\export\ExportMenu;
 /* @var $searchModel andahrm\person\models\PersonSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'People');
+$this->title = Yii::t('andahrm/person', 'Person');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php

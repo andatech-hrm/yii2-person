@@ -115,6 +115,8 @@ class DefaultController extends Controller
      */
     public function actionView($id)
     {
+        $this->layout = 'view';
+        
         $models['person'] = $this->findModel($id);
 //         $models['user'] = $models['person']->user;
         $models['photos'] = $models['person']->photos;
@@ -128,7 +130,8 @@ class DefaultController extends Controller
         $models['people-childs'] = $models['person']->peopleChilds;
         $models['educations'] = $models['person']->educations;
         
-        $post = Yii::$app->request->post();
+        $request = Yii::$app->request;
+        $post = $request->post();
         if($post) {
             $errorMassages = [];
             $transaction = Yii::$app->db->beginTransaction();
@@ -152,6 +155,8 @@ class DefaultController extends Controller
                     $msg .= '</ul>';
                     throw new ErrorException($msg);
                 }else{
+                    $this->setRoles($models['person']->user_id, $request->post('Roles', []));
+                    
                     Yii::$app->getSession()->setFlash('saved',[
                         'type' => 'success',
                         'msg' => Yii::t('andahrm', 'Save operation completed.')
@@ -180,6 +185,38 @@ class DefaultController extends Controller
         $this->prepareData();
         
         return $this->render('view', ['models' => $models]);
+    }
+    
+    public function actionViewPosition($id)
+    {
+        $this->layout = 'view';
+        
+        $searchModel = new \andahrm\positionSalary\models\PersonPositionSalarySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->where(['user_id'=>$id]);
+        $dataProvider->sort->defaultOrder = ['adjust_date'=> SORT_ASC];
+
+        return $this->render('view-position', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+        
+        // echo Yii::$app->runAction('profile/position/index');
+    }
+    
+    public function actionViewDevelopment($id)
+    {
+        $this->layout = 'view';
+        
+        $searchModel = new \andahrm\profile\models\SelfDevelopmentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->where(['user_id'=>$id]);
+        //$dataProvider->sort->defaultOrder = ['development_project.start'=>SORT_DESC];
+
+        return $this->render('view-development', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**
@@ -359,6 +396,8 @@ class DefaultController extends Controller
 //         $models['people-childs'] = (!empty($models['person']->peopleChilds)) ? $models['person']->peopleChilds : [new PeopleChild(['user_id' => $id])];
         $models['people-childs'] = $models['person']->peopleChilds;
         $models['educations'] = $models['person']->educations;
+        $models['position-salary'] = ($models['person']->positionSalary !== null ) ? $models['person']->positionSalary : new PersonPositionSalary(['scenario' => 'new-person', 'user_id' => $id]);
+        $models['leave'] = new LeaveAssign(); #madone
 
         
         if($post){
@@ -728,7 +767,7 @@ class DefaultController extends Controller
         }
         
         $this->prepareData();
-        return $this->renderAjax('photo-create', ['model' => $model, 'modelPerson' => $models['person']]);
+        return $this->renderAjax('photo-create', ['model' => $model]);
     }
     
     public function actionPhotoUpdate($id, $year)

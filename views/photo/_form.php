@@ -23,7 +23,7 @@ use anda\core\widgets\cropimageupload\CropImageUpload;
     <?php echo $form->field($model, 'image')->widget(CropImageUpload::className()); ?>
     <hr>
     <div class="form-group pull-right">
-        <?php $btnText = $model->isNewRecord ? Yii::t('andahrm/structure', 'Create') : Yii::t('andahrm/structure', 'Update'); ?>
+        <?php $btnText = $model->isNewRecord ? Yii::t('andahrm', 'Create') : Yii::t('andahrm', 'Update'); ?>
         <?= Html::submitButton('<i class="fa fa-check-circle-o" aria-hidden="true"></i> '.$btnText, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 

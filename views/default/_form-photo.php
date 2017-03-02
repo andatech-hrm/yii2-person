@@ -5,13 +5,13 @@ use yii\web\JsExpression;
 use anda\core\widgets\cropimageupload\CropImageUpload;
 ?>
 <div class="form-group-image-crop">
-<?= $form->field($model, 'year')->textInput(['maxlength' => true]) ?>
+<?= $form->field($model, 'year')->widget(\kuakling\datepicker\YearBuddhist::className()) ?>
 <div style="width:100px;height:100px;overflow:hidden;margin-left:5px; background:#cfcfcf">
 <?= Html::img($model->getUploadUrl('image_cropped'), ['class' => 'img-responsive img-cropped-preview', 'id' => 'preview']); ?>
 </div>
 <?php
 $modal = Modal::begin([
-    'header' => Html::tag('h2', $model->person->fullname),
+    'header' => Html::tag('h2', ($model->person) ? $model->person->fullname : null),
     'toggleButton' => [
         'label' => Yii::t('andahrm/person', 'Choose photo'),
         'class' => 'btn btn-default'

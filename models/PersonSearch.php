@@ -20,7 +20,7 @@ class PersonSearch extends Person
     {
         return [
             [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'tel', 'phone', 'birthday', 'fullname'], 'safe'],
+            [['citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'tel', 'phone', 'birthday', 'fullname', 'full_address_contact'], 'safe'],
         ];
     }
 
@@ -43,12 +43,18 @@ class PersonSearch extends Person
     public function search($params)
     {
         $query = Person::find();
+        $query->joinWith(['addressContact.tambol', 'addressContact.amphur', 'addressContact.province']);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        
+        $dataProvider->sort->attributes['full_address_contact'] = [
+            'asc' => ['local_province.name' => SORT_ASC],
+            'desc' => ['local_province.name' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -82,6 +88,16 @@ class PersonSearch extends Person
             ->orFilterWhere(['like', 'lastname_th', $this->fullname])
             ->orFilterWhere(['like', 'firstname_en', $this->fullname])
             ->orFilterWhere(['like', 'lastname_en', $this->fullname]);
+            
+        $query->andFilterWhere(['like', 'person_address.number', $this->full_address_contact])
+            ->orFilterWhere(['like', 'person_address.sub_road', $this->full_address_contact])
+            ->orFilterWhere(['like', 'person_address.road', $this->full_address_contact])
+            ->orFilterWhere(['like', 'person_address.postcode', $this->full_address_contact])
+            ->orFilterWhere(['like', 'person_address.phone', $this->full_address_contact])
+            ->orFilterWhere(['like', 'person_address.fax', $this->full_address_contact])
+            ->orFilterWhere(['like', 'local_tambol.name', $this->full_address_contact])
+            ->orFilterWhere(['like', 'local_amphur.name', $this->full_address_contact])
+            ->orFilterWhere(['like', 'local_province.name', $this->full_address_contact]);
 
         return $dataProvider;
     }

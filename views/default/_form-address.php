@@ -8,7 +8,7 @@ use andahrm\setting\models\LocalRegion;
 use andahrm\setting\models\WidgetSettings;
 
 use kartik\widgets\Select2;
-use kartik\widgets\DatePicker;
+use kuakling\datepicker\DatePicker;
 ?>
 <?php $model->localRegion = ($model->province !== null) ? $model->province->region_id : null; ?>
 <div class="address-pane">

@@ -3,7 +3,7 @@ use yii\helpers\ArrayHelper;
 
 use andahrm\setting\models\WidgetSettings;
 use kartik\widgets\Select2;
-use kartik\widgets\DatePicker;
+use kuakling\datepicker\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model andahrm\person\models\Child */

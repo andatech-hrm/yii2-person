@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use wbraganca\dynamicform\DynamicFormWidget;
-use kartik\widgets\DatePicker;
+use kuakling\datepicker\DatePicker;
 use kartik\widgets\Select2;
 use andahrm\setting\models\WidgetSettings;
 

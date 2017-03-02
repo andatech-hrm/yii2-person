@@ -3,9 +3,11 @@
 namespace andahrm\person\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use andahrm\setting\models\Helper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use kuakling\datepicker\behaviors\DateBuddhistBehavior;
 
 /**
  * This is the model class for table "person_address".
@@ -28,7 +30,7 @@ use yii\behaviors\TimestampBehavior;
  * @property PersonDetail[] $personDetails0
  * @property PersonDetail[] $personDetails1
  */
-class Address extends \yii\db\ActiveRecord
+class Address extends ActiveRecord
 {
     const TYPE_CONTACT = 1;
     const TYPE_REGISTER = 2;
@@ -51,7 +53,15 @@ class Address extends \yii\db\ActiveRecord
             ],
             [
                 'class' => TimestampBehavior::className(),
-            ]
+            ],
+            'move_in_date' => [
+                'class' => DateBuddhistBehavior::className(),
+                'dateAttribute' => 'move_in_date',
+            ],
+            'move_out_date' => [
+                'class' => DateBuddhistBehavior::className(),
+                'dateAttribute' => 'move_out_date',
+            ],
         ];
     }
 
@@ -79,50 +89,20 @@ class Address extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('andahrm/person', 'ID'),
             'localRegion' => Yii::t('andahrm/person', 'Local Region'),
-            'number_registration' => Yii::t('andahrm/person', 'เลขทะเบียนบ้าน'),
-            'number' => Yii::t('andahrm/person', 'เลขที่บ้าน'),
+            'number_registration' => Yii::t('andahrm/person', 'Number Registration'),
+            'number' => Yii::t('andahrm/person', 'Number'),
             'sub_road' => Yii::t('andahrm/person', 'Sub Road'),
             'road' => Yii::t('andahrm/person', 'Road'),
-            'tambol_id' => Yii::t('andahrm/person', 'ตำบล'),
-            'amphur_id' => Yii::t('andahrm/person', 'อำเภอ'),
-            'province_id' => Yii::t('andahrm/person', 'จังหวัด'),
-            'postcode' => Yii::t('andahrm/person', 'รหัสไปษณีรย์'),
+            'tambol_id' => Yii::t('andahrm/person', 'Tambol'),
+            'amphur_id' => Yii::t('andahrm/person', 'Amphur'),
+            'province_id' => Yii::t('andahrm/person', 'Province'),
+            'postcode' => Yii::t('andahrm/person', 'Postcode'),
             'phone' => Yii::t('andahrm/person', 'Phone'),
             'fax' => Yii::t('andahrm/person', 'Fax'),
             'move_in_date' => Yii::t('andahrm/person', 'Move In Date'),
             'move_out_date' => Yii::t('andahrm/person', 'Move Out Date'),
+            'addressText' => Yii::t('andahrm/person', 'Address Text'),
         ];
-    }
-    
-    public function beforeSave($insert)
-    {
-        if (parent::beforeSave($insert)) {
-            if(!empty($this->move_in_date)) {
-                $move_in_date = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->move_in_date);
-                $this->move_in_date = $move_in_date->format(Helper::DB_DATE_FORMAT);
-            }
-            
-            if(!empty($this->move_out_date)) {
-                $move_out_date = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->move_out_date);
-                $this->move_out_date = $move_out_date->format(Helper::DB_DATE_FORMAT);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    public function afterFind()
-    {
-        if(!empty($this->move_in_date)) {
-            $move_in_date = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->move_in_date);
-            $this->move_in_date = $move_in_date->format(Helper::UI_DATE_FORMAT);
-        }
-        
-        if(!empty($this->move_out_date)) {
-            $move_out_date = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->move_out_date);
-            $this->move_out_date = $move_out_date->format(Helper::UI_DATE_FORMAT);
-        }
     }
 
     /**
@@ -175,12 +155,13 @@ class Address extends \yii\db\ActiveRecord
     
     public function getAddressText()
     {
+        $notSet = '<span class="not-set">'.Yii::t('yii', '(not set)').'</span>';
         $arr[] = $this->number;
         $arr[] = 'ซ.'.$this->sub_road;
         $arr[] = 'ถ.'.$this->road;
-        $arr[] = 'ต.'.$this->tambol->name;
-        $arr[] = 'อ.'.$this->amphur->name;
-        $arr[] = 'จ.'.$this->province->name;
+        $arr[] = ($this->tambol) ? 'ต.'.$this->tambol->name : 'ต.'.$notSet;
+        $arr[] = ($this->amphur) ? 'อ.'.$this->amphur->name : 'อ.'.$notSet;
+        $arr[] = ($this->province) ? 'จ.'.$this->province->name : 'จ.'.$notSet;
         
         return implode(" ", $arr);
     }

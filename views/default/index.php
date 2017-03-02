@@ -8,7 +8,7 @@ use kartik\export\ExportMenu;
 /* @var $searchModel andahrm\person\models\PersonSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Persons');
+$this->title = Yii::t('andahrm/person', 'Person');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php
@@ -28,6 +28,17 @@ $columns = [
             return $res;
         },
     ],
+    'full_address_contact' => [
+        'attribute' => 'full_address_contact',
+        'format' => 'html',
+        'value' => function($model) {
+            // if ($model->addressContact === null) { return null; }
+            $res = $model->full_address_contact;
+            $res .= '<br />'.$model->addressContact->postcode.' &nbsp<i class="fa fa-phone"></i>โทร. ';
+            $res .= $model->addressContact->phone;
+            return $res;
+        },
+    ],
     'gender' => 'gender',
     'tel' => 'tel',
     'phone' => 'phone',
@@ -39,7 +50,7 @@ $columns = [
 ];
 
 $gridColumns = [
-    $columns['user_id'],
+    // $columns['user_id'],
     $columns['citizen_id'],
     [
         'attribute' => 'fullname',
@@ -54,10 +65,11 @@ $gridColumns = [
             return $res;
         }
     ],
-    $columns['contact'],
+    // $columns['contact'],
+    $columns['full_address_contact'],
     [
         'class' => '\kartik\grid\ActionColumn',
-//         'template' => '{update} {delete}',
+         'template' => '{view} {delete}',
 //         'urlCreator' => function ($action, $model, $key, $index) {
 //             $params = Yii::$app->request->getQueryParams();
 //             unset($params['id'], $params['_pjax']);

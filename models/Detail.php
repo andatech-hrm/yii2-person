@@ -87,11 +87,11 @@ class Detail extends \yii\db\ActiveRecord
     {
         return [
             'user_id' => Yii::t('andahrm/person', 'User ID'),
-            'nationality_id' => Yii::t('andahrm/person', 'สัญชาติ'),
-            'race_id' => Yii::t('andahrm/person', 'เชื้อชาติ'),
-            'religion_id' => Yii::t('andahrm/person', 'ศาสนา'),
-            'blood_group' => Yii::t('andahrm/person', 'กรุ๊ปเลือด'),
-            'married_status' => Yii::t('andahrm/person', 'สถานะ'),
+            'nationality_id' => Yii::t('andahrm/person', 'Nationality'),
+            'race_id' => Yii::t('andahrm/person', 'Race'),
+            'religion_id' => Yii::t('andahrm/person', 'Religion'),
+            'blood_group' => Yii::t('andahrm/person', 'Blood Group'),
+            'married_status' => Yii::t('andahrm/person', 'Married Status'),
         ];
     }
 

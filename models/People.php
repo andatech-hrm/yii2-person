@@ -4,8 +4,10 @@ namespace andahrm\person\models;
 
 use Yii;
 use andahrm\setting\models\Helper;
+use yii\db\ActiveRecord;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use kuakling\datepicker\behaviors\DateBuddhistBehavior;
 
 /**
  * This is the model class for table "people".
@@ -24,7 +26,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $updated_by
  * @property integer $updated_at
  */
-class People extends \yii\db\ActiveRecord
+class People extends ActiveRecord
 {
     const DEFAULT_NATIONALITY = 171;
     
@@ -37,6 +39,8 @@ class People extends \yii\db\ActiveRecord
     const TYPE_MOTHER = 2;
     const TYPE_SPOUSE = 3;
     const TYPE_CHILD = 4;
+    
+    public $birthday_th;
     
     public function init()
     {
@@ -63,7 +67,21 @@ class People extends \yii\db\ActiveRecord
             ],
             [
                 'class' => TimestampBehavior::className(),
-            ]
+            ],
+            // 'birthday' =>[
+            //     'class' => AttributeBehavior::className(),
+            //     'attributes' => [
+            //         ActiveRecord::EVENT_BEFORE_INSERT => 'birthday',
+            //         ActiveRecord::EVENT_BEFORE_UPDATE => 'birthday',
+            //     ],
+            //     'value' => function($event) {
+            //         return Helper::dateUi2Db($this->birthday);
+            //     },
+            // ],
+            'birthday' => [
+                'class' => DateBuddhistBehavior::className(),
+                'dateAttribute' => 'birthday',
+            ],
         ];
     }
 
@@ -73,7 +91,7 @@ class People extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['birthday'], 'safe'],
+            [['birthday', 'birthday_th'], 'safe'],
             [['nationality_id', 'race_id', 'user_id', 'type', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'integer'],
             [['citizen_id'], 'string', 'max' => 20],
             [['name', 'surname', 'live_status'], 'string', 'max' => 255],
@@ -97,31 +115,33 @@ class People extends \yii\db\ActiveRecord
             'birthday' => Yii::t('andahrm/person', 'Birthday'),
             'nationality_id' => Yii::t('andahrm/person', 'Nationality ID'),
             'race_id' => Yii::t('andahrm/person', 'Race ID'),
-            'occupation' => Yii::t('andahrm/person', 'อาชีพ'),
-            'live_status' => Yii::t('andahrm/person', 'มีชีวิต/เสียชีวิต'),
+            'occupation' => Yii::t('andahrm/person', 'Occupation'),
+            'live_status' => Yii::t('andahrm/person', 'Live Status'),
+            'fullname' => Yii::t('andahrm/person', 'Fullname'),
+            'birthday_th' => Yii::t('andahrm/person', 'Birthday'),
         ];
     }
     
-    public function beforeSave($insert)
-    {
-        if (parent::beforeSave($insert)) {
-            if($this->birthday) {
-                $birthday = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday);
-                $this->birthday = $birthday->format(Helper::DB_DATE_FORMAT);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // public function beforeSave($insert)
+    // {
+    //     if (parent::beforeSave($insert)) {
+    //         if($this->birthday) {
+    //             $birthday = \DateTime::createFromFormat(Helper::UI_DATE_FORMAT, $this->birthday);
+    //             $this->birthday = $birthday->format(Helper::DB_DATE_FORMAT);
+    //         }
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
     
-    public function afterFind()
-    {
-        if($this->birthday) {
-            $birthday = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday);
-            $this->birthday = $birthday->format(Helper::UI_DATE_FORMAT);
-        }
-    }
+    // public function afterFind()
+    // {
+    //     if($this->birthday) {
+    //         $birthday = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday);
+    //         $this->birthday = $birthday->format(Helper::UI_DATE_FORMAT);
+    //     }
+    // }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -166,7 +186,11 @@ class People extends \yii\db\ActiveRecord
     public function getLiveStatusText()
     {
         $liveStatus = self::getLiveStatuses();
+        if($this->live_status === null || $this->live_status === ''){
+            return null;
+        }
         $status = intval($this->live_status);
+        
         
         return (isset($liveStatus[$status])) ? $liveStatus[$status] : null;
     }

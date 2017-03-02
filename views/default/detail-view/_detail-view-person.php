@@ -4,7 +4,7 @@ use andahrm\person\models\Title;
 use andahrm\person\models\Religion;
 use yii\helpers\ArrayHelper;
 use kartik\widgets\Select2;
-use kartik\widgets\DatePicker;
+use kuakling\datepicker\DatePicker;
 use andahrm\setting\models\WidgetSettings;
 
 return [

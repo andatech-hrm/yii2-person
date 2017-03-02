@@ -40,7 +40,7 @@ class Title extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('andahrm/person', 'ID'),
             'name' => Yii::t('andahrm/person', 'Name'),
-            'initial' => Yii::t('andahrm/person', 'ชื่อย่อ'),
+            'initial' => Yii::t('andahrm/person', 'Initial'),
         ];
     }
 }

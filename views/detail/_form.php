@@ -15,7 +15,7 @@ use andahrm\setting\models\LocalTumbol;
 use andahrm\setting\models\WidgetSettings;
 
 use kartik\widgets\Select2;
-use kartik\widgets\DatePicker;
+use kuakling\datepicker\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model andahrm\person\models\Detail */
@@ -29,7 +29,7 @@ use kartik\widgets\DatePicker;
 	<?php if(!$isRenderPartial) { ?>
     <div class="pull-right">
     <?= Html::a('<i class="fa fa-times"></i> Discard', array_merge(['view'], Yii::$app->request->getQueryParams()), ['class' => 'btn btn-default']) ?>
-    <?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-check"></i> '.Yii::t('app', 'Create') : '<i class="fa fa-check"></i> '.Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-check"></i> '.Yii::t('andahrm', 'Create') : '<i class="fa fa-check"></i> '.Yii::t('andahrm', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
     <h4><?= $model->isNewRecord ? Yii::t('andahrm', 'Create Person Detail') : $model->person->fullname; ?></h4>
     <hr>
@@ -139,7 +139,7 @@ use kartik\widgets\DatePicker;
 	<?php if(!$isRenderPartial) { ?>
     <div class="form-group pull-right">
         <?= Html::a('<i class="fa fa-times"></i> Discard', array_merge(['view'], Yii::$app->request->getQueryParams()), ['class' => 'btn btn-default']) ?>
-    	<?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-check"></i> '.Yii::t('app', 'Create') : '<i class="fa fa-check"></i> '.Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    	<?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-check"></i> '.Yii::t('andahrm', 'Create') : '<i class="fa fa-check"></i> '.Yii::t('andahrm', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 	<?php } ?>
 

@@ -4,8 +4,8 @@ use kartik\widgets\Select2;
 use andahrm\setting\models\WidgetSettings;
 ?>
 <div class="row">
-    <?= $form->field($model, "year_start", ['options' => ['class' => 'form-group col-sm-2']])->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, "year_end", ['options' => ['class' => 'form-group col-sm-2']])->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, "year_start", ['options' => ['class' => 'form-group col-sm-2']])->widget(\kuakling\datepicker\YearBuddhist::className()) ?>
+    <?= $form->field($model, "year_end", ['options' => ['class' => 'form-group col-sm-2']])->widget(\kuakling\datepicker\YearBuddhist::className()) ?>
     <?= $form->field($model, "level_id", ['options' => ['class' => 'form-group col-sm-3']])->dropDownList(ArrayHelper::map($this->context->educationLevels, 'id', 'title')) ?>
     <?= $form->field($model, "degree", ['options' => ['class' => 'form-group col-sm-2']])->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, "branch", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
