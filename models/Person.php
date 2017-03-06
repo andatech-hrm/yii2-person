@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\AttributeBehavior;
+use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use kuakling\datepicker\behaviors\DateBuddhistBehavior;
 use andahrm\setting\models\Helper;
 
@@ -71,7 +72,24 @@ class Person extends ActiveRecord
                     return $this->addressContact->addressText;
                 },
             ],
+            'softDeleteBehavior' => [
+                'class' => SoftDeleteBehavior::className(),
+                'softDeleteAttributeValues' => [
+                    // 'deleted_at' => date('Y-m-d H:i:s')
+                    'deleted_at' => time()
+                ],
+                'restoreAttributeValues' => [
+                    'deleted_at' => null
+                ]
+            ],
         ];
+    }
+
+    public static function find()
+    {
+        return parent::find()
+            // ->joinWith(['category cat', 'createdBy.profile prof'])
+            ->where(['deleted_at' => null]);
     }
 
     /**
@@ -392,8 +410,6 @@ class Person extends ActiveRecord
     {
         return $this->positionSalary?$this->positionSalary->position->section->title:null;
     }
-  
-
   
   
 }

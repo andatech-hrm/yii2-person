@@ -21,6 +21,7 @@ use andahrm\person\models\EducationModel;
 use andahrm\person\models\EducationLevel;
 use andahrm\person\models\LeaveAssign; #mad
 use andahrm\positionSalary\models\PersonPositionSalary;
+use andahrm\person\models\Contract;
 
 use andahrm\edoc\models\Edoc;
 
@@ -155,7 +156,9 @@ class DefaultController extends Controller
                     $msg .= '</ul>';
                     throw new ErrorException($msg);
                 }else{
-                    $this->setRoles($models['person']->user_id, $request->post('Roles', []));
+                    if($request->post('Roles')){
+                        $this->setRoles($models['person']->user_id, $request->post('Roles', []));
+                    }
                     
                     Yii::$app->getSession()->setFlash('saved',[
                         'type' => 'success',
@@ -248,6 +251,7 @@ class DefaultController extends Controller
         $models['educations'] = [new Education()];
         $models['position-salary'] = new PersonPositionSalary(['scenario' => 'new-person']);
         $models['leave'] = new LeaveAssign(); #madone
+        $models['contract'] = new Contract();
         
         if($post){
             $errorMassages = [];
@@ -261,16 +265,24 @@ class DefaultController extends Controller
                 
                 $skipModel = ['user', 'people-childs', 'educations'];
                 if ($models['user']->save()){
+                    $contractFN = $models['contract']->formName();
+                    $psFN = $models['position-salary']->formName();
+                    $models['position-salary']->adjust_date = Yii::$app->formatter->asDate(date('Y-m-d'), 'php:d/m/Y');
+                    $models['contract']->position_id = $post[$psFN]['position_id'];
+                    $models['contract']->edoc_id = $post[$psFN]['edoc_id'];
                     foreach($models as $key => $model) {
                         // if($key !== 'people-childs' && $key !== 'user'){
                         if(!in_array($key, $skipModel)){
                             $model->load($post);
                             $model->user_id = $models['user']->id;
+                            // echo $model->formName();
+                            // print_r($model->attributes);
                             if (!$model->save()){
                                 $errorMassages[] = $model->getErrors();
                             }
                         }
                     }
+                    // exit();
                     
                 } else {
                     $errorMassages[] = $models['user']->getErrors();
@@ -519,9 +531,10 @@ class DefaultController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        // $this->findModel($id)->delete();
+        $this->findModel($id)->softDelete();
 
-        return $this->redirect(['index']);
+        // return $this->redirect(['index']);
     }
 
     /**

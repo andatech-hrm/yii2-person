@@ -36,6 +36,8 @@ $modalOptions = [
         'style' => 'border-top-left-radius:5px; border-top-right-radius:5px;'
     ]
 ];
+
+// echo Yii::$app->formatter->asDate(date('Y-m-d'), 'php:d/m/Y');
 ?>
 <div class="profile-default-index">
     <div class="row">
