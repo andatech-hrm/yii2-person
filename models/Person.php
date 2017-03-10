@@ -313,7 +313,7 @@ class Person extends ActiveRecord
             Html::a($this->fullname, $link, ['class' => 'title']) .
             //'<p><strong>$2300. </strong> ' . current($this->getRoles()) . ' </p>' .
             '<p class="position">' . $this->positionTitle . '</p>' .
-            '<p> <small>12 Sales Today</small></p>' .
+            //'<p> <small>12 Sales Today</small></p>' .
             '</div>' . 
             '<div class="clearfix"></div>';
         
