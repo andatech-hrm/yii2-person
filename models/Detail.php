@@ -32,7 +32,7 @@ use yii\behaviors\TimestampBehavior;
  */
 class Detail extends \yii\db\ActiveRecord
 {
-    const DEFAULT_NATIONALITY = 171;
+    const DEFAULT_NATIONALITY = 231;
     const DEFAULT_RACE = 99;
     
     const BLOOD_GRUOP_A = 'A';

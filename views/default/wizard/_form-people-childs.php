@@ -60,15 +60,15 @@ $this->context->prepareData();
                         <?= $form->field($model, "[{$index}]citizen_id", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
                         <?= $form->field($model, "[{$index}]name", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
                         <?= $form->field($model, "[{$index}]surname", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
-                        <?= $form->field($model, "[{$index}]birthday", ['options' => ['class' => 'form-group col-sm-3']])->widget(DatePicker::className(), WidgetSettings::DatePicker()) ?>
+                        <?= $form->field($model, "[{$index}]birthday", ['options' => ['class' => 'form-group col-sm-3 birthday']])->widget(DatePicker::className(), WidgetSettings::DatePicker()) ?>
                     </div><!-- end:row -->
 
                     <div class="row">
-                        <?= $form->field($model, "[{$index}]nationality_id", ['options' => ['class' => 'form-group col-sm-3']])->widget(Select2::classname(), WidgetSettings::Select2([
+                        <?= $form->field($model, "[{$index}]nationality_id", ['options' => ['class' => 'form-group col-sm-3 nationality']])->widget(Select2::classname(), WidgetSettings::Select2([
                             'data' => ArrayHelper::map($this->context->nationalities, 'id', 'title')
                         ]))?>
 
-                        <?= $form->field($model, "[{$index}]race_id", ['options' => ['class' => 'form-group col-sm-3']])->widget(Select2::classname(), WidgetSettings::Select2([
+                        <?= $form->field($model, "[{$index}]race_id", ['options' => ['class' => 'form-group col-sm-3 race']])->widget(Select2::classname(), WidgetSettings::Select2([
                             'data' => ArrayHelper::map($this->context->races, 'id', 'title')
                         ]))?>
 
@@ -90,11 +90,16 @@ $this::POS_HEAD);
 
 $js[] = <<< JS
 jQuery(".dynamicform_wrapper").on('afterInsert', function(e, item) {
-    var datePickers = $(this).find('[data-krajee-kvdatepicker]');
-    datePickers.each(function(index, el) {
-        $(this).parent().removeData().kvDatepicker('remove');
-        $(this).parent().kvDatepicker(eval($(this).attr('data-krajee-kvdatepicker')));
-    });
+    // var datePickers = $(this).find('[data-krajee-kvdatepicker]');
+    // datePickers.each(function(index, el) {
+    //     $(this).parent().removeData().kvDatepicker('remove');
+    //     $(this).parent().kvDatepicker(eval($(this).attr('data-krajee-kvdatepicker')));
+    // });
+    var datePickers = $(this).find('.birthday input[type="text"]');
+    datePickers.datepicker({"language":"th-th","autoclose":true});
+    
+    $(item).find('.nationality select').val({$this->context->defaultNationalityId}).trigger("change");
+    $(item).find('.race select').val({$this->context->defaultRaceId}).trigger("change");
     
     jQuery(".dynamicform_wrapper .panel-title-address").each(function(index) {
         jQuery(this).html("Child: " + (index + 1))

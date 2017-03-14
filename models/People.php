@@ -28,7 +28,7 @@ use kuakling\datepicker\behaviors\DateBuddhistBehavior;
  */
 class People extends ActiveRecord
 {
-    const DEFAULT_NATIONALITY = 171;
+    const DEFAULT_NATIONALITY = 231;
     
     const DEFAULT_RACE = 99;
     

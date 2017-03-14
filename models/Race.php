@@ -18,6 +18,7 @@ use Yii;
  */
 class Race extends \yii\db\ActiveRecord
 {
+    const DEFAULT_RACE = 99;
     /**
      * @inheritdoc
      */

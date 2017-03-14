@@ -46,38 +46,6 @@ var btnCancel = $('<button></button>').html('<i class="fa fa-times"></i> Cancel'
     .on('click', function(){ $('#{$wizardId}').smartWizard('reset'); });
 JS;
 
-$jsPersonWizard['event'] = <<< JS
-$('#person-wizard').on('showStep', function(e, anchorObject, stepNumber, stepDirection, stepPosition) {
-    //alert('You are on step '+stepNumber+' now');
-    $('#{$form->id}').yiiActiveForm("resetForm");
-    if(stepPosition === 'first'){
-        $('#prev-btn').addClass('disabled');
-    }else if(stepPosition === 'final'){
-        $('#next-btn').addClass('disabled');
-    }else{
-        $('#prev-btn').removeClass('disabled');
-        $('#next-btn').removeClass('disabled');
-    }
-});
-
-$('#person-wizard').on('leaveStep', function(e, anchorObject, stepNumber, stepDirection) {
-    var elmForm = $('#{$wizardId}-form-step-' + stepNumber);
-    if(stepDirection === 'forward' && elmForm){
-        var inputs = elmForm.find('*[id]:visible');
-        data = $('#{$form->id}').data("yiiActiveForm");
-        $.each(data.attributes, function(i, item) {
-            this.status = 3;
-        });
-        $('#{$form->id}').yiiActiveForm("validate");
-        if (elmForm.find(".has-error").length) {
-            return false;
-        }
-
-    }
-    return true;
-
-});
-JS;
 
 $this->registerJs(implode("\n", $jsPersonWizard));
 $wizardItems = [];
@@ -110,5 +78,43 @@ echo Step::widget([
 <?php ActiveForm::end(); ?>
 
 
+<?php
 
+$jsWizardEvent['showStep'] = <<< JS
+$('#person-wizard').on('showStep', function(e, anchorObject, stepNumber, stepDirection, stepPosition) {
+    //alert('You are on step '+stepNumber+' now');
+    $('#{$form->id}').yiiActiveForm("resetForm");
+    if(stepPosition === 'first'){
+        $('#prev-btn').addClass('disabled');
+    }else if(stepPosition === 'final'){
+        $('#next-btn').addClass('disabled');
+    }else{
+        $('#prev-btn').removeClass('disabled');
+        $('#next-btn').removeClass('disabled');
+    }
+});
+JS;
+
+$jsWizardEvent['leaveStep'] = <<< JS
+$('#person-wizard').on('leaveStep', function(e, anchorObject, stepNumber, stepDirection) {
+    var elmForm = $('#{$wizardId}-form-step-' + stepNumber);
+    if(stepDirection === 'forward' && elmForm){
+        var inputs = elmForm.find('*[id]:visible');
+        data = $('#{$form->id}').data("yiiActiveForm");
+        $.each(data.attributes, function(i, item) {
+            this.status = 3;
+        });
+        $('#{$form->id}').yiiActiveForm("validate");
+        if (elmForm.find(".has-error").length) {
+            return false;
+        }
+
+    }
+    return true;
+
+});
+JS;
+
+$this->registerJs(implode("\n", $jsWizardEvent));
+?>
 

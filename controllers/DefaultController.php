@@ -35,6 +35,7 @@ use yii\rbac\DbManager;
 use andahrm\person\models\Nationality;
 use andahrm\person\models\Race;
 use andahrm\setting\models\LocalRegion;
+use andahrm\setting\models\Country;
 
 /**
  * DefaultController implements the CRUD actions for Person model.
@@ -46,10 +47,15 @@ class DefaultController extends Controller
      * @inheritdoc
      */
     public $races;
+    public $defaultRaceId;
     
     public $nationalities;
+    public $defaultNationalityId;
   
     public $localReligions;
+    
+    public $countries;
+    public $defaultCountryId;
     
     public $educationLevels;
     
@@ -221,6 +227,22 @@ class DefaultController extends Controller
                     'dataProvider' => $dataProvider,
         ]);
     }
+    
+    public function actionViewKp($id)
+    {
+        $this->layout = 'view';
+        
+        $models['person'] = $this->findModel($id);
+        $models['positionSalary'] = PersonPositionSalary::find()
+            ->andWhere(['user_id' => $id])
+            ->orderBy('adjust_date')
+            ->all();
+        $dataProvider = new \yii\data\ArrayDataProvider([
+            'allModels' => $models['positionSalary'],
+        ]);
+        
+        return $this->render('view-kp', ['models' => $models, 'dataProvider' => $dataProvider]);
+    }
 
     /**
      * Creates a new Person model.
@@ -248,7 +270,7 @@ class DefaultController extends Controller
         $models['people-mother'] = new PeopleMother();
         $models['people-spouse'] = new PeopleSpouse();
         $models['people-childs'] = [new PeopleChild()];
-        $models['educations'] = [new Education()];
+        $models['educations'] = [new Education(['country_id' => Country::DEFAULT_COUNTRY])];
         $models['position-salary'] = new PersonPositionSalary(['scenario' => 'new-person']);
         $models['leave'] = new LeaveAssign(); #madone
         $models['contract'] = new Contract();
@@ -563,12 +585,17 @@ class DefaultController extends Controller
     public function prepareData()
     {
         $this->races = Race::find()->all();
+        $this->defaultRaceId = Race::DEFAULT_RACE;
         
         $this->nationalities = Nationality::find()->all();
+        $this->defaultNationalityId = Nationality::DEFAULT_NATIONALITY;
         
         $this->localReligions = LocalRegion::find()->all();
         
         $this->educationLevels = EducationLevel::find()->all();
+        
+        $this->countries = Country::find()->all();
+        $this->defaultCountryId = Country::DEFAULT_COUNTRY;
     }
     
     // public function getStep($point='current')

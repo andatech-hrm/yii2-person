@@ -286,6 +286,7 @@ $modalOptions = [
                     [
                         'attribute' => 'addressText',
                         'contentOptions' => ['class' => 'green'],
+                        'format' => 'html',
                     ],
                     [
                         'attribute' => 'postcode',

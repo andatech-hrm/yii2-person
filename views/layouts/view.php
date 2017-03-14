@@ -98,7 +98,13 @@ JS;
                         'label' => Yii::t('andahrm/person', 'Prestige'),
                         'url' => ['view-prestige', 'id' => $request->get('id')],
                         'icon' => 'fa fa-trophy'
-                    ];    
+                    ];         
+                    
+                $menuItems[] =  [
+                        'label' => Yii::t('andahrm/person', 'Kp'),
+                        'url' => ['view-kp', 'id' => $request->get('id')],
+                        'icon' => 'fa fa-list-alt'
+                    ];
                     
             // echo Menu::widget([
             //     'options' => ['class' => 'nav nav-tabs bar_tabs'],

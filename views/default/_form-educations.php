@@ -69,8 +69,8 @@ use andahrm\setting\models\WidgetSettings;
                         
                         <?= $form->field($model, "[{$index}]province", ['options' => ['class' => 'form-group col-sm-4']])->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($model, "[{$index}]country_id", ['options' => ['class' => 'form-group col-sm-4']])->widget(Select2::classname(), WidgetSettings::Select2([
-                            'data' => ArrayHelper::map($this->context->nationalities, 'id', 'title')
+                        <?= $form->field($model, "[{$index}]country_id", ['options' => ['class' => 'form-group col-sm-4 country']])->widget(Select2::classname(), WidgetSettings::Select2([
+                            'data' => ArrayHelper::map($this->context->countries, 'id', 'title')
                         ])) ?>
 
                     </div><!-- end:row -->
@@ -88,6 +88,7 @@ $this::POS_HEAD);
 
 $js[] = <<< JS
 jQuery(".educations_dynamicform_wrapper").on('afterInsert', function(e, item) {
+    $(item).find('.country select').val({$this->context->defaultCountryId}).trigger("change");
     jQuery(".educations_dynamicform_wrapper .panel-title-educations").each(function(index) {
         jQuery(this).html("Education: " + (index + 1))
     });

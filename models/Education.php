@@ -8,7 +8,7 @@ use andahrm\setting\models\Helper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use kuakling\datepicker\behaviors\YearBuddhistBehavior;
-use andahrm\person\models\Nationality as Country;
+use andahrm\setting\models\Country;
 
 /**
  * This is the model class for table "person_education".
@@ -32,6 +32,16 @@ use andahrm\person\models\Nationality as Country;
  */
 class Education extends ActiveRecord
 {
+    const DEFAULT_COUNTRY = 256;
+    
+    public function init()
+    {
+        parent::init();
+        
+        //if($this->isNewRecord) {
+            $this->country_id = self::DEFAULT_COUNTRY;
+        //}
+    }
     /**
      * @inheritdoc
      */

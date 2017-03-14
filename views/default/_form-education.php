@@ -14,8 +14,11 @@ use andahrm\setting\models\WidgetSettings;
 <div class="row">
     <?= $form->field($model, "institution", ['options' => ['class' => 'form-group col-sm-4']])->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, "province", ['options' => ['class' => 'form-group col-sm-4']])->textInput(['maxlength' => true]) ?>
+    <?php
+    // if($model->isNewRecord) {$model->country_id = $this->context->defaultCountryId;}
+    ?>
     <?= $form->field($model, "country_id", ['options' => ['class' => 'form-group col-sm-4']])->widget(Select2::classname(), WidgetSettings::Select2([
-        'data' => ArrayHelper::map($this->context->nationalities, 'id', 'title')
+        'data' => ArrayHelper::map($this->context->countries, 'id', 'title')
     ])) ?>
 
 </div><!-- end:row -->

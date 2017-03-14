@@ -9,7 +9,6 @@ use Yii;
  *
  * @property integer $id
  * @property string $title
- * @property string $country
  * @property integer $created_at
  * @property integer $created_by
  * @property integer $updated_at
@@ -19,6 +18,7 @@ use Yii;
  */
 class Nationality extends \yii\db\ActiveRecord
 {
+    const DEFAULT_NATIONALITY = 231;
     /**
      * @inheritdoc
      */
@@ -33,9 +33,9 @@ class Nationality extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['country'], 'required'],
+            [['title'], 'required'],
             [['created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['title', 'country'], 'string', 'max' => 100],
+            [['title'], 'string', 'max' => 100],
         ];
     }
 
@@ -47,7 +47,6 @@ class Nationality extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('andahrm/person', 'ID'),
             'title' => Yii::t('andahrm/person', 'Title'),
-            'country' => Yii::t('andahrm/person', 'Country'),
             'created_at' => Yii::t('andahrm', 'Created At'),
             'created_by' => Yii::t('andahrm', 'Created By'),
             'updated_at' => Yii::t('andahrm', 'Updated At'),

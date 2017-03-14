@@ -100,6 +100,9 @@ jQuery(".dynamicform_wrapper").on('afterInsert', function(e, item) {
         $(this).parent().kvDatepicker(eval($(this).attr('data-krajee-kvdatepicker')));
     });
     
+    $(item).find('.nationality select').val({$this->context->defaultNationalityId}).trigger("change");
+    $(item).find('.race select').val({$this->context->defaultRaceId}).trigger("change");
+    
     jQuery(".dynamicform_wrapper .panel-title-address").each(function(index) {
         jQuery(this).html("Child: " + (index + 1))
     });
