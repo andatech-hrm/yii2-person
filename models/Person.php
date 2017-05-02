@@ -98,7 +98,7 @@ class Person extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'phone', 'birthday'], 'required'],
+            [['user_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'tel', 'gender', 'birthday'], 'required'],
             [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['gender'], 'string'],
             [['citizen_id'], 'string', 'max' => 13],
@@ -106,7 +106,7 @@ class Person extends ActiveRecord
             [['tel', 'phone'], 'string', 'max' => 50],
             [['citizen_id'], 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Yii::$app->user->identityClass, 'targetAttribute' => ['user_id' => 'id']],
-            [['full_address_contact'], 'safe']
+            [['full_address_contact', 'phone'], 'safe']
         ];
     }
 

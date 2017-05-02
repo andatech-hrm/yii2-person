@@ -70,7 +70,7 @@ class Detail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id'], 'required'],
+            [['user_id', 'nationality_id', 'race_id', 'religion_id'], 'required'],
             [['user_id', 'nationality_id', 'race_id', 'religion_id', 'married_status'], 'integer'],
             [['blood_group'], 'string', 'max' => 2],
             [['nationality_id'], 'exist', 'skipOnError' => true, 'targetClass' => Nationality::className(), 'targetAttribute' => ['nationality_id' => 'id']],

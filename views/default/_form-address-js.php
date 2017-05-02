@@ -5,30 +5,32 @@ use yii\helpers\Url;
 $js[] = <<< JS
 $(document).on('change', '.address-pane .local-region input:radio', function(e){
     var input = $(this);
-    var tabPane = input.closest('div.address-pane');
-    var inputProvince = tabPane.find('div.addr-province select');
-    var inputAmphur = tabPane.find('div.addr-amphur select');
-    var inputTumbol = tabPane.find('div.addr-tumbol select');
-    var oldProvince = input.closest('.address-pane').find('input[name="oldProvince"]');
-    var selected = '';
-    inputProvince.text("");
-    inputAmphur.text("");
-    inputTumbol.text("");
-    $.ajax({
-        url: input.closest('.local-region').data('province-json'),
-        data: {'region_id': input.val() },
-        dataType: 'json',
-        success: function(data){
-            $.each(data, function( index, value ) {
-                selected = '';
-                if (oldProvince.val() == index) {
-                    selected = ' selected';
-                }
-			    inputProvince.append("<option value='" + index + "'" + selected + "> " + value + "</option>");
-			});
-            inputProvince.trigger('change');
-        }
-    });
+    if(input.prop('checked') == true){
+        var tabPane = input.closest('div.address-pane');
+        var inputProvince = tabPane.find('div.addr-province select');
+        var inputAmphur = tabPane.find('div.addr-amphur select');
+        var inputTumbol = tabPane.find('div.addr-tumbol select');
+        var oldProvince = input.closest('.address-pane').find('input[name="oldProvince"]');
+        var selected = '';
+        inputProvince.text("");
+        inputAmphur.text("");
+        inputTumbol.text("");
+        $.ajax({
+            url: input.closest('.local-region').data('province-json'),
+            data: {'region_id': input.val() },
+            dataType: 'json',
+            success: function(data){
+                $.each(data, function( index, value ) {
+                    selected = '';
+                    if (oldProvince.val() == index) {
+                        selected = ' selected';
+                    }
+    			    inputProvince.append("<option value='" + index + "'" + selected + "> " + value + "</option>");
+    			});
+                inputProvince.trigger('change');
+            }
+        });
+    }
 });
 JS;
 
@@ -98,17 +100,22 @@ JS;
 $js[] = <<< JS
 $(document).on('click', '.btn-copy', function(e){
     e.preventDefault();
-    var tabThis = $(this).closest('.tab-pane');
+    var tabThis = $(this).closest('.panel');
     var inputsThis = tabThis.find(':input').not('.btn-copy');
-    var tabFrom = $('#' + $(this).data('from'));
+    var tabFrom = $('#address-' + $(this).data('from'));
     var inputsFrom = tabFrom.find(':input').not('.btn-copy');
     $.each(inputsThis, function(k, item){
         var attr = $(this).attr('data-name');
         if (typeof attr !== typeof undefined && attr !== false) {
-        var name = $(this).data('name');
-        var value = tabFrom.find(':input[data-name="' + name + '"]').val();
-        $(this).val(value);
-         console.log(tabFrom.find(':input[data-name="' + name + '"]').val());
+            var name = $(this).data('name');
+            var inputFrom = tabFrom.find(':input[data-name="' + name + '"]');
+            if(inputFrom.attr('type') == 'radio') {
+                $(this).prop('checked', inputFrom.prop('checked'));
+                $(this).trigger('change');
+            }else{
+                $(this).val(inputFrom.val());
+            }
+            console.log(tabFrom.find(':input[data-name="' + name + '"]').val());
         }
     });
 });

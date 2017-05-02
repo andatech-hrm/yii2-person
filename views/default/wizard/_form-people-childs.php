@@ -13,6 +13,10 @@ use andahrm\setting\models\WidgetSettings;
 
 
 $this->context->prepareData();
+$labels = [
+    'add-child' => 'เพิ่มบุตร',
+    'num-child' => 'ลำดับที่'
+]
 ?>
 
 <div class="childs-form">
@@ -39,14 +43,14 @@ $this->context->prepareData();
         ],
     ]); ?>
     
-    <button type="button" class="pull-right add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> Add child</button>
+    <button type="button" class="pull-right add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> <?= $labels['add-child']; ?></button>
     <div class="clearfix"></div>
         <div class="container-items">
             <?php foreach ($models as $index => $model): ?>
             <div class="item panel panel-default">
                 <div class="panel-body"><button type="button" class="pull-right remove-item btn btn-danger btn-xs"><i class="fa fa-minus"></i></button>
                     <h4 class="page-header green panel-title-address" style="margin-top: 0">
-                        Child: <?= ($index + 1) ?>
+                        <?= $labels['num-child']; ?>: <?= ($index + 1) ?>
                         
                     </h4>
                     <div class="clearfix"></div>
@@ -102,13 +106,13 @@ jQuery(".dynamicform_wrapper").on('afterInsert', function(e, item) {
     $(item).find('.race select').val({$this->context->defaultRaceId}).trigger("change");
     
     jQuery(".dynamicform_wrapper .panel-title-address").each(function(index) {
-        jQuery(this).html("Child: " + (index + 1))
+        jQuery(this).html("{$labels['num-child']}: " + (index + 1))
     });
 });
 
 jQuery(".dynamicform_wrapper").on("afterDelete", function(e) {
     jQuery(".dynamicform_wrapper .panel-title-address").each(function(index) {
-        jQuery(this).html("Child: " + (index + 1))
+        jQuery(this).html("{$labels['num-child']}: " + (index + 1))
     });
 });
 JS;

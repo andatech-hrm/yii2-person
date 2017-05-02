@@ -111,7 +111,6 @@ $columns = [
   'title'=>'title',
   'salary'=>'salary:decimal',
   'step'=>'step',
-  'level'=>'level',
 ];
 
 $gridColumns = [
@@ -121,7 +120,7 @@ $gridColumns = [
     $columns['title'],
     $columns['position_id'],   
     //$columns['status'],
-    $columns['level'],
+    $columns['step'],
     $columns['salary'],
     $columns['edoc_id'],   
 ];
@@ -147,7 +146,7 @@ $fullExportMenu = ExportMenu::widget([
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
         'id' => 'data-grid',
         'pjax'=>true,
 //        'resizableColumns'=>true,
@@ -180,11 +179,6 @@ $fullExportMenu = ExportMenu::widget([
                 ]) . ' '. 
                 Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$user_id], [
                     'class' => 'btn btn-success btn-flat',
-                    'data-pjax' => 0
-                ]) . ' '.
-                Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print'), ['print-position','id'=>$user_id], [
-                    'class' => 'btn btn-default btn-flat',
-                    'target' => '_blank',
                     'data-pjax' => 0
                 ]) . ' '.
                 ' ',

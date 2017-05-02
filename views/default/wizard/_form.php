@@ -11,7 +11,7 @@ $modals['edoc'] = Modal::begin([
     'size' => Modal::SIZE_LARGE
 ]);
 // echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
-echo Yii::$app->runAction('/edoc/default/create-ajax', ['formAction' => Url::to(['/edoc/default/create-ajax'])]);
+// echo Yii::$app->runAction('/edoc/default/create-ajax', ['formAction' => Url::to(['/edoc/default/create-ajax'])]);
 // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
             
 Modal::end();
@@ -50,9 +50,9 @@ JS;
 $this->registerJs(implode("\n", $jsPersonWizard));
 $wizardItems = [];
 foreach ($this->context->formSteps as $key => $step) {
-    $wizardItems[$key] = [
+    $wizardItems[$step['name']] = [
        'icon' => $step['icon'],
-        'label' => 'Step - '.$key.' <br /><small>'.$step['desc'].'</small>',
+        'label' => 'Step - '.$step['name'].' <br /><small>'.$step['desc'].'</small>',
         'content' => $this->render('_step-'.$key, ['models' => $models, 'modals' => $modals, 'form' => $form]) 
     ];
 }

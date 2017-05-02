@@ -5,7 +5,7 @@
 
 <?php echo $this->render('../_form-person', ['model' => $models['person'], 'modelUser' => $models['user'], 'form' => $form]); ?>
 
-
+<?php /*
 <h2 class="page-header dark"><?= Yii::t('andahrm/person', 'Photo'); ?></span></h2>
 <div class="row">
 <?php 
@@ -22,15 +22,31 @@ if($models['person']->isNewRecord) {
 }
 ?>
 </div>
+*/ ?>
 
 <!--<h4 class="page-header dark">Detail</h4>-->
 <hr />
 <?php echo $this->render('../_form-detail', ['model' => $models['detail'], 'modelSpouse' => $models['people-spouse'], 'form' => $form]);    ?>
 
 <h2 class="page-header dark"><?= Yii::t('andahrm/person', 'Address'); ?></span></h2>
+<?php
+    $btnCopyAddr = [
+        'contact' => '<button class="btn btn-default btn-xs btn-copy" data-from="contact">'.Yii::t('andahrm/person', 'Contact').'</button>',
+        'register' => '<button class="btn btn-default btn-xs btn-copy" data-from="register">'.Yii::t('andahrm/person', 'Register').'</button>',
+        'birth-place' => '<button class="btn btn-default btn-xs btn-copy" data-from="birth-place">'.Yii::t('andahrm/person', 'Birth Place').'</button>',
+    ];
+    $btnCopyLabel = 'คัดลอกจาก: ';
+?>
 <!-- Begin Address Contact -->
-<div class="panel panel-default">
+<div class="panel panel-default" id="address-contact">
     <div class="panel-body">
+        <div class="pull-right">
+            <?= $btnCopyLabel; ?>
+            <div class="btn-group" role="group" aria-label="...">
+            <?= $btnCopyAddr['register']; ?>
+            <?= $btnCopyAddr['birth-place']; ?>
+            </div>
+        </div>
         <h4 class="page-header green" style="margin-top: 0"><?= Yii::t('andahrm/person', 'Contact'); ?></h4>
         <?php echo $this->render('../_form-address', ['model' => $models['address-contact'], 'form' => $form]); ?>
     </div>
@@ -38,8 +54,15 @@ if($models['person']->isNewRecord) {
 <!-- End Address Contact -->
 
 <!-- Begin Address Register -->
-<div class="panel panel-default">
+<div class="panel panel-default" id="address-register">
     <div class="panel-body">
+        <div class="pull-right">
+            <?= $btnCopyLabel; ?>
+            <div class="btn-group" role="group" aria-label="...">
+            <?= $btnCopyAddr['contact']; ?>
+            <?= $btnCopyAddr['birth-place']; ?>
+            </div>
+        </div>
         <h4 class="page-header green" style="margin-top: 0"><?= Yii::t('andahrm/person', 'Register'); ?></h4>
         <?php echo $this->render('../_form-address', ['model' => $models['address-register'], 'form' => $form]); ?>
     </div>
@@ -47,8 +70,15 @@ if($models['person']->isNewRecord) {
 <!-- End Address Register -->
 
 <!-- Begin Address Birth Place -->
-<div class="panel panel-default">
+<div class="panel panel-default" id="address-birth-place">
     <div class="panel-body">
+        <div class="pull-right">
+            <?= $btnCopyLabel; ?>
+            <div class="btn-group" role="group" aria-label="...">
+            <?= $btnCopyAddr['contact']; ?>
+            <?= $btnCopyAddr['register']; ?>
+            </div>
+        </div>
         <h4 class="page-header green" style="margin-top: 0"><?= Yii::t('andahrm/person', 'Birth Place'); ?></h4>
         <?php echo $this->render('../_form-address', ['model' => $models['address-birth-place'], 'form' => $form]); ?>
     </div>

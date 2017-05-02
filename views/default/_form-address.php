@@ -34,7 +34,22 @@ use kuakling\datepicker\DatePicker;
 ?>
     </div>
     
-    <?= $form->field($model, 'localRegion')->inline()->radioList(ArrayHelper::map(LocalRegion::find()->all(), 'id', 'name'), ['data-province-json' => Url::to(['/setting/local-province/json']), 'class' => 'local-region']) ?>
+    <?= $form->field($model, 'localRegion')->inline()->radioList(
+        ArrayHelper::map(LocalRegion::find()->all(), 'id', 'name'), 
+        [
+            // 'itemOptions' => ['data-name' => 'local-region'],
+            
+            'item' => function($index, $label, $name, $checked, $value) {
+                return Html::radio($name, $checked, [
+                    'value' => $value,
+                    'label' => Html::encode($label),
+                    'data-name' => 'local-region-'.$index,
+                ]);
+            },
+            'data-province-json' => Url::to(['/setting/local-province/json']), 
+            'class' => 'local-region'
+        ]
+    ) ?>
     
     <div class="row">
 
@@ -56,8 +71,12 @@ use kuakling\datepicker\DatePicker;
 
 <?= $form->field($model, 'fax', ['options' => ['class' => 'form-group col-sm-3'], 'inputOptions' => ['data-name' => 'fax']])->textInput() ?>
 
-<?= $form->field($model, 'move_in_date', ['options' => ['class' => 'form-group col-sm-3'], 'inputOptions' => ['data-name' => 'move_in_date']])->widget(DatePicker::classname(), WidgetSettings::DatePicker()) ?>
+<?= $form->field($model, 'move_in_date', ['options' => ['class' => 'form-group col-sm-3']])->widget(DatePicker::classname(), WidgetSettings::DatePicker([
+    'options' => ['data-name' => 'move_in_date']
+])) ?>
 
-<?= $form->field($model, 'move_out_date', ['options' => ['class' => 'form-group col-sm-3'], 'inputOptions' => ['data-name' => 'move_out_date']])->widget(DatePicker::classname(), WidgetSettings::DatePicker()) ?>
+<?= $form->field($model, 'move_out_date', ['options' => ['class' => 'form-group col-sm-3']])->widget(DatePicker::classname(), WidgetSettings::DatePicker([
+    'options' => ['data-name' => 'move_out_date']
+])) ?>
     </div>
 </div>

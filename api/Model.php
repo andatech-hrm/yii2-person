@@ -25,6 +25,9 @@ class Model extends \yii\base\Object
     
     public function getFullname($lang = 'th')
     {
+        if($this->_model == null){
+            return Yii::$app->user->identity->username;
+        }
         switch ($lang) {
             case 'en' : $fullname = $this->_model->firstname_en.' '.$this->_model->lastname_en;
                 break;
@@ -60,6 +63,9 @@ class Model extends \yii\base\Object
     
     public function getPhotoLast($original=false)
     {
+        if($this->_model == null){
+            return 'no-pic.jpg';
+        }
         $photoLast = \andahrm\person\models\Photo::find()
             ->where(['user_id' => $this->_model->user_id])
             ->orderBy(['year' => SORT_DESC])
@@ -78,8 +84,13 @@ class Model extends \yii\base\Object
     
     public function getRoles()
     {
+        if($this->_model == null){
+            $userId = Yii::$app->user->id;
+        }else{
+            $userId = $this->_model->user_id;
+        }
         $roles = [];
-        foreach (Yii::$app->authManager->getRolesByUser($this->_model->user_id) as $key => $role) {
+        foreach (Yii::$app->authManager->getRolesByUser($userId) as $key => $role) {
             $roles[$key] = ucfirst($role->description);
         }
         

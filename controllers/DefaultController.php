@@ -4,6 +4,9 @@ namespace andahrm\person\controllers;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\data\ArrayDataProvider;
+use kartik\mpdf\Pdf;
+
 use andahrm\person\models\Person;
 use andahrm\person\models\Photo;
 use andahrm\person\models\PersonSearch;
@@ -21,7 +24,9 @@ use andahrm\person\models\EducationModel;
 use andahrm\person\models\EducationLevel;
 use andahrm\person\models\LeaveAssign; #mad
 use andahrm\positionSalary\models\PersonPositionSalary;
+use andahrm\positionSalary\models\PersonPositionSalaryOld;
 use andahrm\person\models\Contract;
+use andahrm\person\models\Servant;
 
 use andahrm\edoc\models\Edoc;
 
@@ -83,9 +88,9 @@ class DefaultController extends Controller
             1 => ['name' =>'1', 'desc' => Yii::t('andahrm/person', 'Information'), 'icon' => 'fa fa-info-circle', 'models' => ['Person', 'User']],
             2 => ['name' =>'2', 'desc' => Yii::t('andahrm/person', 'Educations'), 'icon' => 'fa fa-graduation-cap', 'models' => ['Detail', 'AddressContact', 'AddressRegister', 'AddressBirthPlace']],
             3 => ['name' =>'3', 'desc' => Yii::t('andahrm/person', 'Family'), 'icon' => 'fa fa-user-secret', 'models' => ['PeopleFather', 'PeopleMother']],
-            4 => ['name' =>'4', 'desc' => Yii::t('andahrm/person', 'Position'), 'icon' => 'fa fa-ticket', 'models' => ['PeopleChild']],
-            5 => ['name' =>'5', 'desc' => Yii::t('andahrm/person', 'Leave'), 'icon' => 'fa fa-bed', 'models' => ['PeopleChild']],
-            6 => ['name' =>'6', 'desc' => Yii::t('andahrm/person', 'User Account'), 'icon' => 'fa fa-key', 'models' => ['PeopleChild']],
+            //4 => ['name' =>'4', 'desc' => Yii::t('andahrm/person', 'Position'), 'icon' => 'fa fa-ticket', 'models' => ['PeopleChild']],
+            5 => ['name' =>'4', 'desc' => Yii::t('andahrm/person', 'Leave and Person Type'), 'icon' => 'fa fa-bed', 'models' => ['PeopleChild']],
+            6 => ['name' =>'5', 'desc' => Yii::t('andahrm/person', 'User Account'), 'icon' => 'fa fa-key', 'models' => ['PeopleChild']],
         ];
     
         if (!parent::beforeAction($action)) {
@@ -196,21 +201,202 @@ class DefaultController extends Controller
         return $this->render('view', ['models' => $models]);
     }
     
+    
+    
+    
     public function actionViewPosition($id)
     {
         $this->layout = 'view';
         
-        $searchModel = new \andahrm\positionSalary\models\PersonPositionSalarySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->where(['user_id'=>$id]);
-        $dataProvider->sort->defaultOrder = ['adjust_date'=> SORT_ASC];
+        // $searchModel = new \andahrm\positionSalary\models\PersonPositionSalarySearch();
+        // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        // $dataProvider->query->where(['user_id'=>$id]);
+        // $dataProvider->sort->defaultOrder = ['adjust_date'=> SORT_ASC];
+        
+        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
+            ->orderBy(['adjust_date'=> SORT_ASC])
+            ->all();
+        $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
+            ->orderBy(['adjust_date'=> SORT_ASC])
+            ->all();
+        
+        $data = ArrayHelper::merge($modelPositionOld,$modelPosition);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => false,
+            'sort' => [
+                'attributes' => ['adjust_date' => SORT_ASC],
+            ],
+        ]);
 
         return $this->render('view-position', [
-            'searchModel' => $searchModel,
+            //'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'user_id' => $id
         ]);
         
         // echo Yii::$app->runAction('profile/position/index');
+    }
+    public function actionPrintPosition($id)
+    {
+        $this->layout = 'view';
+        
+        $modelPerson =$this->findModel($id);
+        
+        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
+            ->orderBy(['adjust_date'=> SORT_ASC])
+            ->all();
+        $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
+            ->orderBy(['adjust_date'=> SORT_ASC])
+            ->all();
+        
+        $data = ArrayHelper::merge($modelPositionOld,$modelPosition);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => false,
+            'sort' => [
+                'attributes' => ['adjust_date' => SORT_ASC],
+            ],
+        ]);
+
+        $content = $this->renderPartial('print-position', [
+            'dataProvider' => $dataProvider,
+            'modelPerson' => $modelPerson,
+            'user_id' => $id
+        ]);
+        
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            // your html content input
+            'content' => $content,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            // 'cssFile' => '@frontend/web/css/pdf.css',
+            // any css to be embedded if required
+            /*'cssInline' => '.table-print {width: 100%; border-spacing: 0px;}
+                .table-print th, .table-print td{border-right: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
+                .table-print thead th,{border-top:#000 1px solid;border-bottom:#000 1px solid;}
+                .table-print th:nth-child(1), .table-print td:nth-child(1){border-left:#000 1px solid;}',*/
+            'cssInline' => '
+                .table-print{width: 100%; border-spacing: 0px;border-bottom: #000 1px solid;}
+                .table-print td, .table-print th{border-left: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
+                .table-print .cell-right{border-right: #000 1px solid;}
+                .header-labels th{border-top:#000 1px solid; border-bottom:#000 1px solid;}
+            ',
+            // set mPDF properties on the fly
+            'options' => ['title' => $this->getView()->title.': '.$modelPerson->fullname],
+            // call mPDF methods on the fly
+            'methods' => [
+                'SetHeader'=>['{PAGENO} / {nb}'],
+                'SetFooter'=>[Yii::$app->user->identity->username.' '.Yii::$app->formatter->asDateTime('NOW')],
+            ]
+        ]);
+        
+        return $pdf->render();
+        
+    }
+    
+    public function actionCreatePosition($formAction=null)
+    {
+        $model = new PersonPositionSalary();
+        
+        if($model->load(Yii::$app->request->post())){
+            $post = Yii::$app->request->post();
+           // print_r($post);
+            //exit();
+
+            if(!$model->getExists() && $model->save()){
+                 Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$model->user_id]);
+            }elseif($model->getExists()){
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'warning',
+                        'msg' => Yii::t('andahrm/person', 'Cannot save! but have data.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$model->user_id]);
+            }else{
+                 print_r($model->getErrors());
+                 exit();
+            }
+            
+        }
+
+
+        return $this->renderPartial('position/create-position', [
+            'model' => $model,
+            'formAction' => $formAction
+        ]);
+    }
+    
+    public function actionCreatePositionOld($formAction=null,$id)
+    {
+        $model = new PersonPositionSalaryOld();
+        $model->user_id = $id;
+        $model->status  = 1;
+        if($model->load(Yii::$app->request->post())){
+            $post = Yii::$app->request->post();
+           // print_r($post);
+            //exit();
+            $model->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
+                'code'=>$model->position_old_id
+                ]);
+            
+            
+            if(!$model->getExists() && $model->save()){
+                 Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$model->user_id]);
+            }elseif($model->getExists()){
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'warning',
+                        'msg' => Yii::t('andahrm/person', 'Cannot save! but have data.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$model->user_id]);
+            }else{
+                 print_r($model->getErrors());
+                 exit();
+            }
+            
+        }
+    
+        //return $this->renderPartial('position/create-position-old', [
+        return $this->render('position/create-position-old', [
+            'model' => $model,
+            'formAction' => $formAction
+        ]);
+    }
+    
+    public function chkDb($tb,$find,$id='id'){
+        $key = array_keys($find);
+        if($find){
+            if($model = $tb::find()->where($find)->one()){
+                return $model->$id;
+            }elseif($model = $tb::find()->where([$id=>$find[$key[0]]])->one()){
+                return $model->$id;
+            }else{
+                $model = new $tb;
+                $model->$key[0] = $find[$key[0]];
+                if($model->save()){
+                     return $model->$id;
+                }else{
+                //      print_r($model->getErrors());
+                // exit();
+                }
+            }
+        }
     }
     
     public function actionViewDevelopment($id)
@@ -261,7 +447,7 @@ class DefaultController extends Controller
         $models['user']->scenario = 'create';
         
         $models['person'] = new Person();
-        $models['photo'] = new Photo(['scenario' => 'insert']);
+        // $models['photo'] = new Photo(['scenario' => 'insert']);
         $models['detail'] = new Detail();
         $models['address-contact'] = new AddressContact();
         $models['address-birth-place'] = new AddressBirthPlace();
@@ -271,12 +457,18 @@ class DefaultController extends Controller
         $models['people-spouse'] = new PeopleSpouse();
         $models['people-childs'] = [new PeopleChild()];
         $models['educations'] = [new Education(['country_id' => Country::DEFAULT_COUNTRY])];
-        $models['position-salary'] = new PersonPositionSalary(['scenario' => 'new-person']);
+        // $models['position-salary'] = new PersonPositionSalary(['scenario' => 'new-person']);
         $models['leave'] = new LeaveAssign(); #madone
-        $models['contract'] = new Contract();
+        // $models['contract'] = new Contract();
+        $models['servant'] = new Servant();
         
         if($post){
             $errorMassages = [];
+            if(isset($post['personType']) && $post['personType'] == 1){
+                unset($models['servant']);
+            }
+            // print_r($post);
+            // exit();
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $models['user']->load($post);
@@ -287,11 +479,11 @@ class DefaultController extends Controller
                 
                 $skipModel = ['user', 'people-childs', 'educations'];
                 if ($models['user']->save()){
-                    $contractFN = $models['contract']->formName();
-                    $psFN = $models['position-salary']->formName();
-                    $models['position-salary']->adjust_date = Yii::$app->formatter->asDate(date('Y-m-d'), 'php:d/m/Y');
-                    $models['contract']->position_id = $post[$psFN]['position_id'];
-                    $models['contract']->edoc_id = $post[$psFN]['edoc_id'];
+                    // $contractFN = $models['contract']->formName();
+                    // $psFN = $models['position-salary']->formName();
+                    // $models['position-salary']->adjust_date = Yii::$app->formatter->asDate(date('Y-m-d'), 'php:d/m/Y');
+                    // $models['contract']->position_id = $post[$psFN]['position_id'];
+                    // $models['contract']->edoc_id = $post[$psFN]['edoc_id'];
                     foreach($models as $key => $model) {
                         // if($key !== 'people-childs' && $key !== 'user'){
                         if(!in_array($key, $skipModel)){
@@ -341,7 +533,8 @@ class DefaultController extends Controller
                 if(count($errorMassages) > 0){
                     $msg = '<ul>';
                         foreach($errorMassages as $key => $fields){
-                            $msg .= '<li>'.implode("<br />", $fields).'</li>';
+                            // $msg .= '<li>'.implode("<br />", $fields).'</li>';
+                            $msg .= '<li>'.json_encode($fields).'</li>';
                         }
                     $msg .= '</ul>';
                     throw new ErrorException($msg);
