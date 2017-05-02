@@ -1,10 +1,13 @@
 <?php
 use yii\bootstrap\Html;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use dmstr\widgets\Menu;
 use andahrm\person\models\Person;
 use andahrm\person\models\PersonSearch;
+use andahrm\positionSalary\models\PersonPositionSalary;
+use andahrm\positionSalary\models\PersonPositionSalaryOld;
 
 use andahrm\person\PersonApi;
 ?>
@@ -71,6 +74,30 @@ JS;
 
         </div>
         <div class="col-md-9 col-sm-9 col-xs-12">
+<?php
+
+$modelPosition = PersonPositionSalary::find()->where(['user_id' => Yii::$app->request->get('id')])
+    ->orderBy(['adjust_date'=> SORT_ASC])
+    ->all();
+$modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => Yii::$app->request->get('id')])
+    ->orderBy(['adjust_date'=> SORT_ASC])
+    ->all();
+        
+$data = ArrayHelper::merge($modelPositionOld,$modelPosition);
+?>
+<?php
+if(count($data) === 0) : ?>
+<div class="alert alert-warning" role="alert">
+    <?= $person->fullname; ?> ยังไม่มีประวัติการทำงาน
+    <div class="pull-right">
+        <?= Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position New'), ['create-position','id'=>$person->getModel()->user_id], ['class' => 'btn btn-warning btn-xs',]); ?>
+        <?= Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$person->getModel()->user_id], ['class' => 'btn btn-warning btn-xs',]); ?>
+        <!--<a href="#" class="alert-link">...</a>-->
+    </div>
+  
+</div>
+<?php endif ?>
+
             
             <div class="" role="tabpanel" data-example-id="togglable-tabs">
             <?php
@@ -100,11 +127,11 @@ JS;
                         'icon' => 'fa fa-trophy'
                     ];         
                     
-                $menuItems[] =  [
-                        'label' => Yii::t('andahrm/person', 'Kp'),
-                        'url' => ['view-kp', 'id' => $request->get('id')],
-                        'icon' => 'fa fa-list-alt'
-                    ];
+                // $menuItems[] =  [
+                //         'label' => Yii::t('andahrm/person', 'Kp'),
+                //         'url' => ['view-kp', 'id' => $request->get('id')],
+                //         'icon' => 'fa fa-list-alt'
+                //     ];
                     
             // echo Menu::widget([
             //     'options' => ['class' => 'nav nav-tabs bar_tabs'],

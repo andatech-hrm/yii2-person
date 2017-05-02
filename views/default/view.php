@@ -39,6 +39,7 @@ $modalOptions = [
 
 // echo Yii::$app->formatter->asDate(date('Y-m-d'), 'php:d/m/Y');
 ?>
+
 <div class="profile-default-index">
     <div class="row">
         <div class="col-sm-6 animated flipInY">
