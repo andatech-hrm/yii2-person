@@ -64,7 +64,7 @@ class Model extends \yii\base\Object
     public function getPhotoLast($original=false)
     {
         if($this->_model == null){
-            return 'no-pic.jpg';
+            return '/uploads/no-pic.jpg';
         }
         $photoLast = \andahrm\person\models\Photo::find()
             ->where(['user_id' => $this->_model->user_id])

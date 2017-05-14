@@ -72,7 +72,7 @@ class Address extends ActiveRecord
     {
         return [
             [['tambol_id', 'amphur_id', 'province_id', 'postcode'], 'integer'],
-            [['move_in_date'], 'required'],
+            // [['move_in_date'], 'required'],
             [['tambol_id', 'amphur_id', 'province_id', 'postcode', 'move_in_date', 'move_out_date'], 'safe'],
             [['sub_road', 'road'], 'string', 'max' => 50],
             [['number_registration'], 'string', 'max' => 20],
