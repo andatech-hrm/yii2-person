@@ -10,12 +10,17 @@ use yii\bootstrap\Modal;
 use kuakling\datepicker\DatePicker;
 use kartik\widgets\FileInput;
 use kartik\widgets\Typeahead;
-
+use yii\helpers\Json;
 use kartik\widgets\Select2;
+
 use andahrm\setting\models\WidgetSettings;
 use andahrm\edoc\models\Edoc;
-use yii\helpers\Json;
+use andahrm\structure\models\Position;
 
+
+
+$this->title = Yii::t('andahrm/person', 'Create Position');
+$this->params['breadcrumbs'][] = $this->title;
 /* @var $this yii\web\View */
 /* @var $model andahrm\positionSalary\models\PersonPostionSalary */
 /* @var $form yii\widgets\ActiveForm */
@@ -47,31 +52,43 @@ Modal::end();
   
   $form = ActiveForm::begin($formOptions); ?>
 
-
-
-
-         <?php echo $form->field($model,'title',[
-            'horizontalCssClasses' => [
-                    'wrapper' => 'col-sm-6',
-                ]
-        ])->textInput();?>
- 
+<div class="x_panel tile">
+    <div class="x_title">
+        <h2><?= $this->title; ?></h2>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+         <?php echo $form->field($model,'user_id')->hiddenInput()->label(false)->hint(false)->error(false);?>
 
         <?php echo $form->field($model,'adjust_date')->widget(DatePicker::classname(), [              
           'options' => [
             'daysOfWeekDisabled' => [0, 6],
           ]
         ]);?>
+
+         <?php echo $form->field($model,'title')->textInput();?>
+ 
+
+        
        
-       <?php echo $form->field($model,'position_id')->widget(DatePicker::classname(), [              
-          'options' => [
-            'daysOfWeekDisabled' => [0, 6],
-          ]
-        ]);?>
-
+       
+        <?php echo $form->field($model, "position_id")
+            ->widget(Select2::className(), [
+                'data' => Position::getListTitle(),
+                'options' => [
+                    'placeholder' => Yii::t('andahrm','Select'), 
+                   
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+        ?>
  
  
 
+         <?php echo $form->field($model,'level')->textInput();?>
+         <?php echo $form->field($model,'salary')->textInput();?>
 
         
 <?php 
@@ -101,11 +118,16 @@ echo $form->field($model, "edoc_id", [
 
 <div class="form-group">
      <div class="col-sm-9 col-sm-offset-3">
-        <?= Html::submitButton(Yii::t('andahrm/position-salary', 'Assign person') , ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Yii::t('andahrm/position-salary', 'Cencel') , ['index'],['class' => 'btn btn-link']) ?>
+         <?= Html::submitButton(Yii::t('andahrm', 'Save') , ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('andahrm/position-salary', 'Cencel') , ['view-position','id'=>$model->user_id],['class' => 'btn btn-link']) ?>
     </div>
 </div>
-    <?php ActiveForm::end(); ?>
 
+
+
+</div>
+</div>
+
+<?php ActiveForm::end(); ?>
 
 

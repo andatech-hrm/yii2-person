@@ -333,7 +333,7 @@ class DefaultController extends Controller
         }
 
 
-        return $this->renderPartial('position/create-position', [
+        return $this->render('position/create-position', [
             'model' => $model,
             'formAction' => $formAction
         ]);
@@ -413,6 +413,31 @@ class DefaultController extends Controller
                     'dataProvider' => $dataProvider,
         ]);
     }
+    
+    public function actionViewPrestige($id)
+    {
+        $this->layout = 'view';
+        
+        $searchModel = new \andahrm\insignia\models\InsigniaPersonSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->where(['user_id'=>$id]);
+        // $dataProvider->sort->defaultOrder = [
+        //     'year'=>SORT_DESC
+        //     ];
+
+       
+        
+        //$dataProvider->sort->defaultOrder = ['development_project.start'=>SORT_DESC];
+
+        return $this->render('view-prestige', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+    
+    
+    
+    
     
     public function actionViewKp($id)
     {
