@@ -18,7 +18,7 @@ use andahrm\setting\models\WidgetSettings;
         'widgetBody' => '.educations-container-items', // required: css class selector
         'widgetItem' => '.educations-item', // required: css class
         'limit' => 4, // the maximum times, an element can be cloned (default 999)
-        'min' => 1, // 0 or 1 (default 1)
+        'min' => 0, // 0 or 1 (default 1)
         'insertButton' => '.educations-add-item', // css class
         'deleteButton' => '.educations-remove-item', // css class
         'model' => $models[0],

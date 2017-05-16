@@ -98,10 +98,10 @@ class Person extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'tel', 'gender', 'birthday'], 'required'],
+            [['user_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'birthday', 'citizen_id'], 'required'],
             [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['gender'], 'string'],
-            [['citizen_id'], 'string', 'max' => 13],
+            [['citizen_id'], 'match', 'pattern' => '/^\d{13}$/'],
             [['firstname_th', 'lastname_th', 'firstname_en', 'lastname_en'], 'string', 'max' => 100],
             [['tel', 'phone'], 'string', 'max' => 50],
             [['citizen_id'], 'unique'],

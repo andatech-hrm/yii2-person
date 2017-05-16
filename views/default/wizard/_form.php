@@ -115,6 +115,25 @@ $('#person-wizard').on('leaveStep', function(e, anchorObject, stepNumber, stepDi
 });
 JS;
 
+$jsWizardEvent['validateCitizenId'] = <<< JS
+$('#$form->id').yiiActiveForm('add', {
+    id: 'person-citizen_id',
+    name: 'person-citizen_id',
+    container: '.field-person-citizen_id',
+    input: '#person-citizen_id',
+    error: '.help-block',
+    validate:  function (attribute, value, messages, deferred, \$form) {
+        console.log(attribute);
+        for(i=0, sum=0; i < 12; i++){
+            sum += parseFloat(value.charAt(i))*(13-i);
+        }
+        if((11-sum%11)%10!=parseFloat(value.charAt(12))){
+            yii.validation.boolean(value, messages, {"message":"Citizen Id don't match"});
+        }
+    }
+});
+JS;
+
 $this->registerJs(implode("\n", $jsWizardEvent));
 ?>
 

@@ -36,6 +36,7 @@ use andahrm\setting\models\WidgetSettings;
 
 <?php
 if($model->isNewRecord) {
+$form_id = $form->id;
 $firstname_en_id = Html::getInputId($model, "firstname_en");
 $username_id = Html::getInputId($modelUser, "username");
 
@@ -45,8 +46,19 @@ $passwordConfirm_id = Html::getInputId($modelUser, "newPasswordConfirm");
 $js[] = <<< JS
 $(document).on('change', '#{$firstname_en_id}', function(event){ var val = $(this).val().toLowerCase(); $('#$username_id').val(val); });
 $(document).on('change', '#{$citizen_id_id}', function(event){ var val = $(this).val().toLowerCase(); $('#$password_id').val(val); $('#$passwordConfirm_id').val(val); });
+
+
+// $('#$form_id').yiiActiveForm('add', {
+//     id: '$citizen_id_id',
+//     name: '$citizen_id_id',
+//     container: '.field-person-citizen_id',
+//     input: '#$citizen_id_id',
+//     error: '.help-block',
+//     validate:  function (attribute, value, messages, deferred, \$form) {
+//         yii.validation.required(value, messages, {message: "Validation Message Here"});
+//     }
+// });
+
 JS;
-
-
 $this->registerJs(implode("\n", $js));
 }
