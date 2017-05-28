@@ -147,7 +147,7 @@ $fullExportMenu = ExportMenu::widget([
             '{toggleData}',
             $fullExportMenu,
         ],
-        'columns' => $gridColumns,
+       'columns' => $gridColumns,
     ]); ?>
 </div>
 <?php

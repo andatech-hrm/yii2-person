@@ -38,6 +38,13 @@ class TrashController extends \yii\web\Controller
 
         // return $this->redirect(['index']);
     }
+    
+    public function actionRestore($id)
+    {
+        $model = $this->findModel($id);
+        $model->restore();
+        return $this->redirect(['index']);
+    }
 
     /**
      * Finds the Person model based on its primary key value.

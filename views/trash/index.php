@@ -68,7 +68,12 @@ $gridColumns = [
     $columns['full_address_contact'],
     [
         'class' => '\kartik\grid\ActionColumn',
-         'template' => '{delete}',
+        'template' => '{restore} {delete}',
+        'buttons' => [
+           'restore' => function($url,$model,$key){
+                return Html::a('<i class="glyphicon glyphicon-repeat"></i> ',$url);
+            }
+        ]
     ]
 ];
 
