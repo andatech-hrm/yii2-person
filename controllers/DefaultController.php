@@ -42,6 +42,9 @@ use andahrm\person\models\Race;
 use andahrm\setting\models\LocalRegion;
 use andahrm\setting\models\Country;
 
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+
 /**
  * DefaultController implements the CRUD actions for Person model.
  */
@@ -462,6 +465,9 @@ class DefaultController extends Controller
      */
     public function actionCreate()
     {
+        
+        
+        
 //         $this->layout = 'x_panel';
 //         $model = new Person();
         $request = Yii::$app->request;
@@ -487,7 +493,28 @@ class DefaultController extends Controller
         // $models['contract'] = new Contract();
         $models['servant'] = new Servant();
         
+        if (Yii::$app->request->isAjax){
+            
+            if($models['person']->load($post)) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $ss = ActiveForm::validate($models['person']);
+                
+                if(Person::find()->where(['citizen_id'=>$models['person']->numberCitizenId])->exists()){
+                    $ss['person-citizen_id']= [Yii::t('andahrm/person','Got "{id}" card code already.',['id'=>$models['person']->citizen_id])];
+                }
+                
+                
+                
+                return $ss;
+            }
+            
+        }
+        
         if($post){
+            
+            
+            
+            
             $errorMassages = [];
             if(isset($post['personType']) && $post['personType'] == 1){
                 unset($models['servant']);

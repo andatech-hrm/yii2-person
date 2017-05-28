@@ -4,10 +4,17 @@ use yii\helpers\ArrayHelper;
 use andahrm\person\models\Title;
 use kuakling\datepicker\DatePicker;
 use andahrm\setting\models\WidgetSettings;
+use yii\widgets\MaskedInput;
 ?>
 <div class="form-person">
     <div class="row">
-        <?= $form->field($model, 'citizen_id', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'citizen_id', [
+            'options' => ['class' => 'form-group col-sm-3'],
+            'enableAjaxValidation' => true
+        ])->widget(
+            MaskedInput::className(),[
+            'mask' => '9-9999-99999-99-9'
+        ]) ?>
         
         <?= $form->field($model, 'title_id', ['options' => ['class' => 'form-group col-sm-3']])->dropDownList(ArrayHelper::map(Title::find()->all(), 'id', 'name')) ?>
         
@@ -60,5 +67,15 @@ $(document).on('change', '#{$citizen_id_id}', function(event){ var val = $(this)
 // });
 
 JS;
+$js['validateCitizenId'] = <<< JS
+    $(document).on('blur', "#{$citizen_id_id}",function(){
+       
+            
+                //alert(555);
+              
+        
+    });
+JS;
+
 $this->registerJs(implode("\n", $js));
 }
