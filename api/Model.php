@@ -8,6 +8,8 @@ use andahrm\person\models\Address;
 class Model extends \yii\base\Object
 {
     public $_model;
+    public $noImg='no-pic.jpg';
+    
     
     public function __construct($arg)
     {
@@ -64,7 +66,7 @@ class Model extends \yii\base\Object
     public function getPhotoLast($original=false)
     {
         if($this->_model == null){
-            return '/uploads/no-pic.jpg';
+            return '/uploads/'.$this->noImg;
         }
         $photoLast = \andahrm\person\models\Photo::find()
             ->where(['user_id' => $this->_model->user_id])
@@ -80,6 +82,15 @@ class Model extends \yii\base\Object
         }
         
         return $photoLast->getUploadUrl('image_cropped');
+    }
+    
+    public function getPhoto()
+    {
+        if($this->getPhotoLast()){
+            return $this->getPhotoLast();
+        }else{
+            return '/uploads/'.$this->noImg;
+        }
     }
     
     public function getRoles()
