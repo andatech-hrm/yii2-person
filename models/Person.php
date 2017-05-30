@@ -59,6 +59,15 @@ class Person extends ActiveRecord
             [
                 'class' => TimestampBehavior::className(),
             ],
+            [
+                'class' => AttributeBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_VALIDATE => 'citizen_id',
+                ],
+                'value' => function ($event) {
+                    return str_replace('-','',$this->citizen_id);
+                },
+            ],
             'birthday' => [
                 'class' => DateBuddhistBehavior::className(),
                 'dateAttribute' => 'birthday',

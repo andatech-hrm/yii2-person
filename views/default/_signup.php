@@ -3,9 +3,9 @@ use yii\bootstrap\Html;
 ?>
 <?php $roleList = \andahrm\person\models\Person::getRoleList(); ?>
 
-        <?= $form->field($model, 'username')->label(Yii::t('andahrm/person', 'Username'));?>
+        <?= $form->field($model, 'username',['enableAjaxValidation' => true ])->label(Yii::t('andahrm/person', 'Username'));?>
 
-        <?= $form->field($model, 'email')->label(Yii::t('andahrm/person', 'Email'));?>
+        <?= $form->field($model, 'email',[ 'enableAjaxValidation' => true])->label(Yii::t('andahrm/person', 'Email'));?>
         <?php if($model->isNewRecord) : ?>
         <?= $form->field($model, 'newPassword')->passwordInput()->label(Yii::t('andahrm/person', 'Password'));?>
 

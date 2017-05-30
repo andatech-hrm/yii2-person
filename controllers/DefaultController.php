@@ -457,6 +457,15 @@ class DefaultController extends Controller
         
         return $this->render('view-kp', ['models' => $models, 'dataProvider' => $dataProvider]);
     }
+    
+    
+    public function actionTest(){
+        $person = new Person();
+        $person->citizen_id = '1-9499-00097-92-1';
+        echo $person->citizen_id."<br/>";
+        $person->validate();
+        echo $person->citizen_id;
+    }
 
     /**
      * Creates a new Person model.
@@ -465,8 +474,6 @@ class DefaultController extends Controller
      */
     public function actionCreate()
     {
-        
-        
         
 //         $this->layout = 'x_panel';
 //         $model = new Person();
@@ -494,25 +501,27 @@ class DefaultController extends Controller
         $models['servant'] = new Servant();
         
         if (Yii::$app->request->isAjax){
+            Yii::$app->response->format = Response::FORMAT_JSON;
             
-            if($models['person']->load($post)) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $ss = ActiveForm::validate($models['person']);
+            if(isset($post)){
+                $models['person']->load($post);
+                $models['user']->load($post);
+                $res_valid= ActiveForm::validate($models['person'],$models['user']);
                 
-                if(Person::find()->where(['citizen_id'=>$models['person']->numberCitizenId])->exists()){
-                    $ss['person-citizen_id']= [Yii::t('andahrm/person','Got "{id}" card code already.',['id'=>$models['person']->citizen_id])];
-                }
+                // if(Person::find()->where(['citizen_id'=>$models['person']->citizen_id])->exists()){
+                //     $res_valid['person-citizen_id']= [Yii::t('andahrm/person','Got "{id}" card code already.',['id'=>$models['person']->citizen_id])];
+                // }
                 
+                // if($userClass::find()->where(['username'=>$models['user']->username])->exists()){
+                //     $res_valid['user-username']= [Yii::t('andahrm/person','Got "{id}" card code already.',['id'=>$models['person']->citizen_id])];
+                // }
                 
-                
-                return $ss;
+                return $res_valid;
             }
-            
+            return [];
         }
         
         if($post){
-            
-            
             
             
             $errorMassages = [];
@@ -536,6 +545,9 @@ class DefaultController extends Controller
                     // $models['position-salary']->adjust_date = Yii::$app->formatter->asDate(date('Y-m-d'), 'php:d/m/Y');
                     // $models['contract']->position_id = $post[$psFN]['position_id'];
                     // $models['contract']->edoc_id = $post[$psFN]['edoc_id'];
+                    
+                    //$models['person']->citizen_id = $models['person']->numberCitizenId;
+                    
                     foreach($models as $key => $model) {
                         // if($key !== 'people-childs' && $key !== 'user'){
                         if(!in_array($key, $skipModel)){

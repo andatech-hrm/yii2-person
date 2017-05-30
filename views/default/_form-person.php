@@ -51,8 +51,17 @@ $citizen_id_id =  Html::getInputId($model, "citizen_id");
 $password_id = Html::getInputId($modelUser, "newPassword");
 $passwordConfirm_id = Html::getInputId($modelUser, "newPasswordConfirm");
 $js[] = <<< JS
-$(document).on('change', '#{$firstname_en_id}', function(event){ var val = $(this).val().toLowerCase(); $('#$username_id').val(val); });
-$(document).on('change', '#{$citizen_id_id}', function(event){ var val = $(this).val().toLowerCase(); $('#$password_id').val(val); $('#$passwordConfirm_id').val(val); });
+$(document).on('change', '#{$firstname_en_id}', function(event){ 
+    var val = $(this).val().toLowerCase(); 
+    $('#$username_id').val(val); 
+});
+$(document).on('change', '#{$citizen_id_id}', function(event){ 
+    var val = $(this).val();
+    var res = val.replace(/\-/g, '');
+    //alert(res);
+    $('#$password_id').val(res);
+    $('#$passwordConfirm_id').val(res); 
+});
 
 
 // $('#$form_id').yiiActiveForm('add', {

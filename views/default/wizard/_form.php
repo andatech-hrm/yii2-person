@@ -18,6 +18,7 @@ Modal::end();
 ?>
 
 <?php $form = ActiveForm::begin([
+    'enableAjaxValidation' => true,
     'options' => [
         'role'=>"form",
         'data-toggle'=>"validator",
