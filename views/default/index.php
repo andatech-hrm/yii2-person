@@ -57,7 +57,7 @@ $gridColumns = [
         'format' => 'raw',
         'value' => function($model) {
             $res = '<div class="media"> <div class="media-left"> ' . 
-                '<img class="media-object img-circle" src="'.$model->photoLast.'" style="width: 32px; height: 32px;"> </div> ' . 
+                '<img class="media-object img-circle" src="'.$model->photo.'" style="width: 32px; height: 32px;"> </div> ' . 
                 '<div class="media-body"> ' . 
                 '<h4 class="media-heading" style="margin:0;">' . 
                 Html::a($model->fullname, ['view', 'id' => $model->user_id], ['class' => 'green', 'data-pjax' => 0]) . '</h4> ' . 

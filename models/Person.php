@@ -302,6 +302,18 @@ class Person extends ActiveRecord
         return $photoLast->getUploadUrl('image_cropped');
     }
     
+    public $noImg='no-pic.jpg';
+    
+    public function getPhoto()
+    {
+        if($this->getPhotoLast()){
+            return $this->getPhotoLast();
+        }else{
+            return '/uploads/'.$this->noImg;
+        }
+    }
+    
+    
     public function getFullname($lang = 'th')
     {
         if($lang === 'th'){
