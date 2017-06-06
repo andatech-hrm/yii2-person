@@ -15,6 +15,8 @@ use andahrm\person\PersonApi;
 // $profile = $user->profile;
 // $person = Person::findOne($user->id);
 $person = PersonApi::instance(Yii::$app->request->get('id'));
+// print_r($person);
+// exit();
 $module = $this->context->module->id;
 ?>
 <?php $this->beginContent('@app/views/layouts/main.php'); ?>
@@ -59,6 +61,15 @@ $module = $this->context->module->id;
             </ul>
 
             <!-- <a class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Edit Profile</a> -->
+            
+            <?=Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print'),
+                 ['print','id'=>$person->_model->user_id], 
+                 [
+                        'class' => 'btn btn-default btn-flat',
+                        'target' => '_blank',
+                        'data-pjax' => 0
+                ]);
+            ?>
             </div>
 <?php
 $js[] = <<< JS

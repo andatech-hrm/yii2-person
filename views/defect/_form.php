@@ -83,3 +83,21 @@ echo $form->field($model, "edoc_id", [
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+$edocInputId = Html::getInputId($model, 'edoc_id');
+$jsHead[] = <<< JS
+function callbackEdoc(result)
+{   
+    $("#{$edocInputId}").append($('<option>', {
+        value: result.id,
+        text: result.code + ' - ' + result.title
+    }));
+    $("#{$edocInputId}").val(result.id).trigger('change.select2');
+    
+    $("#{$modals['edoc']->id}").modal('hide');
+}
+JS;
+
+
+$this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);

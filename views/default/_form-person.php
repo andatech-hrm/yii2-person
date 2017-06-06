@@ -5,6 +5,7 @@ use andahrm\person\models\Title;
 use kuakling\datepicker\DatePicker;
 use andahrm\setting\models\WidgetSettings;
 use yii\widgets\MaskedInput;
+
 ?>
 <div class="form-person">
     <div class="row">
