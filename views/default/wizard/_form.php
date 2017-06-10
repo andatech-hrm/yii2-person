@@ -32,7 +32,7 @@ $wizardId = 'person-wizard';
 
 $jsPersonWizard['btn'] = <<< JS
 // Toolbar extra buttons
-var btnFinish = $('<button></button>').html('<i class="fa fa-flag-checkered"></i> Finish')
+var btnFinish = $('<button id="btnFinish"></button>').html('<i class="fa fa-flag-checkered"></i> Finish')
     .addClass('btn btn-primary')
     .on('click', function(){
         $.each($('.step-content'), function(){
@@ -50,11 +50,20 @@ JS;
 
 $this->registerJs(implode("\n", $jsPersonWizard));
 $wizardItems = [];
+$isNewRecord= $models['person']->isNewRecord;#true
 foreach ($this->context->formSteps as $key => $step) {
+    
+   $content = null;
+    if($isNewRecord && $key==1){
+         $content = $this->render('_step-'.$key, ['models' => $models, 'modals' => $modals, 'form' => $form]);
+    }elseif(!$isNewRecord){
+        $content = $this->render('_step-'.$key, ['models' => $models, 'modals' => $modals, 'form' => $form]);
+    }
+    
     $wizardItems[$step['name']] = [
        'icon' => $step['icon'],
         'label' => 'Step - '.$step['name'].' <br /><small>'.$step['desc'].'</small>',
-        'content' => $this->render('_step-'.$key, ['models' => $models, 'modals' => $modals, 'form' => $form]) 
+        'content' => $content
     ];
 }
 echo Step::widget([
@@ -81,7 +90,11 @@ echo Step::widget([
 
 <?php
 
+
+
 $jsWizardEvent['showStep'] = <<< JS
+
+
 $('#person-wizard').on('showStep', function(e, anchorObject, stepNumber, stepDirection, stepPosition) {
     //alert('You are on step '+stepNumber+' now');
     $('#{$form->id}').yiiActiveForm("resetForm");
@@ -134,6 +147,13 @@ $jsWizardEvent['validateCitizenId'] = <<< JS
 //     }
 // });
 JS;
+
+if($isNewRecord){
+    $jsWizardEvent['changType'] = <<< JS
+        $('button.sw-btn-next').attr('type','submit');
+        $('button#btnFinish').addClass('disabled');
+JS;
+}
 
 $this->registerJs(implode("\n", $jsWizardEvent));
 ?>

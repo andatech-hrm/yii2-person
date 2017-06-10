@@ -2,4 +2,4 @@
     <i class="<?= $this->context->formSteps[5]['icon']; ?>"></i> Step 5 
     <span class="text-muted"><?= $this->context->formSteps[5]['desc']; ?></span>
 </h2> 
-<?= $this->render('../_form-leave', ['model' => $models['leave'], 'modelServant' => $models['servant'], 'form' => $form]); ?>
+<?= $this->render('../_form-position-salary', ['model' => $models['position-salary'], 'modelContract' => $models['contract'], 'modals' => $modals, 'form' => $form]); ?>

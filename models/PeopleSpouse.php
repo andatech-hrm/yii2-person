@@ -19,6 +19,13 @@ use Yii;
  */
 class PeopleSpouse extends People
 {
+    
+    public function init() {
+        $this->type = parent::TYPE_SPOUSE;
+        parent::init();
+    }
+    
+    
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

@@ -28,6 +28,11 @@ use Yii;
 class AddressBirthPlace extends Address
 {
     
+    public function init() {
+        $this->type = parent::TYPE_BIRTH_PLACE;
+        parent::init();
+    }
+    
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

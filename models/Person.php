@@ -78,7 +78,8 @@ class Person extends ActiveRecord
                     ActiveRecord::EVENT_AFTER_FIND => 'full_address_contact',
                 ],
                 'value' => function($event) {
-                    return $this->addressContact->addressText;
+                    $model = $this->addressContact;
+                    return $model?$model->addressText:$model;
                 },
             ],
             'softDeleteBehavior' => [

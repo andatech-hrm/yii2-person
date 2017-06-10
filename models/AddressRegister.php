@@ -27,6 +27,10 @@ use Yii;
  */
 class AddressRegister extends Address
 {
+    public function init() {
+        $this->type = parent::TYPE_REGISTER;
+        parent::init();
+    }
     
     public function beforeSave($insert)
     {

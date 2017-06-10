@@ -27,6 +27,10 @@ use Yii;
  */
 class AddressContact extends Address
 {
+    public function init() {
+        $this->type = parent::TYPE_CONTACT;
+        parent::init();
+    }
     
     public function beforeSave($insert)
     {

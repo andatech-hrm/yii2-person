@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\data\ArrayDataProvider;
 use kartik\mpdf\Pdf;
 
+use andahrm\person\models\User;
 use andahrm\person\models\Person;
 use andahrm\person\models\Photo;
 use andahrm\person\models\PersonSearch;
@@ -47,6 +48,7 @@ use yii\widgets\ActiveForm;
 
 ## Print ก.พ.7
 use andahrm\person\models\Defect;
+use common\models\DynamicFormModel;
 #use yii\helpers\ArrayHelper;
 
 /**
@@ -72,10 +74,15 @@ class DefaultController extends Controller
     public $educationLevels;
     
     public $formSteps = [];
+    public $user_id;
     
     protected $modelMany = ['user', 'people-childs', 'educations', 'photos'];
     
     public $sessionKey = 'person-form-data';
+    
+    public $modelUser;
+    public $modelPerson;
+
     
     public function behaviors()
     {
@@ -92,13 +99,15 @@ class DefaultController extends Controller
     public function beforeAction($action)
     {
         $this->formSteps = [
-            1 => ['name' =>'1', 'desc' => Yii::t('andahrm/person', 'Information'), 'icon' => 'fa fa-info-circle', 'models' => ['Person', 'User']],
-            2 => ['name' =>'2', 'desc' => Yii::t('andahrm/person', 'Educations'), 'icon' => 'fa fa-graduation-cap', 'models' => ['Detail', 'AddressContact', 'AddressRegister', 'AddressBirthPlace']],
-            3 => ['name' =>'3', 'desc' => Yii::t('andahrm/person', 'Family'), 'icon' => 'fa fa-user-secret', 'models' => ['PeopleFather', 'PeopleMother']],
+            1 => ['name' =>'1', 'desc' => Yii::t('andahrm/person', 'Register'), 'icon' => 'fa fa-info-circle', 'models' => ['Person', 'User']],
+            2 => ['name' =>'2', 'desc' => Yii::t('andahrm/person', 'Information'), 'icon' => 'fa fa-info-circle', 'models' =>  [ 'Person', 'Detail','PeopleSpouse', 'AddressContact', 'AddressRegister', 'AddressBirthPlace']],
+            3 => ['name' =>'3', 'desc' => Yii::t('andahrm/person', 'Educations'), 'icon' => 'fa fa-graduation-cap', 'models' => ['Education']],
+            4 => ['name' =>'4', 'desc' => Yii::t('andahrm/person', 'Family'), 'icon' => 'fa fa-user-secret', 'models' => ['PeopleFather', 'PeopleMother','PeopleChilds']],
             //4 => ['name' =>'4', 'desc' => Yii::t('andahrm/person', 'Position'), 'icon' => 'fa fa-ticket', 'models' => ['PeopleChild']],
-            5 => ['name' =>'4', 'desc' => Yii::t('andahrm/person', 'Leave and Person Type'), 'icon' => 'fa fa-bed', 'models' => ['PeopleChild']],
-            6 => ['name' =>'5', 'desc' => Yii::t('andahrm/person', 'User Account'), 'icon' => 'fa fa-key', 'models' => ['PeopleChild']],
+            5 => ['name' =>'5', 'desc' => Yii::t('andahrm/person', 'Leave and Person Type'), 'icon' => 'fa fa-bed', 'models' => ['PeopleChild']],
+            //7 => ['name' =>'6', 'desc' => Yii::t('andahrm/person', 'User Account'), 'icon' => 'fa fa-key', 'models' => ['PeopleChild']],
         ];
+        
     
         if (!parent::beforeAction($action)) {
             return false;
@@ -579,167 +588,210 @@ Css;
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($step=1,$id=null)
     {
+       //if(!$s)
         
-//         $this->layout = 'x_panel';
-//         $model = new Person();
+        
+        if($step != 1 && $id==null){
+            return $this->redirect(['create','step'=> 1]);
+        }elseif(!ArrayHelper::keyExists($step,$this->formSteps)){
+            throw new NotFoundHttpException(Yii::t('andahrm','The requested page does not exist.'));
+        }elseif($id){
+           $this->findModel($id);
+           $this->user_id = $id; #Use in layout
+           $nextStep = $step + 1;
+        }
+        
+        $this->layout = 'create';
+        
         $request = Yii::$app->request;
         $post = Yii::$app->request->post();
         
-        $userClass = Yii::$app->user->identityClass;
-        $models['user'] = new $userClass();
-        $models['user']->scenario = 'create';
-        
-        $models['person'] = new Person();
+        ###################################
+        $models['User'] = new User();
+        $models['User']->scenario = 'create';
+        $models['Person'] = new Person();
         // $models['photo'] = new Photo(['scenario' => 'insert']);
-        $models['detail'] = new Detail();
-        $models['address-contact'] = new AddressContact();
-        $models['address-birth-place'] = new AddressBirthPlace();
-        $models['address-register'] = new AddressRegister();
-        $models['people-father'] = new PeopleFather();
-        $models['people-mother'] = new PeopleMother();
-        $models['people-spouse'] = new PeopleSpouse();
-        $models['people-childs'] = [new PeopleChild()];
-        $models['educations'] = [new Education(['country_id' => Country::DEFAULT_COUNTRY])];
+        $models['Detail'] = new Detail();
+        $models['AddressContact'] = new AddressContact();
+        $models['AddressBirthPlace'] = new AddressBirthPlace();
+        $models['AddressRegister'] = new AddressRegister();
+        $models['PeopleFather'] = new PeopleFather();
+        $models['PeopleMother'] = new PeopleMother();
+        $models['PeopleSpouse'] = new PeopleSpouse();
+        $models['PeopleChilds'] = [new PeopleChild()];
+        $models['Educations'] = [new Education(['country_id' => Country::DEFAULT_COUNTRY])];
         // $models['position-salary'] = new PersonPositionSalary(['scenario' => 'new-person']);
         $models['leave'] = new LeaveAssign(); #madone
         // $models['contract'] = new Contract();
         $models['servant'] = new Servant();
-        
-        if (Yii::$app->request->isAjax){
-            Yii::$app->response->format = Response::FORMAT_JSON;
+        ##################################
+
+        if(Person::findOne($id)){
+            $models['User'] = User::findOne($id);
+            $models['Person'] = Person::findOne($id);
             
-            if(isset($post)){
-                $models['person']->load($post);
-                $models['user']->load($post);
-                $res_valid= ActiveForm::validate($models['person'],$models['user']);
-                
-                // if(Person::find()->where(['citizen_id'=>$models['person']->citizen_id])->exists()){
-                //     $res_valid['person-citizen_id']= [Yii::t('andahrm/person','Got "{id}" card code already.',['id'=>$models['person']->citizen_id])];
-                // }
-                
-                // if($userClass::find()->where(['username'=>$models['user']->username])->exists()){
-                //     $res_valid['user-username']= [Yii::t('andahrm/person','Got "{id}" card code already.',['id'=>$models['person']->citizen_id])];
-                // }
-                
-                return $res_valid;
+            $skipModel = ['User', 'PeopleChilds', 'Educations'];
+            foreach($this->formSteps[$step]['models'] as $modelKey) {
+                if(!in_array($modelKey, $skipModel)){
+                     $model = '\andahrm\person\models\\'.ucfirst($modelKey);
+                     $modelCheck = $model::find()->where(['user_id'=>$id]);
+                     switch($modelKey){
+                         case "AddressContact": $modelCheck->andWhere(['type'=>AddressContact::TYPE_CONTACT]); break;
+                         case "AddressRegister": $modelCheck->andWhere(['type'=>AddressRegister::TYPE_REGISTER]); break;
+                         case "AddressBirthPlace": $modelCheck->andWhere(['type'=>AddressContact::TYPE_BIRTH_PLACE]); break;
+                         case "PeopleFather": $modelCheck->andWhere(['type'=>PeopleFather::TYPE_FATHER]); break;
+                         case "PeopleMother": $modelCheck->andWhere(['type'=>PeopleMother::TYPE_MOTHER]); break;
+                     }
+                     
+                     if($modelCheck->exists())
+                     $models[$modelKey] = $modelCheck->one();
+                }
             }
-            return [];
-        }
-        
-        if($post){
             
-            
-            $errorMassages = [];
-            if(isset($post['personType']) && $post['personType'] == 1){
-                unset($models['servant']);
+            switch($step){
+                case 3:
+                    $models['Educations'] = $models['Person']->educations ? $models['Person']->educations : $models['Educations'];
+                break;
+                case 4:
+                    $models['PeopleChilds'] = $models['Person']->peopleChilds ? $models['Person']->peopleChilds : $models['PeopleChilds'];
+                break;
             }
-            // print_r($post);
-            // exit();
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                $models['user']->load($post);
-                $models['user']->username = $models['user']->username;
-                $models['user']->email = $models['user']->email;
-                $models['user']->setPassword($models['user']->newPassword);
-                $models['user']->generateAuthKey();
+            
+             if (Yii::$app->request->isAjax){
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if($res_valid= ActiveForm::validate($models['Person'],$models['User'])){
+                    return $res_valid;
+                }
+                return [];
+            }
+            
+           
+            if($post){
+                $errorMassages = [];
                 
-                $skipModel = ['user', 'people-childs', 'educations'];
-                if ($models['user']->save()){
-                    // $contractFN = $models['contract']->formName();
-                    // $psFN = $models['position-salary']->formName();
-                    // $models['position-salary']->adjust_date = Yii::$app->formatter->asDate(date('Y-m-d'), 'php:d/m/Y');
-                    // $models['contract']->position_id = $post[$psFN]['position_id'];
-                    // $models['contract']->edoc_id = $post[$psFN]['edoc_id'];
-                    
-                    //$models['person']->citizen_id = $models['person']->numberCitizenId;
-                    
-                    foreach($models as $key => $model) {
-                        // if($key !== 'people-childs' && $key !== 'user'){
-                        if(!in_array($key, $skipModel)){
-                            $model->load($post);
-                            $model->user_id = $models['user']->id;
-                            // echo $model->formName();
-                            // print_r($model->attributes);
-                            if (!$model->save()){
-                                $errorMassages[] = $model->getErrors();
+                switch($step){
+                    case 2:
+                        //print_r($post);
+                        
+                         foreach($this->formSteps[$step]['models'] as $model) {
+                             $modelKey = null;
+                             $modelKey = $model;
+                             if(!in_array($modelKey, $skipModel) && $models[$modelKey]->load($post)){
+                                $models[$modelKey]->user_id = $models['User']->id;
+                                // echo $model->formName();
+                                // print_r($model->attributes);
+                                if (!$models[$modelKey]->save()){
+                                    $errorMassages[] = $models[$modelKey]->getErrors();
+                                }
                             }
                         }
-                    }
-                    // exit();
+                    break;
                     
-                } else {
-                    $errorMassages[] = $models['user']->getErrors();
-                }
-                
-                // $models['people-childs'] = ChildModel::createMultiple(PeopleChild::classname(), $models['people-childs']);
-                // ChildModel::loadMultiple($models['people-childs'], $post);
-
-                // // validate all models
-                // $valid = $models['user']->validate();
-                // $valid = ChildModel::validateMultiple($models['people-childs']) && $valid;
-                // if($valid){
-                //     foreach ($models['people-childs'] as $modelChild) {
-                //         $modelChild->user_id = $models['user']->id;
-                //         if (! ($flag = $modelChild->save(false))) {
-                //             $errorMassages[] = $modelChild->getErrors();
-                //             break;
-                //         }
-                //     }
-                // }else{
-                //     $errorMassages[] = ['Child in valid.'];
-                // }
-                
-                $saveChilds = $this->createDynamicForm($models['people-childs'], ChildModel::className(), $models['user']);
-                if($saveChilds[0] === false) {
-                    $errorMassages[] = $saveChilds[1];
-                }
-                
-                $saveEducations = $this->createDynamicForm($models['educations'], EducationModel::className(), $models['user']);
-                if($saveEducations[0] === false) {
-                    $errorMassages[] = $saveEducations[1];
-                }
-                
-                if(count($errorMassages) > 0){
-                    $msg = '<ul>';
-                        foreach($errorMassages as $key => $fields){
-                            // $msg .= '<li>'.implode("<br />", $fields).'</li>';
-                            $msg .= '<li>'.json_encode($fields).'</li>';
+                     case 3:
+                        $saveEducations = $this->createDynamicForm($models['Educations'], EducationModel::className(), $models['User']);
+                        if($saveEducations[0] === false) {
+                            $errorMassages[] = $saveEducations[1];
                         }
-                    $msg .= '</ul>';
-                    throw new ErrorException($msg);
-                }else{
-                    $this->setRoles($models['user']->id, $request->post('Roles', []));
+                     break;
                     
+                    case 4:
+                        #Father & Mother
+                        foreach($this->formSteps[$step]['models'] as $model) {
+                             $modelKey = null;
+                             $modelKey = $model;
+                             if(!in_array($modelKey, $skipModel) && $models[$modelKey]->load($post)){
+                                $models[$modelKey]->user_id = $models['User']->id;
+                                if (!$models[$modelKey]->save()){
+                                    $errorMassages[] = $models[$modelKey]->getErrors();
+                                }
+                            }
+                        }
+                        
+                        #Childs
+                        $saveChilds = $this->createDynamicForm($models['PeopleChilds'], ChildModel::className(), $models['User']);
+                        if($saveChilds[0] === false) {
+                            $errorMassages[] = $saveChilds[1];
+                        }
+                     break;
+                     
+                   
+                  
+                }
+                
+                
+                
+                
+                
+                
+                
+                if($post['next']){
+                    //exit();
+                    // echo $nextStep;
+                    // echo $models['Person']->user_id;
+                    // exit();
                     Yii::$app->getSession()->setFlash('saved',[
                         'type' => 'success',
                         'msg' => Yii::t('andahrm', 'Save operation completed.')
                     ]);
-                    
-                    $transaction->commit();
-
-                    return $this->redirect(['view', 'id' => $models['user']->id]);
+                    return $this->redirect(['create','step'=> $nextStep,'id' => $models['Person']->user_id]);
+                }elseif($post['finish']){
+                    Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                    return $this->redirect(['view','id' => $models['Person']->user_id]);
                 }
-                
-            }catch(ErrorException $e) {
-                Yii::$app->getSession()->setFlash('saved',[
-                    'type' => 'error',
-                    'title' => Yii::t('andahrm', 'Unable to save record.'),
-                    'msg' => $e->getMessage()
-                ]);
-                $transaction->rollback();
+            }
+       
+        }elseif($step==1){
+            if($models['Person']->load($post) && $models['User']->load($post)){
+                 
+                    if (Yii::$app->request->isAjax){
+                        Yii::$app->response->format = Response::FORMAT_JSON;
+                        if($res_valid= ActiveForm::validate($models['Person'],$models['User'])){
+                            return $res_valid;
+                        }
+                        return [];
+                    }
             }
             
-        }
-        
-        $this->prepareData();
             
-//         return $this->render('create', ['models' => $models,]); //แสดงทุกอย่างในหน้าเดียว
-        return $this->render('wizard/create', ['models' => $models]); //แสดงแบบ Wizard
-        //เลือกเปิดเอาว่าชอบแบบใหน
-        
+             if($models['Person']->load($post)&&$models['User']->load($post)){
+                 
+                   
+                    $models['User']->username = $models['User']->username;
+                    $models['User']->email = $models['User']->email;
+                    $models['User']->setPassword($models['User']->newPassword);
+                    $models['User']->generateAuthKey();
+                    
+                    if ($models['User']->save()){
+                        $this->setRoles($models['User']->id, $request->post('Roles', []));
+                        $models['Person']->user_id = $models['User']->id;
+                        if($models['Person']->save()){
+                             if($post['next']){
+                                Yii::$app->getSession()->setFlash('saved',[
+                                    'type' => 'success',
+                                    'msg' => Yii::t('andahrm', 'Save operation completed.')
+                                ]);
+                                return $this->redirect(['create','step'=> $nextStep,'id' => $models['User']->id]);
+                            }
+                        }
+                    }
+             }
+        }
+        $this->prepareData();
+         
+        return $this->render('tab/create', ['models' => $models,'step'=>$step]); 
     }
+    
+   protected function createStep1(){
+       
+   }
+    
+    
+    
     
     protected function createDynamicForm($models, $multipleModel, $mainModel)
     {
@@ -747,14 +799,27 @@ Css;
         $success = true;
         
         $post = Yii::$app->request->post();
+        $className = $models[0]::className();
         
-        $models = $multipleModel::createMultiple($models[0]::className(), $models);
-        $multipleModel::loadMultiple($models, $post);
-
+        $oldIDs = ArrayHelper::map($models, 'id', 'id');
+        $models = DynamicFormModel::createMultiple($className, $models);
+        DynamicFormModel::loadMultiple($models, $post);
+        $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($models, 'id', 'id')));
+        
+        // $oldIDs = ArrayHelper::map($modelsOptionValue, 'id', 'id');
+        // $modelsOptionValue = Model::createMultiple(OptionValue::classname(), $modelsOptionValue);
+        // Model::loadMultiple($modelsOptionValue, Yii::$app->request->post());
+        // $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsOptionValue, 'id', 'id')));
+        
         // validate all models
         $valid = $mainModel->validate();
         $valid = $multipleModel::validateMultiple($models) && $valid;
         if($valid){
+            
+            if (!empty($deletedIDs)) {
+                $flag = $className::deleteAll(['id'=>$deletedIDs]);
+            }
+            
             foreach ($models as $model) {
                 $model->user_id = $mainModel->id;
                 if (! ($flag = $model->save(false))) {
@@ -1216,5 +1281,22 @@ Css;
         
         return $this->redirect(['view', 'id' => $person_id]);
     }
+    
+    public function actionCheckUsername($firstname_en,$lastname_en){
+         $userClass = Yii::$app->user->identityClass;
+         $username = $firstname_en;
+         $index = 0;
+         while($userClass::find()->where(['username'=>$username])->exists()){
+             $char = str_split($lastname_en);
+             if($index == 0){
+                $username .='.'.$char[$index];
+             }else{
+                $username .=(isset($char[$index])?$char[$index]:$index);
+             }
+             $index++;
+         }
+         return $username;
+    }
+    
 
 }

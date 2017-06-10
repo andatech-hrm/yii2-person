@@ -13,6 +13,8 @@ use kuakling\datepicker\DatePicker;
 <?php $model->localRegion = ($model->province !== null) ? $model->province->region_id : null; ?>
 <div class="address-pane">
     <div class="row">
+<?php #echo $form->field($model, 'type')->textInput() ?>        
+        
 <?= $form->field($model, 'number_registration', [
     'options' => ['class' => 'form-group col-sm-3'],
     'inputOptions' => ['data-name' => 'number_registration']

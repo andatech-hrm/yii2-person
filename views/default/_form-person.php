@@ -10,24 +10,27 @@ use yii\widgets\MaskedInput;
 <div class="form-person">
     <div class="row">
         <?= $form->field($model, 'citizen_id', [
-            'options' => ['class' => 'form-group col-sm-3'],
+            'options' => ['class' => 'form-group col-sm-8'],
             'enableAjaxValidation' => true
         ])->widget(
             MaskedInput::className(),[
             'mask' => '9-9999-99999-99-9'
         ]) ?>
-        
-        <?= $form->field($model, 'title_id', ['options' => ['class' => 'form-group col-sm-3']])->dropDownList(ArrayHelper::map(Title::find()->all(), 'id', 'name')) ?>
-        
-        <?= $form->field($model, 'firstname_th', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
-        
-        <?= $form->field($model, 'lastname_th', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+    
     </div>
     
     <div class="row">
-        <?= $form->field($model, 'firstname_en', ['options' => ['class' => 'form-group col-sm-3 col-sm-offset-6']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'title_id', ['options' => ['class' => 'form-group col-sm-4']])->dropDownList(ArrayHelper::map(Title::find()->all(), 'id', 'name')) ?>
         
-        <?= $form->field($model, 'lastname_en', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'firstname_th', ['options' => ['class' => 'form-group col-sm-4']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($model, 'lastname_th', ['options' => ['class' => 'form-group col-sm-4']])->textInput(['maxlength' => true]) ?>
+    </div>
+    
+    <div class="row">
+        <?= $form->field($model, 'firstname_en', ['options' => ['class' => 'form-group col-sm-4 col-sm-offset-4']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($model, 'lastname_en', ['options' => ['class' => 'form-group col-sm-4']])->textInput(['maxlength' => true]) ?>
     </div>
     
     <div class="row">

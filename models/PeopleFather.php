@@ -19,6 +19,12 @@ use Yii;
  */
 class PeopleFather extends People
 {
+    
+    public function init() {
+        $this->type = parent::TYPE_FATHER;
+        parent::init();
+    }
+    
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

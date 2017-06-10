@@ -51,9 +51,9 @@ use andahrm\setting\models\WidgetSettings;
                     <div class="clearfix"></div>
                     <?php
                     // necessary for update action.
-                    if (!$model->isNewRecord) {
+                    //if (!$model->isNewRecord) {
                         echo Html::activeHiddenInput($model, "[{$index}]id");
-                    }
+                    //}
                     ?>
                    <div class="row">
                         <?= $form->field($model, "[{$index}]year_start", ['options' => ['class' => 'form-group col-sm-2']])->widget(\kuakling\datepicker\YearBuddhist::className()) ?>
