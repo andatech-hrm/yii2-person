@@ -1666,14 +1666,11 @@ Css;
          $userClass = Yii::$app->user->identityClass;
          $username = $firstname_en;
          $index = 0;
+         $char = str_split($lastname_en);
+         $username .='.'.$char[$index];
          while($userClass::find()->where(['username'=>$username])->exists()){
-             $char = str_split($lastname_en);
-             if($index == 0){
-                $username .='.'.$char[$index];
-             }else{
-                $username .=(isset($char[$index])?$char[$index]:$index);
-             }
-             $index++;
+            ++$index;
+            $username .=(isset($char[$index])?$char[$index]:$index);
          }
          return $username;
     }
