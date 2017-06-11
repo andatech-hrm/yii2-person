@@ -1,7 +1,8 @@
 <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
-    <i class="<?= $this->context->formSteps[1]['icon']; ?>"></i> Step 1 
-    <span class="text-muted"><?= $this->context->formSteps[1]['desc']; ?></span>
-</h2>
+    <i class="<?= $this->context->formSteps[$step]['icon']; ?>"></i> Step <?=$step?> 
+    <span class="text-muted"><?= $this->context->formSteps[$step]['desc']; ?></span>
+</h2> 
+
 
 <?php echo $this->render('../_form-person', ['model' => $models['Person'], 'modelUser' => $models['User'], 'form' => $form]); ?>
 

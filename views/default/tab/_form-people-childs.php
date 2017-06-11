@@ -6,6 +6,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 use kuakling\datepicker\DatePicker;
 use kartik\widgets\Select2;
 use andahrm\setting\models\WidgetSettings;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $modelCustomer app\modules\yii2extensions\models\Customer */
@@ -61,7 +62,12 @@ $labels = [
                     }
                     ?>
                    <div class="row">
-                        <?= $form->field($model, "[{$index}]citizen_id", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, "[{$index}]citizen_id", [
+                                'options' => ['class' => 'form-group col-sm-3']
+                            ])->widget(
+                                MaskedInput::className(),[
+                                'mask' => '9-9999-99999-99-9'
+                            ]) ?>
                         <?= $form->field($model, "[{$index}]name", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
                         <?= $form->field($model, "[{$index}]surname", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
                         <?= $form->field($model, "[{$index}]birthday", ['options' => ['class' => 'form-group col-sm-3 birthday']])->widget(DatePicker::className(), WidgetSettings::DatePicker()) ?>

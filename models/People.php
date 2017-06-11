@@ -7,6 +7,7 @@ use andahrm\setting\models\Helper;
 use yii\db\ActiveRecord;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeBehavior;
 use kuakling\datepicker\behaviors\DateBuddhistBehavior;
 
 /**
@@ -78,6 +79,15 @@ class People extends ActiveRecord
             //         return Helper::dateUi2Db($this->birthday);
             //     },
             // ],
+            [
+                'class' => AttributeBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_VALIDATE => 'citizen_id',
+                ],
+                'value' => function ($event) {
+                    return str_replace('-','',$this->citizen_id);
+                },
+            ],
             'birthday' => [
                 'class' => DateBuddhistBehavior::className(),
                 'dateAttribute' => 'birthday',

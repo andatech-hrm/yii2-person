@@ -1,112 +1,232 @@
 <?php
+
 use yii\helpers\Html;
-use andahrm\structure\models\Position;
-use andahrm\setting\models\WidgetSettings;
-use kartik\widgets\Select2;
-use yii\widgets\Pjax;
-
-use andahrm\structure\models\PersonType;
-use andahrm\structure\models\BaseSalary;
-use andahrm\structure\models\PositionLine;
-use andahrm\structure\models\Section;
-use kartik\widgets\DepDrop;
-use yii\web\JsExpression;
-use yii\helpers\Json;
-use kuakling\datepicker\DatePicker;
-
 use yii\helpers\Url;
+use yii\widgets\Pjax;
+use yii\grid\GridView;
+
+// use kartik\grid\GridView;
+// use kartik\export\ExportMenu;
 
 use andahrm\edoc\models\Edoc;
-use andahrm\edoc\models\EdocSearch;
+use andahrm\person\models\Person;
+use andahrm\structure\models\Position;
+use andahrm\positionSalary\models\PersonPositionSalary;
 
-$modelBase = new Position(['scenario'=>'search']);
-?>
-<?php
-$section_json = Json::encode(Section::getList());
-?>
-      
-    <div class="row">
-        <?= $form->field($model, "title", ['options' => ['class' => 'form-group col-sm-6']])->textInput() ?>
+use yii\bootstrap\Modal;
+/* @var $this yii\web\View */
+/* @var $searchModel andahrm\positionSalary\models\PersonPositionSalarySearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
-        <?php $positionInputId = Html::getInputId($model, 'position_id'); ?>
-        <?= $form->field($model, 'position_id', [
-            'options' => ['class' => 'form-group col-sm-6'],
-            'inputTemplate' => '{input}<div class="text-info" id="'.$positionInputId.'-prop" style="padding:3px;font-style: italic;"></div>'
-            ])->widget(Select2::className(), WidgetSettings::Select2([
-            'data' => Position::getListTitle(),
-            'pluginOptions' => [
-                'templateResult' => new JsExpression('formatPosition'),
-            ],
-            'pluginEvents' => [
-                "select2:select" => "function(event) { 
-                    var text = position_prop[event.target.value].type + ' / ' +
-                    position_prop[event.target.value].section + ' / ' +
-                    position_prop[event.target.value].positionLine
-                    \$('#".$positionInputId."-prop').text(text);
-                }",
-            ]
-        ]))
-        ?>
-    </div>
-    
-    <div class="row">
-        <?= $form->field($model, "level", ['options' => ['class' => 'form-group col-sm-2']])->textInput() ?>
-      
-        <?= $form->field($model, "salary", ['options' => ['class' => 'form-group col-sm-2']])->textInput()?>
-      
-        <?= $form->field($model, "status", ['options' => ['class' => 'form-group col-sm-2']])->dropDownlist($model->getItemStatus())?>
+$this->title = Yii::t('andahrm/position-salary', 'Person Position Salaries');
+$this->params['breadcrumbs'][] = $this->title;
+
+
+?>
+
+<div class="person-index">
+    <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
+        <i class="<?= $this->context->formSteps[$step]['icon']; ?>"></i> Step <?=$step?>.1 
+        <span class="text-muted"><?=Yii::t('andahrm/position-salary', 'Contracts')?></span>
+         <?= Html::button('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Contract'), [
+            'class' => 'pull-right btn btn-success btn-xs',
+            'data-pjax' => 0,
+            'data-toggle'=>"modal",
+            'data-target'=>"#{$modals['contract']->id}"
+        ]);?>
+    </h2> 
+    <?php $pjaxs['contract'] = Pjax::begin();?>
+    <?php
+    $columns = [
+        ['class' => 'yii\grid\SerialColumn'],
+        [
+            'attribute'=>'position_id',
+            'value' => 'position.code'
+        ],
+        'start_date:date',
+        'end_date:date',
+        'work_date:date',
+        [
+            'attribute'=>'edoc_id',
+            'format' => 'html',
+            'value' => 'edoc.codeTitle',
+        ],
+        // 'created_at',
+        // 'created_by',
+        // 'updated_at',
+        // 'updated_by',
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template'=>'{delete}',
+            'buttons'=>[
+              'delete' => function ($url, $model, $key) use($step) {
+                $options = [
+                    'title' => Yii::t('andatech', 'Delete'),
+                    'aria-label' => Yii::t('andatech', 'Delete'),
+                    'class' => 'btnDelete',
+                    //'data-pjax' => 1,
+                ];
+                if($model->formName() == "PersonContractOld"){
+                    $url = Url::toRoute(['delete-contract',
+                        'user_id' => $model->user_id,
+                        'position_id' => $model->position_id,
+                        'edoc_id' => $model->edoc_id,
+                        'step'=>$step,
+                        'old'=>true
+                    ]);
+                }else{
+                    $url = Url::toRoute(['delete-contract',
+                        'user_id' => $model->user_id,
+                        'position_id' => $model->position_id,
+                        'edoc_id' => $model->edoc_id,
+                        'step'=>$step,
+                    ]);
+                }
+                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url,$options);
+                }
+              ]
         
-        <?php
-            $edocInputTemplate = <<< HTML
-<div class="input-group">
-    {input}
-    <span class="input-group-btn">
-        <button type="button" class="btn btn-success" role="edoc" data-toggle="modal" data-target="#{$modals['edoc']->id}"><i class="fa fa-plus"></i></button>
-    </span>
+        ],
+        ];
+    echo  GridView::widget([
+        'dataProvider' => $dataProviderContract,
+        'columns' => $columns,
+    ]); ?>
+    <?php Pjax::end();?>
+    
+    <!--############################################################################-->
+    <!--############################################################################-->
+    <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
+        <i class="<?= $this->context->formSteps[$step]['icon']; ?>"></i> Step <?=$step?>.2
+        <span class="text-muted"><?= $this->context->formSteps[$step]['desc']; ?></span>
+        
+        <?= Html::button('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), [
+                    'class' => 'pull-right btn btn-success btn-xs',
+                    'data-pjax' => 0,
+                    'data-toggle'=>"modal",
+                    'data-target'=>"#{$modals['position-old']->id}"
+                ])  ?>
+        <?= Html::button('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position New'), [
+                    'class' => 'pull-right btn btn-success btn-xs',
+                    'data-pjax' => 0,
+                    'data-toggle'=>"modal",
+                    'data-target'=>"#{$modals['position']->id}"
+                ]);?>
+                
+    
+   
+    </h2> 
+    
+    
+    <?php $pjaxs['positionOld'] = Pjax::begin();?>
+    <?php
+    $columns = [
+      ['class' => 'yii\grid\SerialColumn'],
+      'adjust_date'=>'adjust_date:date',
+      'title',
+        [
+            'attribute'=>'position_id',
+            'value' => 'position.code'
+        ],
+        'level',
+        'salary:decimal',
+       [
+            'attribute'=>'edoc_id',
+            'format' => 'html',
+            'value' => 'edoc.codeTitle',
+        ],
+       ['class' => 'yii\grid\ActionColumn',
+       'template'=>'{delete}',
+       'buttons'=>[
+          'delete' => function ($url, $model, $key) use($step) {
+            $options = [
+                'title' => Yii::t('andatech', 'Delete'),
+                'aria-label' => Yii::t('andatech', 'Delete'),
+                'class' => 'btnDelete',
+                //'data-pjax' => 1,
+            ];
+            
+            if(isset($model->position_old_id)){
+                $url = Url::toRoute(['delete-position-old',
+                    'user_id' => $model->user_id,
+                    'position_id' => $model->position_id,
+                    'edoc_id' => $model->edoc_id,
+                    'step'=>$step,
+                ]);
+            }else{
+                $url = Url::toRoute(['delete-position',
+                    'user_id' => $model->user_id,
+                    'position_id' => $model->position_id,
+                    'edoc_id' => $model->edoc_id,
+                    'step'=>$step,
+                ]);
+            }
+                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url,$options);
+            }
+           ]
+       ],
+    ];
+    echo  GridView::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => $columns,
+    ]); ?>
+    <?php Pjax::end();?>
+    
+    
+    
+    
+    
 </div>
-HTML;
-?>
-            <?= $form->field($model, "edoc_id", [
-                'inputTemplate' => $edocInputTemplate,
-                'options' => [
-                    'class' => 'form-group col-sm-6'
-                ]
-            ])->widget(Select2::className(), WidgetSettings::Select2(['data' => Edoc::getList()])) ?>
-    </div>
-    
-    <h4 class="page-header" style="margin:15px 0 10px 0">สัญญาจ้าง</h4>
-    <?= $form->field($modelContract, "start_date", ['options' => ['class' => 'form-group col-sm-6']])->widget(DatePicker::className(), WidgetSettings::DatePicker())?>
-    
-    <?= $form->field($modelContract, "end_date", ['options' => ['class' => 'form-group col-sm-6']])->widget(DatePicker::className(), WidgetSettings::DatePicker())?>
-
 <?php
-$edocInputId = Html::getInputId($model, 'edoc_id');
-$jsHead[] = <<< JS
-function callbackEdoc(result)
-{   
-    $("#{$edocInputId}").append($('<option>', {
-        value: result.id,
-        text: result.code + ' - ' + result.title
-    }));
-    $("#{$edocInputId}").val(result.id).trigger('change.select2');
-    
-    $("#{$modals['edoc']->id}").modal('hide');
+$js[] = "
+$(document).on('click', '#btn-reload-grid', function(e){
+    e.preventDefault();
+    $.pjax.reload({container: '#data-grid-pjax'});
+});
+";
+$urlCreatePosition = Url::to(['/person/default/create-position'],true); 
+/*
+$js[] = <<< Js
+var urlCreate = "{$urlCreatePosition}";
+$(document).ready(function() {
+    // $("#{$modals['position']->id}").modal('show');
+    $('#{$modals['position']->id}').on('shown.bs.modal', function() {
+        
+        // var body = $(this).find('.modal-body');
+        // $.get(urlCreate,function(data){
+        //     $(body).html(data);
+        // });
+    });
+});
+
+Js;
+*/
+//$this->registerJs(implode("\n", $js));
+
+
+// $this->registerJs("
+// function initSelect2Loading(a,b){ initS2Loading(a,b); }
+// function initSelect2DropStyle(id, kvClose, ev){ initS2Open(id, kvClose, ev); }", 
+// $this::POS_HEAD);
+
+$js[] = <<< JS
+
+$('.btnDelete').click(function(){
+    //$.pjax.reload({container:"#{$pjaxs['positionOld']->id}"});
+});
+
+function callbackPosition(result){
+    //alert(result);
+    $.pjax.reload({container:"#{$pjaxs['positionOld']->id}"});
+     $("#{$modals['position-old']->id}").modal('hide');
+     $("#{$modals['position']->id}").modal('hide');
+}
+function callbackContract(result){
+    //alert(result);
+    $.pjax.reload({container:"#{$pjaxs['contract']->id}"});
+     $("#{$modals['contract']->id}").modal('hide');
 }
 JS;
+    
+$this->registerJs(implode("\n", $js));
 
-$position_prop = Json::encode(Position::getListProp());
-$jsHead[] = <<< JS
-var position_prop = $position_prop;
-function formatPosition (position) {
-    if (!position.id) { return position.text; }
-    var position = $(
-        '<span>' + position.text + '<br/><i style="opacity: 0.5">' + position_prop[position.element.value].type + ' / ' +
-        position_prop[position.element.value].section + ' / ' +
-        position_prop[position.element.value].positionLine +
-        '</i></span>'
-    );
-    return position;
-};
-JS;
-
-$this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);

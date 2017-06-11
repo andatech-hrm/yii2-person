@@ -4,6 +4,7 @@ use yii\helpers\ArrayHelper;
 use andahrm\setting\models\WidgetSettings;
 use kartik\widgets\Select2;
 use kuakling\datepicker\DatePicker;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $model andahrm\person\models\Child */
@@ -11,7 +12,12 @@ use kuakling\datepicker\DatePicker;
 // if($model->isNewRecord)
 ?>
 <div class="row">
-        <?= $form->field($model, 'citizen_id', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'citizen_id', [
+            'options' => ['class' => 'form-group col-sm-3']
+        ])->widget(
+            MaskedInput::className(),[
+            'mask' => '9-9999-99999-99-9'
+        ]) ?>
     
         <?= $form->field($model, 'name', ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
 

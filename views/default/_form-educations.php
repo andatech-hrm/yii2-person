@@ -35,11 +35,11 @@ use andahrm\setting\models\WidgetSettings;
     ]); ?>
     
     <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
-        <i class="<?= $this->context->formSteps[2]['icon']; ?>"></i> Step 2 
-        <span class="text-muted"><?= $this->context->formSteps[2]['desc']; ?></span>
+        <i class="<?= $this->context->formSteps[$step]['icon']; ?>"></i> Step <?=$step?> 
+        <span class="text-muted"><?= $this->context->formSteps[$step]['desc']; ?></span>
         <button type="button" class="pull-right educations-add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> Add Education</button>
-        <!--<div class="clearfix"></div>-->
-    </h2>
+    </h2> 
+    
         <div class="educations-container-items">
             <?php foreach ($models as $index => $model): ?>
             <div class="educations-item panel panel-default">

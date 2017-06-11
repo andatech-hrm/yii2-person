@@ -10,6 +10,12 @@ use andahrm\person\models\Person;
 
 ?>
 <div class="form-person">
+    
+    <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
+        <i class="<?= $this->context->formSteps[$step]['icon']; ?>"></i> Step <?=$step?>.1
+        <span class="text-muted"><?= Yii::t('andahrm/person','Basic Information'); ?></span>
+    </h2> 
+    
     <div class="row">
         <?= $form->field($model, 'citizen_id', [
             'options' => ['class' => 'form-group col-sm-8'],
@@ -47,14 +53,22 @@ use andahrm\person\models\Person;
     </div>
     
     
-    
     <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
-        <i class="<?= $this->context->formSteps[1]['icon']; ?>"></i> Step 1 
-        <span class="text-muted"><?= $this->context->formSteps[1]['desc']; ?></span>
-    </h2>
+        <i class="<?= $this->context->formSteps[$step]['icon']; ?>"></i> Step <?=$step?>.2
+        <span class="text-muted"><?= $this->context->formSteps[$step]['desc']; ?></span>
+    </h2> 
+    <!--<h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">-->
+    <!--    <i class="<?= $this->context->formSteps[1]['icon']; ?>"></i> Step 1 -->
+    <!--    <span class="text-muted"><?= $this->context->formSteps[1]['desc']; ?></span>-->
+    <!--</h2>-->
     
-    
-        <?= $form->field($modelUser, 'username',['enableAjaxValidation' => true ])->label(Yii::t('andahrm/person', 'Username'));?>
+        <?php 
+        if($modelUser->isNewRecord){
+            echo $form->field($modelUser, 'username',['enableAjaxValidation' => true ])->label(Yii::t('andahrm/person', 'Username'));
+         }else{
+            echo Html::activeLabel($modelUser,'username').' : '.$modelUser->username;
+        }
+        ?>
 
         <?= $form->field($modelUser, 'email',[ 'enableAjaxValidation' => true])->label(Yii::t('andahrm/person', 'Email'));?>
         

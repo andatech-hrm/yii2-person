@@ -14,7 +14,10 @@ use kuakling\datepicker\behaviors\DateBuddhistBehavior;
 use andahrm\setting\models\Helper;
 
 use andahrm\leave\models\LeavePermission; #mad
+use andahrm\positionSalary\models\PersonContract; #mad
+use andahrm\positionSalary\models\PersonContractOld; #mad
 use andahrm\positionSalary\models\PersonPositionSalary; #mad
+use andahrm\positionSalary\models\PersonPositionSalaryOld; #mad
 use andahrm\leave\models\LeaveRelatedPerson; #mad
 
 /**
@@ -411,9 +414,30 @@ class Person extends ActiveRecord
   *  Create by mad
   * เงินเดือนและตำแหน่ง
   */
+    public function getPersonContracts()
+    {
+        return $this->hasMany(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
+    }
+    
+    public function getPersonContractOlds()
+    {
+        return $this->hasMany(PersonContractOld::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
+    }
+    
     public function getPositionSalary()
     {
         return $this->hasOne(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_DESC]);
+    }
+    
+    public function getPositionSalaries()
+    {
+        return $this->hasMany(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_DESC]);
+    }
+    
+    
+    public function getPositionSalaryOlds()
+    {
+        return $this->hasMany(PersonPositionSalaryOld::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_DESC]);
     }
   
     /**
@@ -423,6 +447,11 @@ class Person extends ActiveRecord
     public function getPosition()
     {
         return $this->positionSalary?$this->positionSalary->position:null;
+    }
+    
+    public function getPositionOld()
+    {
+        return $this->positionSalaryOl?$this->positionSalary->position:null;
     }
   
     public function getPositionTitle()

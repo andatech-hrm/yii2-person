@@ -1,5 +1,5 @@
 <?php
-
+/*
 use yii\helpers\Html;
 
 //echo $step;
@@ -20,3 +20,47 @@ $disabledNext = ($step == count($formSteps))?' disabled':'';
          <?= Html::submitButton(Yii::t('andahrm', 'Next').' <i class="fa fa-arrow-right "></i>', ['name'=>'next','value'=>'next', 'class' => 'btn btn-default btn-success'.$disabledNext]); ?>
     </div>
 </nav>
+
+
+
+<?php
+*/
+
+use yii\helpers\Html;
+
+//echo $step;
+$disabledFinish = ($step==1)?' disabled':'';
+$btnFinishOptin['name']='finish';
+$btnFinishOptin['value']='finish';
+$btnFinishOptin['class']='btn btn-primary '.$disabledFinish;
+if($disabledFinish)
+$btnFinishOptin['disabled']=$disabledFinish;
+
+$disabledPrev = ($step==1)?' disabled':'';
+$btnPrevOptin['name']='prev';
+$btnPrevOptin['value']='prev';
+$btnPrevOptin['class']='btn btn-default '.$disabledPrev;
+if($disabledPrev)
+$btnPrevOptin['disabled']=$disabledPrev;
+
+$disabledNext = $step == count($formSteps)?'disabled':'';
+$btnNextOptin['name']='next';
+$btnNextOptin['value']='next';
+$btnNextOptin['class']='btn btn-success'.$disabledNext;
+if($disabledNext)
+$btnNextOptin['disabled']=$disabledNext;
+
+?>
+<nav class="navbar btn-toolbar sw-toolbar sw-toolbar-top">
+    <div class="btn-group navbar-btn sw-btn-group-extra pull-right" role="group">
+        <?= Html::submitButton('<i class="fa fa-flag-checkered"></i> '.Yii::t('andahrm', 'Finish'), $btnFinishOptin) ?>
+        <?= Html::a('<i class="fa fa-times"></i> '.Yii::t('andahrm', 'Cancel'),['/person'],['class'=>'btn btn-default']);?>
+    </div>
+    
+    <div class="btn-group navbar-btn sw-btn-group pull-right" role="group">
+         <?= Html::submitButton('<i class="fa fa-arrow-left "></i> '.Yii::t('andahrm', 'Prev'), $btnPrevOptin); ?>
+         <?= Html::submitButton(Yii::t('andahrm', 'Next').' <i class="fa fa-arrow-right "></i>', $btnNextOptin); ?>
+    </div>
+</nav>
+
+    

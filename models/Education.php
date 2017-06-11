@@ -110,6 +110,14 @@ class Education extends ActiveRecord
         ];
     }
     
+    public function attributeHints()
+    {
+        return [
+            'year_start' => Yii::t('andahrm/person', 'Buddhist Year ex.{year}',['year'=>(date('Y')+539)]),
+            'year_end' => Yii::t('andahrm/person', 'Buddhist Year ex.{year}',['year'=>(date('Y')+543)]),
+        ];
+    }
+    
     // public function afterFind()
     // {
     //     if(!empty($this->year_start)) {

@@ -68,6 +68,12 @@ Modal::end();
     <div class="x_content">
 
          <?php echo $form->field($model,'user_id')->hiddenInput()->label(false)->hint(false)->error(false);?>
+         
+          <?php echo $form->field($model,'adjust_date')->widget(DatePicker::classname(), [              
+          'options' => [
+            'daysOfWeekDisabled' => [0, 6],
+          ]
+        ]);
 
          <?php echo $form->field($model,'title',[
             'horizontalCssClasses' => [
@@ -76,11 +82,7 @@ Modal::end();
         ])->textInput();?>
  
 
-        <?php echo $form->field($model,'adjust_date')->widget(DatePicker::classname(), [              
-          'options' => [
-            'daysOfWeekDisabled' => [0, 6],
-          ]
-        ]);
+       
         ?>
 <?php
 // $positionInputTemplate = <<< HTML
