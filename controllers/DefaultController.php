@@ -985,6 +985,12 @@ Css;
                         'msg' => Yii::t('andahrm', 'Save operation completed.')
                     ]);
                     return $this->redirect(['create','step'=> $nextStep,'id' => $models['Person']->user_id]);
+            }elseif(isset($post['save']) && $post['save']){
+                    Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                    return $this->redirect(['create','step'=> $step,'id' => $models['Person']->user_id]);
             }elseif(isset($post['prev']) && $post['prev']){
                 Yii::$app->getSession()->setFlash('saved',[
                     'type' => 'success',

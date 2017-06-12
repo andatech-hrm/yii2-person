@@ -50,6 +50,13 @@ $btnNextOptin['class']='btn btn-success'.$disabledNext;
 if($disabledNext)
 $btnNextOptin['disabled']=$disabledNext;
 
+$disabledSave = $step == count($formSteps)?'disabled':'';
+$btnSaveOptin['name']='save';
+$btnSaveOptin['value']='save';
+$btnSaveOptin['class']='btn btn-default'.$disabledSave;
+if($disabledSave)
+$btnNextOptin['disabled']=$disabledSave;
+
 ?>
 <nav class="navbar btn-toolbar sw-toolbar sw-toolbar-top">
     <div class="btn-group navbar-btn sw-btn-group-extra pull-right" role="group">
@@ -59,6 +66,7 @@ $btnNextOptin['disabled']=$disabledNext;
     
     <div class="btn-group navbar-btn sw-btn-group pull-right" role="group">
          <?= Html::submitButton('<i class="fa fa-arrow-left "></i> '.Yii::t('andahrm', 'Prev'), $btnPrevOptin); ?>
+         <?= Html::submitButton('<i class="fa fa-floppy-o"></i> '.Yii::t('andahrm', 'Save'), $btnSaveOptin); ?>
          <?= Html::submitButton(Yii::t('andahrm', 'Next').' <i class="fa fa-arrow-right "></i>', $btnNextOptin); ?>
     </div>
 </nav>
