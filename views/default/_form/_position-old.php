@@ -173,7 +173,7 @@ HTML;
     <?php DynamicFormWidget::end(); ?>
     
      <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('andahrm', 'Create') : Yii::t('andahrm', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton( Yii::t('andahrm', 'Save') , ['class' =>  'btn btn-success' ]) ?>
     </div>
 </div>
 
