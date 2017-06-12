@@ -183,6 +183,7 @@ $(document).on('click', '#btn-reload-grid', function(e){
     e.preventDefault();
     $.pjax.reload({container: '#data-grid-pjax'});
 });
+$.fn.modal.Constructor.prototype.enforceFocus = $.noop;
 ";
 $urlCreatePosition = Url::to(['/person/default/create-position'],true); 
 /*

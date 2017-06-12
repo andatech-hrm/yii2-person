@@ -623,6 +623,7 @@ $('#{$modals[$mkey]->id}').on('show.bs.modal', function (e) {
                     [
                         'class' => 'yii\grid\ActionColumn',
                         'template' => '{update} {delete}',
+                        'contentOptions' => ['style' => 'white-space: nowrap;'],
                         'header' => Html::a('<i class="fa fa-plus"></i>', ['education-create', 'person_id' => $models['person']->user_id], [
                             'class' => 'btn btn-success btn-xs', 
                             'title' => Yii::t('andahrm/person', 'Add Education'),

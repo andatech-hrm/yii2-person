@@ -86,12 +86,14 @@ use kartik\widgets\FileInput;
                         ])->textInput();?>
                         
                          <?=$form->field($model, "[{$index}]position_old_id",[
-                             'options' => ['class' => 'form-group col-sm-2']
+                             'options' => ['class' => 'form-group col-sm-2','tab-index'=>false]
                              ])
                             ->widget(Select2::classname(),
                                 WidgetSettings::Select2([
                                     'data' => PositionOld::getList(),
+                                    'options'=>['tab-index'=>false],
                                     'pluginOptions' => [
+                                        'tab-index' => false,
                                         'tags' => true,
                                         'tokenSeparators' => [',', ' '],
                                         'maximumInputLength' => 10
