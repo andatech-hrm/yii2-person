@@ -97,7 +97,7 @@ use kartik\widgets\FileInput;
                                         'maximumInputLength' => 10
                                     ],
                                 ])
-                            )->hint(false); ?>
+                            ); ?>
                             
                         <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group col-sm-1']])
                         ->textInput();?>
