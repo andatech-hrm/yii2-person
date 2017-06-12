@@ -19,6 +19,7 @@ use andahrm\positionSalary\models\PersonContractOld; #mad
 use andahrm\positionSalary\models\PersonPositionSalary; #mad
 use andahrm\positionSalary\models\PersonPositionSalaryOld; #mad
 use andahrm\leave\models\LeaveRelatedPerson; #mad
+use andahrm\person\PersonApi;
 
 /**
  * This is the model class for table "person".
@@ -180,7 +181,8 @@ class Person extends ActiveRecord
     
     public function getCreatedBy()
     {
-        return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'created_by']);
+        //return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'created_by']);
+        return PersonApi::instance($this->created_by);
     }
     
     public function getUpdatedBy()

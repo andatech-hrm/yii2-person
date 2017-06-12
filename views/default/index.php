@@ -45,12 +45,20 @@ $columns = [
     'birthday' => 'birthday',
     'created_at' => 'created_at',
     'created_by' => 'created_by',
+    'created_by' => [
+        'attribute' => 'created_by',
+        'format' => 'html',
+        'value' => function($model) {
+            return $model->createdBy->fullname;
+        },
+    ],
     'updated_at' => 'updated_at',
     'updated_by' => 'updated_by',
 ];
 
 $gridColumns = [
     // $columns['user_id'],
+    ['class' => '\kartik\grid\SerialColumn'],
     $columns['citizen_id'],
     [
         'attribute' => 'fullname',
@@ -65,8 +73,9 @@ $gridColumns = [
             return $res;
         }
     ],
-    // $columns['contact'],
+    
     $columns['full_address_contact'],
+    $columns['created_by'],
     [
         'class' => '\kartik\grid\ActionColumn',
          'template' => '{view} {delete}',
