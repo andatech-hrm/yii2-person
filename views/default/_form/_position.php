@@ -50,7 +50,7 @@ use kartik\widgets\FileInput;
     
     <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
         <span class="text-muted"><?=Yii::t('andahrm/person', 'Position History')?></span>
-        <button type="button" class="pull-right positions_old-add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> <?=Yii::t('andahrm/person', 'Create Position')?></button>
+        <button type="button" class="pull-right positions_old-add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> <?=Yii::t('andahrm', 'Add List')?></button>
     </h2> 
     
         <div class="positions-container-items">
