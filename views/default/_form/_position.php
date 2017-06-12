@@ -132,14 +132,16 @@ HTML;
                                 'options' => ['class' => 'form-group col-sm-2']
                                 ])->textInput(['disabled'=>'disabled']);?>
                                 
-                                <?=$form->field($modelsEdoc[0],"[{$index}]title",[
-                                'options' => ['class' => 'form-group col-sm-4']
-                                ])->textInput(['disabled'=>'disabled']);?>
-                                
                                 <?=$form->field($modelsEdoc[0], "[{$index}]date_code",
                                 ['options' => ['class' => 'form-group col-sm-2 date_code']])
                                 ->widget(DatePicker::classname(), WidgetSettings::DatePicker(['options' => ['disabled'=>'disabled']]));
                                 ?>
+                                
+                                <?=$form->field($modelsEdoc[0],"[{$index}]title",[
+                                'options' => ['class' => 'form-group col-sm-4']
+                                ])->textInput(['disabled'=>'disabled']);?>
+                                
+                                
                                 
                                  <?= $form->field($modelsEdoc[0], "[{$index}]file",['options' => ['class' => 'form-group col-sm-4']])
                                  ->widget(FileInput::classname(), [
