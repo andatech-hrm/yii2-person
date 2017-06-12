@@ -37,7 +37,7 @@ use andahrm\setting\models\WidgetSettings;
     <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
         <i class="<?= $this->context->formSteps[$step]['icon']; ?>"></i> Step <?=$step?> 
         <span class="text-muted"><?= $this->context->formSteps[$step]['desc']; ?></span>
-        <button type="button" class="pull-right educations-add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> Add Education</button>
+        <button type="button" class="pull-right educations-add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> <?=Yii::t("andahrm/person","Add Education")?></button>
     </h2> 
     
         <div class="educations-container-items">
@@ -45,7 +45,7 @@ use andahrm\setting\models\WidgetSettings;
             <div class="educations-item panel panel-default">
                 <div class="panel-body"><button type="button" class="pull-right educations-remove-item btn btn-danger btn-xs"><i class="fa fa-minus"></i></button>
                     <h4 class="page-header green panel-title-educations" style="margin-top: 0">
-                        Education: <?= ($index + 1) ?>
+                        <?=Yii::t("andahrm/person","Education")?>: <?= ($index + 1) ?>
                         
                     </h4>
                     <div class="clearfix"></div>
@@ -86,17 +86,18 @@ function initSelect2Loading(a,b){ initS2Loading(a,b); }
 function initSelect2DropStyle(id, kvClose, ev){ initS2Open(id, kvClose, ev); }", 
 $this::POS_HEAD);
 
+$labelList = Yii::t("andahrm/person","Education");
 $js[] = <<< JS
 jQuery(".educations_dynamicform_wrapper").on('afterInsert', function(e, item) {
     $(item).find('.country select').val({$this->context->defaultCountryId}).trigger("change");
     jQuery(".educations_dynamicform_wrapper .panel-title-educations").each(function(index) {
-        jQuery(this).html("Education: " + (index + 1))
+        jQuery(this).html("{$labelList}: " + (index + 1))
     });
 });
 
 jQuery(".educations_dynamicform_wrapper").on("afterDelete", function(e) {
     jQuery(".educations_dynamicform_wrapper .panel-title-educations").each(function(index) {
-        jQuery(this).html("Education: " + (index + 1))
+        jQuery(this).html("{$labelList}: " + (index + 1))
     });
 });
 JS;

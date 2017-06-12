@@ -48,7 +48,10 @@ foreach ($this->context->formSteps as $key => $step) {
                 $this->render('../layouts/_nav-item-default', ['item' => $item, 'index' => $index, 'widget' => $this,'id'=>$this->context->user_id]),
                 ['class' => 'post'.$active.$done ]
             );
-        }, 'class' => 'nav nav-tabs step-anchor'])?>
+        },
+        'class' => 'nav nav-tabs step-anchor',
+        'style'=>'background: #fff;'
+        ])?>
        
    
    

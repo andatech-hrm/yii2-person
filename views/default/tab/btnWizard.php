@@ -50,12 +50,12 @@ $btnNextOptin['class']='btn btn-success'.$disabledNext;
 if($disabledNext)
 $btnNextOptin['disabled']=$disabledNext;
 
-$disabledSave = $step == count($formSteps)?'disabled':'';
+// $disabledSave = $step == count($formSteps)?'disabled':'';
 $btnSaveOptin['name']='save';
 $btnSaveOptin['value']='save';
-$btnSaveOptin['class']='btn btn-default'.$disabledSave;
-if($disabledSave)
-$btnNextOptin['disabled']=$disabledSave;
+$btnSaveOptin['class']='btn btn-default';
+// if($disabledSave)
+// $btnNextOptin['disabled']=$disabledSave;
 
 ?>
 <nav class="navbar btn-toolbar sw-toolbar sw-toolbar-top">
