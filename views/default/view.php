@@ -581,6 +581,9 @@ $('#{$modals[$mkey]->id}').on('show.bs.modal', function (e) {
             $educationDataProvider = new \yii\data\ActiveDataProvider([
                 'query' => $models['person']->getEducations(),
             ]);
+            ?>
+            <div class="table-responsive">
+            <?php
             echo \yii\grid\GridView::widget([
                 'dataProvider' => $educationDataProvider,
                 'summary'=>false,
@@ -641,6 +644,7 @@ $('#{$modals[$mkey]->id}').on('show.bs.modal', function (e) {
                 ],
             ]);
             ?>
+            </div>
             <?php XPanel::end(); ?>
         </div>
     </div><!-- end row -->

@@ -569,6 +569,9 @@ Css;
     
      public function actionCreatePosition($formAction=null,$id,$modal_edoc_id=null)
     {
+        // if(!$formAction){
+        //     $this->layout = 'view';
+        // }
         $modelsPosition = [new PersonPositionSalary(['user_id'=>$id])];
         $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
         $post = Yii::$app->request->post();
@@ -642,6 +645,9 @@ Css;
     
     public function actionCreatePositionOld($formAction=null,$id,$modal_edoc_id=null)
     {
+        // if(!$formAction){
+        //     $this->layout = 'view';
+        // }
         $modelsPosition = [new PersonPositionSalaryOld(['user_id'=>$id])];
         $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
         $post = Yii::$app->request->post();
