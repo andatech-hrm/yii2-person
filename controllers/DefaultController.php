@@ -665,8 +665,12 @@ Css;
                         $modelPosition->edoc_id = $modelsEdoc[$key]->id;
                         //exit();
                     }
+                    
                     //echo $modelPosition->edoc_id;
                     if($modelPosition->edoc_id){
+                        $modelPosition->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
+                            'code'=>$modelPosition->position_old_id
+                        ]);
                         if(!$modelPosition->getExists() && $modelPosition->save(false)){
                              $success = true;
                              $result = $modelPosition->attributes;
