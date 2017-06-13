@@ -121,7 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <table class="table-print">
        <tr class="body-labels-first">
             <th class="" >
-                <?=$modelPerson->getAttributeLabel('firstname'); ?>
+                <?=$modelPerson->getAttributeLabel('firstname_th'); ?>
                 <span class="text-underdot">
                     <?=$modelPerson->fullname ?>
                 </span>
