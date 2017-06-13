@@ -501,23 +501,18 @@ class DefaultController extends Controller
             }
         }
         
+        $options = [
+                'model' => $this->findModel($id),
+                'models' => $modelsPosition,
+                'modelsEdoc' => $modelsEdoc,
+                'formAction' => $formAction,
+                'modal_edoc_id' => $modal_edoc_id
+            ];
        
         if($formAction){
-            return $this->renderPartial('_form/_position', [
-                //'model' => $model,
-                'models' => $modelsPosition,
-                'modelsEdoc' => $modelsEdoc,
-                'formAction' => $formAction,
-                'modal_edoc_id' => $modal_edoc_id
-            ]);
+            return $this->renderPartial('_form/_position', $options);
         }else{
-            return $this->render('_form/_position', [
-                //'model' => $model,
-                'models' => $modelsPosition,
-                'modelsEdoc' => $modelsEdoc,
-                'formAction' => $formAction,
-                'modal_edoc_id' => $modal_edoc_id
-            ]);
+            return $this->render('_form/_position', $options);
         }
     }
     
@@ -581,23 +576,18 @@ class DefaultController extends Controller
             }
         }
         
+        $options = [
+                'model' => $this->findModel($id),
+                'models' => $modelsPosition,
+                'modelsEdoc' => $modelsEdoc,
+                'formAction' => $formAction,
+                'modal_edoc_id' => $modal_edoc_id
+            ];
        
         if($formAction){
-            return $this->renderPartial('_form/_position-old', [
-                //'model' => $model,
-                'models' => $modelsPosition,
-                'modelsEdoc' => $modelsEdoc,
-                'formAction' => $formAction,
-                'modal_edoc_id' => $modal_edoc_id
-            ]);
+            return $this->renderPartial('_form/_position-old', $options);
         }else{
-            return $this->render('_form/_position-old', [
-                //'model' => $model,
-                'models' => $modelsPosition,
-                'modelsEdoc' => $modelsEdoc,
-                'formAction' => $formAction,
-                'modal_edoc_id' => $modal_edoc_id
-            ]);
+            return $this->render('_form/_position-old', $options);
         }
     }
     

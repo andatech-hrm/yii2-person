@@ -13,6 +13,13 @@ use yii\bootstrap\ActiveForm;
 use kartik\widgets\FileInput;
 /* @var $this yii\web\View */
 
+if($formAction == null){
+$this->title = Yii::t('andahrm/person', 'Create Position Old');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->fullname, 'url' => ['view', 'id' => $model->user_id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Position'), 'url' => ['view-position', 'id' => $model->user_id]];
+$this->params['breadcrumbs'][] = $this->title;
+}
 ?>
 <?php 
   $formOptions['options'] = ['data-pjax' => ''];
