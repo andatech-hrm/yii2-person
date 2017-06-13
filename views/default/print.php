@@ -146,9 +146,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <span class="text-underdot">
                     <?=$modelPerson->birthday?Yii::$app->formatter->asDate($modelPerson->birthday,'long'):null; ?>
                 </span><br/>
-                <span class="text-underdot">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                (<?=$modelPerson->birthday ?>)
+                <span class="text-underdot">
+                (<?=Yii::$app->formatter->asSpellout(Yii::$app->formatter->asDate($modelPerson->birthday,"php:d")) ?>)
                 </span>
             </th>
             <th class="">
