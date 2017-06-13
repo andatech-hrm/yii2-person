@@ -14,6 +14,7 @@ use andahrm\person\PersonApi;
 <?php
 // $profile = $user->profile;
 // $person = Person::findOne($user->id);
+$user_id = Yii::$app->request->get('id');
 $person = PersonApi::instance(Yii::$app->request->get('id'));
 // print_r($person);
 // exit();
@@ -45,32 +46,47 @@ $module = $this->context->module->id;
             <h3><?= $person->getFullname(); ?></h3>
 
             <ul class="list-unstyled user_data">
+                <?php if($person->getAddress()):?>
                 <li>
                     <i class="fa fa-map-marker user-profile-icon"></i>
                     <?= $person->getAddress(); ?>
                 </li>
-
+                <?php endif;?>
+                 
+                <?php if($person->getPosition()):?>
                 <li>
                     <i class="fa fa-briefcase user-profile-icon"></i>
                     <?=$person->getPosition(); ?>
                 </li>
+                <?php endif;?>
+                
+                <?php if($person->getSection()):?>
                 <li>
                     <i class="fa fa-briefcase user-profile-icon"></i>
                     <?=$person->getSection(); ?>
                 </li>
+                <?php endif;?>
             </ul>
 
             <!-- <a class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Edit Profile</a> -->
-            
-            <?=Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print'),
-                 ['print','id'=>$person->_model->user_id], 
-                 [
-                        'class' => 'btn btn-default btn-flat',
+            <div class="raw">
+                <div class="col-sm-12">
+                    <?=Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print'),
+                         ['print','id'=>$person->_model->user_id], 
+                         [
+                                'class' => 'btn btn-default btn-block ',
+                                'target' => '_blank',
+                                'data-pjax' => 0
+                        ]);
+                    ?>
+                     <?=Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print Position Histories'), ['print-position','id'=>$user_id], [
+                        'class' => 'btn btn-default btn-block',
                         'target' => '_blank',
                         'data-pjax' => 0
-                ]);
-            ?>
-            </div>
+                    ]) ?>
+                </div>  
+            </div>  
+    </div>
 <?php
 $js[] = <<< JS
 $('#veiw_sidebar').on('affix.bs.affix', function(){

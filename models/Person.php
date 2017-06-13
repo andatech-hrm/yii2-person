@@ -411,11 +411,17 @@ class Person extends ActiveRecord
     {
         return $this->hasOne(LeaveRelatedPerson::className(), ['user_id' => 'user_id']);
     }
+    
+    /**
+     * สัญญาจ้าง
+     * 
+     */ 
+    public function getPersonContract()
+    {
+        return $this->hasMany(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
+    }
   
-  /**
-  *  Create by mad
-  * เงินเดือนและตำแหน่ง
-  */
+ 
     public function getPersonContracts()
     {
         return $this->hasMany(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
@@ -425,6 +431,11 @@ class Person extends ActiveRecord
     {
         return $this->hasMany(PersonContractOld::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
     }
+    
+     /**
+  *  Create by mad
+  * เงินเดือนและตำแหน่ง
+  */
     
     public function getPositionSalary()
     {

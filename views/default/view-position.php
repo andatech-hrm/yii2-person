@@ -213,13 +213,7 @@ $fullExportMenu = ExportMenu::widget([
                 Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$user_id], [
                     'class' => 'btn btn-success btn-flat',
                     'data-pjax' => 0
-                ]) . ' '.
-                Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print Position Histories'), ['print-position','id'=>$user_id], [
-                    'class' => 'btn btn-default btn-flat',
-                    'target' => '_blank',
-                    'data-pjax' => 0
-                ]) . ' '.
-                ' ',
+                ])                ,
                 'heading'=>false,
                 //'footer'=>false,
         ],

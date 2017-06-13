@@ -1550,10 +1550,12 @@ class DefaultController extends Controller
         ]);
 
         
-        $rowNum = 8;
+        $rowNum[0] = 10;
+        $rowNum[1] = 9;
+        $rowNum[2] = 9;
         $dataDefect = [];
         $modelDefect = Defect::find()->where(['user_id'=>$id])->all();
-        for($i = 0;$i<=$rowNum;$i++ ){
+        for($i = 0;$i<=$rowNum[0];$i++ ){
              //$dataDefect[$i] = null;
             if(isset($modelDefect[$i])){
                 $dataDefect[$i] = $modelDefect[$i];
@@ -1564,6 +1566,7 @@ class DefaultController extends Controller
         // exit();
         
         $content = $this->renderPartial('print', [
+        //return $this->renderPartial('print', [
         //$content = $this->renderAjax('print', [
             'rowNum' => $rowNum,
             'dataDefect' => $dataDefect,
@@ -1585,6 +1588,9 @@ $css = <<< Css
     .table-print th.cell-right,.table-print td.cell-right{ border-right: none; }
     .table-print tr td{ border-bottom: #000 1px dotted; }
     .header-labels th{border-top:#000 1px solid; border-bottom:#000 1px solid;}
+    .body-labels-first th{border-top:#000 1px solid;border-bottom:#000 1px solid; line-height: 1;}
+    .body-labels th{ border-bottom:#000 1px solid;line-height: 1;}
+    .text-underdot{ display:inline-block; padding:5px 5px; margin-bottom:5px; border-bottom: #000 1px dotted;width:auto;}
 Css;
         
         $pdf = new Pdf([

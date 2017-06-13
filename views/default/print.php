@@ -23,7 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <p class="text-center"><b>
-    ๑๑. การได้รับโทษทางวินัย
+    <!--๑๑. การได้รับโทษทางวินัย-->
+    <?=Yii::t('andahrm/person','11. Punishment')?>
 </b></p>
 <table class="table-print">
         <thead>
@@ -43,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             <?php endforeach; ?>
             <?php 
-                for($i=0;$i<=($rowNum-count($dataDefect));$i++) : ?>
+                for($i=0;$i<=($rowNum[0]-count($dataDefect));$i++) : ?>
                 <tr>
                     <td></td>
                     <td></td>
@@ -56,7 +57,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <p class="text-center"><b>
-    ๑๑. การได้รับโทษทางวินัย
+    <!--๑๒. วันที่ไม่ได้รับเงินเดือนหรือได้รับเงินเดือนไม่เติม หรือวันที่มิได้ประจำปฎิบัติหน้าที่อยู่ในเขตที่ได้มีประกาศใช้กฎอัยการศึก-->
+    <?=Yii::t('andahrm/person','12. Do not get a salary or get a salary')?>
 </b></p>
 <table class="table-print">
         <thead>
@@ -76,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             <?php endforeach; ?>
             <?php 
-                for($i=0;$i<=($rowNum-count($dataDefect));$i++) : ?>
+                for($i=0;$i<=($rowNum[1]-count($dataDefect));$i++) : ?>
                 <tr>
                     <td></td>
                     <td></td>
@@ -85,4 +87,189 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php endfor; ?>
         </tbody>
     </table>
+    
+    
+    
+    
+<!--33333333333333333333333333-->
+    <br />
+    
+    
+    
+<table>
+    <tr>
+        <td width="350">
+            <!-- กระทรวง -->
+            <?=Yii::t('andahrm/person','ministry')?>
+            <span class="text-underdot">
+                
+            </span>
+        </td>
+        <td width="350">
+            <!-- กรม -->
+            <?=Yii::t('andahrm/person','department')?>
+             <span class="text-underdot">
+                
+            </span>
+        </td>
+        <td >
+            <?=Yii::t('andahrm/person','kopo7')?>
+        </td>
+    </tr>
+</table>
 
+<table class="table-print">
+       <tr class="body-labels-first">
+            <th class="" >
+                <?=$modelPerson->getAttributeLabel('firstname'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->fullname ?>
+                </span>
+            </th>
+            <th class="" style="width: 5cm;">
+                <?=Yii::t('andahrm/person', 'Spouse'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->peopleSpouse->fullname ?>
+                </span>
+            </th>
+            <th class=" cell-right" style="width: 5cm;">
+                <?=$modelPerson->getAttributeLabel('personContract.start_date'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->personContract?$modelPerson->personContract->start_date:null ?>
+                </span>
+            </th>
+        </tr>
+        
+        <tr class="body-labels">
+            <th class="" >
+                <?=$modelPerson->getAttributeLabel('birthday'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->birthday ?>
+                </span>
+            </th>
+            <th class="">
+                <?=Yii::t('andahrm/person', 'Father'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->fullname ?>
+                </span>
+            </th>
+            <th class="cell-right" style="width: 5cm;">
+               <?=$modelPerson->getAttributeLabel('personContract.work_date'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->personContract?$modelPerson->personContract->work_date:null ?>
+                </span>
+            </th>
+        </tr>
+        
+        <tr class="body-labels">
+            <th class="" >
+                <?=$modelPerson->getAttributeLabel('personContract.end_date'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->personContract?$modelPerson->personContract->end_date:null ?>
+                </span>
+            </th>
+            <th class="">
+                <?=Yii::t('andahrm/person', 'Mother'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->fullname ?>
+                </span>
+            </th>
+            <th class="cell-right" >
+               <?=Yii::t('andahrm/structure', 'Goverment Type'); ?>
+                <span class="text-underdot">
+                    <?=$modelPerson->fullname ?>
+                </span>
+            </th>
+        </tr>
+</table>
+
+<!--444444444444444444444-->
+
+<p class="text-center"><b>
+    <!--๑๐. ประวัติการศึกษา ฝึกอบรมและดูงาน-->
+    <?=Yii::t('andahrm/person','10. history of education Train and watch')?>
+</b></p>
+
+
+
+<table class="table-print">
+        <thead>
+            <tr class="header-labels">
+                <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/position-salary', 'Adjust Date'); ?></th>
+                <th class="text-center"><?= Yii::t('andahrm/position-salary', 'Title'); ?></th>
+                <th class="text-center"><?= Yii::t('andahrm/position-salary', 'Title'); ?></th>
+                <th class="text-center" style="width: 0.5cm;" > </th>
+                <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/position-salary', 'Adjust Date'); ?></th>
+                <th class="text-center"><?= Yii::t('andahrm/position-salary', 'Title'); ?></th>
+                <th class="text-center cell-right" ><?= Yii::t('andahrm/position-salary', 'Edoc ID'); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+           
+            <?php foreach($dataDefect as $key => $model): ?>
+                <tr>
+                    <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
+                    <td><?= $model->title; ?></td>
+                    <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
+                    <td></td>
+                    <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
+                    <td><?= $model->title; ?></td>
+                    <td class="cell-right"><?= $model->edoc->title; ?></td>
+                </tr>
+            <?php endforeach; ?>
+            <?php 
+                for($i=0;$i<=($rowNum[2]-count($dataDefect));$i++) : ?>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-right"></td>
+                </tr>
+            <?php endfor; ?>
+        </tbody>
+    </table>
+    
+    
+    
+    
+    
+    <!--55555555555555555555555-->
+    <br/>
+    <table >
+        <tbody>
+            <tr >
+                <td class="text-center" width="350" style="vertical-align: top;">
+                    <p>
+                        (ลงชื่อ)
+                        ..............................................................................................
+                    </p>
+                    <p>
+                        (เจ้าของประวัติ)
+                    </p>
+                    <p>....................../...................../.....................</p>
+                </td>
+                
+                <td class="text-center" style="vertical-align: top;padding-left:30px;">
+                    <p>
+                        (ลงชื่อ)
+                        ..............................................................................................
+                    </p>
+                    <p>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        (..............................................................................................)
+                    </p>
+                    <p>
+                        ตำแหน่ง
+                        ............................................................................................
+                    </p>
+                    <p>
+                       หัวหน้าส่วนราชการหรือผู้ที่หัวหน้าส่วนราชการมอบหมาย
+                    </p>
+                    <p>....................../...................../.....................</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
