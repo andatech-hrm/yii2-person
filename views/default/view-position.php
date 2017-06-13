@@ -66,7 +66,7 @@ $gridColumns = [
     $columns['title'],
     $columns['position_id'],   
     $columns['edoc_id'], 
-    //['class' => '\kartik\grid\ActionColumn',]
+   
 ];
 
 $columns = [
@@ -84,7 +84,7 @@ $columns = [
         'attribute'=>'edoc_id',
         'filter' => Edoc::getList(),
         'format' => 'html',
-        'value' => 'edoc.codeTitle',
+        'value' => 'edoc.codeDateTitleFile',
   //'group'=>true,
     ],
   'user_id'=> [
@@ -123,7 +123,36 @@ $gridColumns = [
     //$columns['status'],
     $columns['level'],
     $columns['salary'],
-    $columns['edoc_id'],   
+    $columns['edoc_id'],
+    ['class' => '\kartik\grid\ActionColumn',
+    'template'=>"{delete}",
+    'buttons'=>[
+        'delete' => function ($url, $model, $key) {
+            $options = [
+                'title' => Yii::t('andatech', 'Delete'),
+                'aria-label' => Yii::t('andatech', 'Delete'),
+                'class' => 'btnDelete',
+                //'data-pjax' => 1,
+            ];
+            
+            if($model->formName() == 'PersonPositionSalaryOld' && isset($model->position_old_id)){
+                $url = Url::toRoute(['delete-position-old',
+                    'user_id' => $model->user_id,
+                    'position_id' => $model->position_old_id,
+                    'edoc_id' => $model->edoc_id,
+                ]);
+            }else{
+                $url = Url::toRoute(['delete-position',
+                    'user_id' => $model->user_id,
+                    'position_id' => $model->position_id,
+                    'edoc_id' => $model->edoc_id
+                ]);
+            }
+                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url,$options);
+            }
+        ]
+    
+    ]
 ];
 
 $fullExportMenu = ExportMenu::widget([
@@ -182,7 +211,7 @@ $fullExportMenu = ExportMenu::widget([
                     'class' => 'btn btn-success btn-flat',
                     'data-pjax' => 0
                 ]) . ' '.
-                Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print'), ['print-position','id'=>$user_id], [
+                Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print Position Histories'), ['print-position','id'=>$user_id], [
                     'class' => 'btn btn-default btn-flat',
                     'target' => '_blank',
                     'data-pjax' => 0

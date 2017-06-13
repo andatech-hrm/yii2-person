@@ -86,14 +86,14 @@ use kartik\widgets\FileInput;
                         ])->textInput();?>
                         
                          <?=$form->field($model, "[{$index}]position_old_id",[
-                             'options' => ['class' => 'form-group col-sm-2','tab-index'=>false]
+                             'options' => ['class' => 'form-group col-sm-2']
                              ])
                             ->widget(Select2::classname(),
                                 WidgetSettings::Select2([
                                     'data' => PositionOld::getList(),
-                                    'options'=>['tab-index'=>false],
+                                    //'options'=>['tab-index'=>false],
                                     'pluginOptions' => [
-                                        'tab-index' => false,
+                                        //'tab-index' => false,
                                         'tags' => true,
                                         'tokenSeparators' => [',', ' '],
                                         'maximumInputLength' => 10
@@ -110,7 +110,7 @@ use kartik\widgets\FileInput;
 $edocInputTemplate = <<< HTML
 <div class="input-group">
     {input}
-    <span class="input-group-addon btn btn-success new_edoc" data-key="{$index}">
+    <span class="input-group-addon btn btn-success new_edoc_old" data-key="{$index}">
         <i class="fa fa-plus"></i>
     </span>
 </div>
@@ -118,18 +118,19 @@ HTML;
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,
-                             'options' => ['class' => 'form-group col-sm-3'
-                             ]])
-                         ->widget(Select2::className(), WidgetSettings::Select2(['data' => Edoc::getList()]));
+                             'options' => ['class' => 'form-group col-sm-3','id'=>'edoc_id_old']])
+                             ->widget(Select2::className(), 
+                             WidgetSettings::Select2([
+                                 'data' => Edoc::getList(),
+                            ]));
                         ?>
                     </div>
                     
                         <div class="row">
                             <?php #= $form->errorSummary($modelsEdoc); ?>
                             
-                            <?=$form->field($model,"[{$index}]new_edoc")->hiddenInput()->label(false);?>
                             
-                            <div class="new_edoc_area" data-key="<?=$index?>" style="display:none;">
+                            <div class="new_edoc_old_area" data-key="<?=$index?>" style="display:none;">
                                 
                                 <?=$form->field($modelsEdoc[0],"[{$index}]code",[
                                 'options' => ['class' => 'form-group col-sm-2']
@@ -191,7 +192,7 @@ $this::POS_HEAD);
 
 $listLabel = Yii::t('andahrm', 'List');
 $js[] = <<< JS
-bindBtnAddEdoc();
+bindBtnAddEdocOld();
 jQuery(".positions_old_dynamicform_wrapper").on('afterInsert', function(e, item) {
     
     
@@ -214,9 +215,9 @@ jQuery(".positions_old_dynamicform_wrapper").on('afterInsert', function(e, item)
     $(".positions_old_dynamicform_wrapper .panel-title-positions_old").each(function(index) {
         jQuery(this).html("{$listLabel}: " + (index + 1));
     });
+     //alert(555);
     
-    
-    bindBtnAddEdoc();
+    bindBtnAddEdocOld();
     
 });
 
@@ -227,12 +228,12 @@ jQuery(".positions_old_dynamicform_wrapper").on("afterDelete", function(e) {
 });
 
 
-function bindBtnAddEdoc(){
-    $(".positions_old_dynamicform_wrapper .new_edoc").each(function(index) {
+function bindBtnAddEdocOld(){
+   console.log(555);
+    $(".positions_old_dynamicform_wrapper #edoc_id_old .new_edoc_old").each(function(index) {
         $(this).attr('data-key',index);
         //var key = index;
-        var area = $(".positions_old_dynamicform_wrapper .new_edoc_area:eq("+index+")").attr('data-key',index);
-        
+        var area = $(".positions_old_dynamicform_wrapper .new_edoc_old_area:eq("+index+")").attr('data-key',index);
         
         $(this).unbind('click');
         $(this).bind('click',function(){

@@ -544,15 +544,20 @@ Css;
     
     public function actionDeletePosition($user_id,$position_id,$edoc_id,$step=null){
         $model = PersonPositionSalary::find()
-        ->where(['user_id'=>$user_id,'position_old_id'=>$position_id,'edoc_id'=>$edoc_id])->one();
+        ->where(['user_id'=>$user_id,'position_id'=>$position_id,'edoc_id'=>$edoc_id])->one();
         if($model->delete()){
             if(Yii::$app->request->isAjax && $step){
                return $this->redirect(['create','id'=>$user_id,'step'=>$step]);
+            }elseif(Yii::$app->request->isAjax){
+                return ['success'=>true,'result'=>$model];
             }else{
                return $this->redirect(['view-position','id'=>$user_id]);
             }
         }
     }
+    
+    
+    
     
     public function actionDeletePositionOld($user_id,$position_id,$edoc_id,$step=null){
         $model = PersonPositionSalaryOld::find()
