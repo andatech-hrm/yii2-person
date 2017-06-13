@@ -227,7 +227,7 @@ class DefaultController extends Controller
     public function actionViewPosition($id)
     {
         $this->layout = 'view';
-        
+        $models['person'] = $this->findModel($id);
         // $searchModel = new \andahrm\positionSalary\models\PersonPositionSalarySearch();
         // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         // $dataProvider->query->where(['user_id'=>$id]);
@@ -251,6 +251,7 @@ class DefaultController extends Controller
         ]);
 
         return $this->render('view-position', [
+            'models'=>$models,
             //'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'user_id' => $id
@@ -259,171 +260,45 @@ class DefaultController extends Controller
         // echo Yii::$app->runAction('profile/position/index');
     }
     
-    
-    public function actionPrint($id)
-    {
-        
-        //$ss = \andahrm\person\assets\PrintAsset::register($this);
-        
-        $this->layout = 'view';
-        
-        $modelPerson =$this->findModel($id);
-        
-        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
-            ->orderBy(['adjust_date'=> SORT_ASC])
-            ->all();
-        $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
-            ->orderBy(['adjust_date'=> SORT_ASC])
-            ->all();
-        
-        $data = ArrayHelper::merge($modelPositionOld,$modelPosition);
-
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $data,
-            'pagination' => false,
-            'sort' => [
-                'attributes' => ['adjust_date' => SORT_ASC],
-            ],
-        ]);
-
-        
-        $rowNum = 8;
-        $dataDefect = [];
-        $modelDefect = Defect::find()->where(['user_id'=>$id])->all();
-        for($i = 0;$i<=$rowNum;$i++ ){
-             //$dataDefect[$i] = null;
-            if(isset($modelDefect[$i])){
-                $dataDefect[$i] = $modelDefect[$i];
-            }
-        }
-        // echo "<pre>";
-        // print_r($dataDefect);
-        // exit();
-        
-        $content = $this->renderPartial('print', [
-        //$content = $this->renderAjax('print', [
-            'rowNum' => $rowNum,
-            'dataDefect' => $dataDefect,
-            'dataProvider' => $dataProvider,
-            'modelPerson' => $modelPerson,
-            'user_id' => $id
-        ]);
-        
-$css = <<< Css
-    @page *{
-        margin-top: 2.54cm;
-        margin-bottom: 2.54cm;
-        margin-left: 0cm;
-        margin-right: 0cm;
-    }
-    body{padding:0px;margin:0px;}
-    .table-print{ width: 100%; border-spacing: 0px; }
-    .table-print th, .table-print td {border-right: #000 1px solid; padding: 8px;line-height: 0.5;vertical-align: top;}
-    .table-print th.cell-right,.table-print td.cell-right{ border-right: none; }
-    .table-print tr td{ border-bottom: #000 1px dotted; }
-    .header-labels th{border-top:#000 1px solid; border-bottom:#000 1px solid;}
-Css;
-        
-        $pdf = new Pdf([
-            'mode' => Pdf::MODE_UTF8,
-            // A4 paper format
-            'format' => Pdf::FORMAT_A4,
-            // portrait orientation
-            'orientation' => Pdf::ORIENT_PORTRAIT,
-            // stream to browser inline
-            'destination' => Pdf::DEST_BROWSER,
-            // your html content input
-            'content' => $content,
-            // format content from your own css file if needed or use the
-            // enhanced bootstrap css built by Krajee for mPDF formatting
-            // 'cssFile' => '@frontend/web/css/pdf.css',
-            //'cssFile' => '@andahrm/person/views/print/print.css',
-            // any css to be embedded if required
-            /*'cssInline' => '.table-print {width: 100%; border-spacing: 0px;}
-                .table-print th, .table-print td{border-right: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
-                .table-print thead th,{border-top:#000 1px solid;border-bottom:#000 1px solid;}
-                .table-print th:nth-child(1), .table-print td:nth-child(1){border-left:#000 1px solid;}',*/
-            'cssInline' => $css,
-            // set mPDF properties on the fly
-            'options' => ['title' => $this->getView()->title.': '.$modelPerson->fullname],
-            // call mPDF methods on the fly
-            'methods' => [
-                'SetHeader'=>false,
-                'SetFooter'=>false,
-            ]
-            
-        ]);
-        //echo $content;
-        return $pdf->render();
-        
-    }
-    
-    
-    public function actionPrintPosition($id)
+      public function actionViewDevelopment($id)
     {
         $this->layout = 'view';
+        $models['person'] = $this->findModel($id);
         
-        $modelPerson =$this->findModel($id);
-        
-        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
-            ->orderBy(['adjust_date'=> SORT_ASC])
-            ->all();
-        $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
-            ->orderBy(['adjust_date'=> SORT_ASC])
-            ->all();
-        
-        $data = ArrayHelper::merge($modelPositionOld,$modelPosition);
+        $searchModel = new \andahrm\profile\models\SelfDevelopmentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->where(['user_id'=>$id]);
+        //$dataProvider->sort->defaultOrder = ['development_project.start'=>SORT_DESC];
 
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $data,
-            'pagination' => false,
-            'sort' => [
-                'attributes' => ['adjust_date' => SORT_ASC],
-            ],
-        ]);
-
-        $content = $this->renderPartial('print-position', [
+        return $this->render('view-development', [
+            'models'=>$models,
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'modelPerson' => $modelPerson,
-            'user_id' => $id
         ]);
-        
-        $pdf = new Pdf([
-            'mode' => Pdf::MODE_UTF8,
-            // A4 paper format
-            'format' => Pdf::FORMAT_A4,
-            // portrait orientation
-            'orientation' => Pdf::ORIENT_PORTRAIT,
-            // stream to browser inline
-            'destination' => Pdf::DEST_BROWSER,
-            // your html content input
-            'content' => $content,
-            // format content from your own css file if needed or use the
-            // enhanced bootstrap css built by Krajee for mPDF formatting
-            // 'cssFile' => '@frontend/web/css/pdf.css',
-            // any css to be embedded if required
-            /*'cssInline' => '.table-print {width: 100%; border-spacing: 0px;}
-                .table-print th, .table-print td{border-right: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
-                .table-print thead th,{border-top:#000 1px solid;border-bottom:#000 1px solid;}
-                .table-print th:nth-child(1), .table-print td:nth-child(1){border-left:#000 1px solid;}',*/
-            'cssInline' => '
-                .table-print{width: 100%; border-spacing: 0px;border-bottom: #000 1px solid;}
-                .table-print td, .table-print th{border-left: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
-                .table-print .cell-right{border-right: #000 1px solid;}
-                .header-labels th{border-top:#000 1px solid; border-bottom:#000 1px solid;}
-            ',
-            // set mPDF properties on the fly
-            'options' => ['title' => $this->getView()->title.': '.$modelPerson->fullname],
-            // call mPDF methods on the fly
-            'methods' => [
-                'SetHeader'=>['{PAGENO} / {nb}'],
-                'SetFooter'=>[Yii::$app->user->identity->username.' '.Yii::$app->formatter->asDateTime('NOW')],
-            ]
-        ]);
-        
-        return $pdf->render();
-        
     }
+    
+      public function actionViewPrestige($id)
+    {
+        $this->layout = 'view';
+        $models['person'] = $this->findModel($id);
+        $searchModel = new \andahrm\insignia\models\InsigniaPersonSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->where(['user_id'=>$id]);
+        // $dataProvider->sort->defaultOrder = [
+        //     'year'=>SORT_DESC
+        //     ];
+
+       
+        
+        //$dataProvider->sort->defaultOrder = ['development_project.start'=>SORT_DESC];
+
+        return $this->render('view-prestige', [
+            'models'=>$models,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+    
     
     /*
     public function actionCreatePosition($formAction=null,$id)
@@ -555,8 +430,6 @@ Css;
             }
         }
     }
-    
-    
     
     
     public function actionDeletePositionOld($user_id,$position_id,$edoc_id,$step=null){
@@ -849,41 +722,9 @@ Css;
         }
     }
     
-    public function actionViewDevelopment($id)
-    {
-        $this->layout = 'view';
-        
-        $searchModel = new \andahrm\profile\models\SelfDevelopmentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->where(['user_id'=>$id]);
-        //$dataProvider->sort->defaultOrder = ['development_project.start'=>SORT_DESC];
-
-        return $this->render('view-development', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
-        ]);
-    }
+  
     
-    public function actionViewPrestige($id)
-    {
-        $this->layout = 'view';
-        
-        $searchModel = new \andahrm\insignia\models\InsigniaPersonSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->where(['user_id'=>$id]);
-        // $dataProvider->sort->defaultOrder = [
-        //     'year'=>SORT_DESC
-        //     ];
-
-       
-        
-        //$dataProvider->sort->defaultOrder = ['development_project.start'=>SORT_DESC];
-
-        return $this->render('view-prestige', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
-        ]);
-    }
+  
     
     
     public function actionViewKp($id)
@@ -1611,10 +1452,6 @@ Css;
         return $this->redirect(['view', 'id' => $person_id]);
     }
     
-    
-    
-    
-    
     public function actionPhotoCreate($id)
     {
         $model = new Photo();
@@ -1694,6 +1531,171 @@ Css;
             $username .=(isset($char[$index])?$char[$index]:$index);
          }
          return $username;
+    }
+    
+    public function actionPrint($id)
+    {
+        
+        //$ss = \andahrm\person\assets\PrintAsset::register($this);
+        
+        $this->layout = 'view';
+        
+        $modelPerson =$this->findModel($id);
+        
+        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
+            ->orderBy(['adjust_date'=> SORT_ASC])
+            ->all();
+        $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
+            ->orderBy(['adjust_date'=> SORT_ASC])
+            ->all();
+        
+        $data = ArrayHelper::merge($modelPositionOld,$modelPosition);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => false,
+            'sort' => [
+                'attributes' => ['adjust_date' => SORT_ASC],
+            ],
+        ]);
+
+        
+        $rowNum = 8;
+        $dataDefect = [];
+        $modelDefect = Defect::find()->where(['user_id'=>$id])->all();
+        for($i = 0;$i<=$rowNum;$i++ ){
+             //$dataDefect[$i] = null;
+            if(isset($modelDefect[$i])){
+                $dataDefect[$i] = $modelDefect[$i];
+            }
+        }
+        // echo "<pre>";
+        // print_r($dataDefect);
+        // exit();
+        
+        $content = $this->renderPartial('print', [
+        //$content = $this->renderAjax('print', [
+            'rowNum' => $rowNum,
+            'dataDefect' => $dataDefect,
+            'dataProvider' => $dataProvider,
+            'modelPerson' => $modelPerson,
+            'user_id' => $id
+        ]);
+        
+$css = <<< Css
+    @page *{
+        margin-top: 2.54cm;
+        margin-bottom: 2.54cm;
+        margin-left: 0cm;
+        margin-right: 0cm;
+    }
+    body{padding:0px;margin:0px;}
+    .table-print{ width: 100%; border-spacing: 0px; }
+    .table-print th, .table-print td {border-right: #000 1px solid; padding: 8px;line-height: 0.5;vertical-align: top;}
+    .table-print th.cell-right,.table-print td.cell-right{ border-right: none; }
+    .table-print tr td{ border-bottom: #000 1px dotted; }
+    .header-labels th{border-top:#000 1px solid; border-bottom:#000 1px solid;}
+Css;
+        
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            // your html content input
+            'content' => $content,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            // 'cssFile' => '@frontend/web/css/pdf.css',
+            //'cssFile' => '@andahrm/person/views/print/print.css',
+            // any css to be embedded if required
+            /*'cssInline' => '.table-print {width: 100%; border-spacing: 0px;}
+                .table-print th, .table-print td{border-right: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
+                .table-print thead th,{border-top:#000 1px solid;border-bottom:#000 1px solid;}
+                .table-print th:nth-child(1), .table-print td:nth-child(1){border-left:#000 1px solid;}',*/
+            'cssInline' => $css,
+            // set mPDF properties on the fly
+            'options' => ['title' => $this->getView()->title.': '.$modelPerson->fullname],
+            // call mPDF methods on the fly
+            'methods' => [
+                'SetHeader'=>false,
+                'SetFooter'=>false,
+            ]
+            
+        ]);
+        //echo $content;
+        return $pdf->render();
+        
+    }
+    
+    
+    public function actionPrintPosition($id)
+    {
+        $this->layout = 'view';
+        
+        $modelPerson =$this->findModel($id);
+        
+        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
+            ->orderBy(['adjust_date'=> SORT_ASC])
+            ->all();
+        $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
+            ->orderBy(['adjust_date'=> SORT_ASC])
+            ->all();
+        
+        $data = ArrayHelper::merge($modelPositionOld,$modelPosition);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => false,
+            'sort' => [
+                'attributes' => ['adjust_date' => SORT_ASC],
+            ],
+        ]);
+
+        $content = $this->renderPartial('print-position', [
+            'dataProvider' => $dataProvider,
+            'modelPerson' => $modelPerson,
+            'user_id' => $id
+        ]);
+        
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            // your html content input
+            'content' => $content,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            // 'cssFile' => '@frontend/web/css/pdf.css',
+            // any css to be embedded if required
+            /*'cssInline' => '.table-print {width: 100%; border-spacing: 0px;}
+                .table-print th, .table-print td{border-right: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
+                .table-print thead th,{border-top:#000 1px solid;border-bottom:#000 1px solid;}
+                .table-print th:nth-child(1), .table-print td:nth-child(1){border-left:#000 1px solid;}',*/
+            'cssInline' => '
+                .table-print{width: 100%; border-spacing: 0px;border-bottom: #000 1px solid;}
+                .table-print td, .table-print th{border-left: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
+                .table-print .cell-right{border-right: #000 1px solid;}
+                .header-labels th{border-top:#000 1px solid; border-bottom:#000 1px solid;}
+            ',
+            // set mPDF properties on the fly
+            'options' => ['title' => $this->getView()->title.': '.$modelPerson->fullname],
+            // call mPDF methods on the fly
+            'methods' => [
+                'SetHeader'=>['{PAGENO} / {nb}'],
+                'SetFooter'=>[Yii::$app->user->identity->username.' '.Yii::$app->formatter->asDateTime('NOW')],
+            ]
+        ]);
+        
+        return $pdf->render();
+        
     }
     
 

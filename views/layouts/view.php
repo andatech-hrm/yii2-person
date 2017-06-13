@@ -35,7 +35,7 @@ $module = $this->context->module->id;
                 <!-- end of image cropping -->
                 <div id="crop-avatar">
                     <!-- Current avatar -->
-                    <img class="img-responsive avatar-view" src="<?= $person->getPhoto(); ?>" alt="Avatar" title="Change the avatar">
+                    <img class="img-responsive avatar-view" src="<?= $person->getPhoto(); ?>" alt="Avatar" title="Change the avatar" width="100%">
                     <!-- Loading state -->
                     <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
                 </div>

@@ -13,7 +13,10 @@ use andahrm\structure\models\FiscalYear;
 /* @var $searchModel andahrm\insignia\models\InsigniaRequestSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('andahrm/insignia', 'Insignia Requests');
+$this->title = Yii::t('andahrm/person', 'Prestige');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
+//$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="insignia-request-index">

@@ -12,6 +12,13 @@ use andahrm\setting\models\Helper;
 // use kartik\widgets\Select2;
 // use kuakling\datepicker\DatePicker;
 // use andahrm\setting\models\WidgetSettings;
+
+
+$this->title = Yii::t('andahrm/person', 'Information');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
+//$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php
 // $detailViewConfig = [

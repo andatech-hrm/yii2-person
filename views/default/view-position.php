@@ -17,7 +17,10 @@ use yii\bootstrap\Modal;
 /* @var $searchModel andahrm\positionSalary\models\PersonPositionSalarySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('andahrm/position-salary', 'Person Position Salaries');
+$this->title = Yii::t('andahrm/person', 'Position');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
+//$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
 $this->params['breadcrumbs'][] = $this->title;
 
 // $modals['position'] = Modal::begin([
