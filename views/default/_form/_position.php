@@ -8,6 +8,7 @@ use kuakling\datepicker\DatePicker;
 use kartik\widgets\Select2;
 use andahrm\setting\models\WidgetSettings;
 use andahrm\edoc\models\Edoc;
+use andahrm\structure\models\Position;
 use andahrm\structure\models\PositionOld;
 use yii\bootstrap\ActiveForm;
 use kartik\widgets\FileInput;
@@ -90,7 +91,7 @@ use kartik\widgets\FileInput;
                              ])
                             ->widget(Select2::classname(),
                                 WidgetSettings::Select2([
-                                    'data' => PositionOld::getList(),
+                                    'data' => Position::getList(),
                                     'pluginOptions' => [
                                         'tags' => true,
                                         'tokenSeparators' => [',', ' '],
