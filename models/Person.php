@@ -418,7 +418,7 @@ class Person extends ActiveRecord
      */ 
     public function getPersonContract()
     {
-        return $this->hasMany(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
+        return $this->hasOne(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
     }
   
  

@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
-<p class="text-center"><b>
+<p class="text-center" ><b>
     <!--๑๑. การได้รับโทษทางวินัย-->
     <?=Yii::t('andahrm/person','11. Punishment')?>
 </b></p>
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
-<p class="text-center"><b>
+<p class="text-center" style="padding-top:10px;"><b>
     <!--๑๒. วันที่ไม่ได้รับเงินเดือนหรือได้รับเงินเดือนไม่เติม หรือวันที่มิได้ประจำปฎิบัติหน้าที่อยู่ในเขตที่ได้มีประกาศใช้กฎอัยการศึก-->
     <?=Yii::t('andahrm/person','12. Do not get a salary or get a salary')?>
 </b></p>
@@ -98,21 +98,21 @@ $this->params['breadcrumbs'][] = $this->title;
     
 <table>
     <tr>
-        <td width="350">
+        <td width="350" style="vertical-align: top; padding-bottom:10px;">
             <!-- กระทรวง -->
             <?=Yii::t('andahrm/person','ministry')?>
             <span class="text-underdot">
                 
             </span>
         </td>
-        <td width="350">
+        <td width="350" style="vertical-align: top; padding-bottom:10px;">
             <!-- กรม -->
             <?=Yii::t('andahrm/person','department')?>
              <span class="text-underdot">
                 
             </span>
         </td>
-        <td >
+        <td style="vertical-align: top; padding-bottom:10px;">
             <?=Yii::t('andahrm/person','kopo7')?>
         </td>
     </tr>
@@ -121,63 +121,67 @@ $this->params['breadcrumbs'][] = $this->title;
 <table class="table-print">
        <tr class="body-labels-first">
             <th class="" >
-                <?=$modelPerson->getAttributeLabel('firstname_th'); ?>
+                ๑. <?=Yii::t('andahrm/person', 'Name')?>
                 <span class="text-underdot">
                     <?=$modelPerson->fullname ?>
                 </span>
             </th>
             <th class="" style="width: 5cm;">
-                <?=Yii::t('andahrm/person', 'Spouse'); ?>
+                ๔. <?=Yii::t('andahrm/person', 'Name').Yii::t('andahrm/person', 'Spouse'); ?>
                 <span class="text-underdot">
                     <?=$modelPerson->peopleSpouse->fullname ?>
                 </span>
             </th>
             <th class=" cell-right" style="width: 5cm;">
-                <?=$modelPerson->getAttributeLabel('personContract.start_date'); ?>
+                ๗. <?=$modelPerson->getAttributeLabel('personContract.start_date'); ?>
                 <span class="text-underdot">
-                    <?=$modelPerson->personContract?$modelPerson->personContract->start_date:null ?>
+                    <?=$modelPerson->personContract?Yii::$app->formatter->asDate($modelPerson->personContract->start_date):null ?>
                 </span>
             </th>
         </tr>
         
         <tr class="body-labels">
             <th class="" >
-                <?=$modelPerson->getAttributeLabel('birthday'); ?>
+                ๒. <?=$modelPerson->getAttributeLabel('birthday'); ?>
                 <span class="text-underdot">
-                    <?=$modelPerson->birthday ?>
+                    <?=$modelPerson->birthday?Yii::$app->formatter->asDate($modelPerson->birthday,'long'):null; ?>
+                </span><br/>
+                <span class="text-underdot">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                (<?=$modelPerson->birthday ?>)
                 </span>
             </th>
             <th class="">
-                <?=Yii::t('andahrm/person', 'Father'); ?>
+                ๕. <?=Yii::t('andahrm/person', 'Name').Yii::t('andahrm/person', 'Father'); ?>
                 <span class="text-underdot">
                     <?=$modelPerson->fullname ?>
                 </span>
             </th>
             <th class="cell-right" style="width: 5cm;">
-               <?=$modelPerson->getAttributeLabel('personContract.work_date'); ?>
+               ๘. <?=$modelPerson->getAttributeLabel('personContract.work_date'); ?>
                 <span class="text-underdot">
-                    <?=$modelPerson->personContract?$modelPerson->personContract->work_date:null ?>
+                    <?=$modelPerson->personContract?Yii::$app->formatter->asDate($modelPerson->personContract->work_date):null ?>
                 </span>
             </th>
         </tr>
         
         <tr class="body-labels">
             <th class="" >
-                <?=$modelPerson->getAttributeLabel('personContract.end_date'); ?>
+                ๓. <?=$modelPerson->getAttributeLabel('personContract.end_date'); ?>
                 <span class="text-underdot">
-                    <?=$modelPerson->personContract?$modelPerson->personContract->end_date:null ?>
+                    <?=$modelPerson->personContract?Yii::$app->formatter->asDate($modelPerson->personContract->end_date):null ?>
                 </span>
             </th>
             <th class="">
-                <?=Yii::t('andahrm/person', 'Mother'); ?>
+                ๖. <?=Yii::t('andahrm/person', 'Name').Yii::t('andahrm/person', 'Mother'); ?>
                 <span class="text-underdot">
                     <?=$modelPerson->fullname ?>
                 </span>
             </th>
             <th class="cell-right" >
-               <?=Yii::t('andahrm/structure', 'Goverment Type'); ?>
+               ๙. <?=Yii::t('andahrm/structure', 'Goverment Type'); ?>
                 <span class="text-underdot">
-                    <?=$modelPerson->fullname ?>
+                    <?=$modelPerson->positionSalary->position->personType->title ?>
                 </span>
             </th>
         </tr>
@@ -185,7 +189,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <!--444444444444444444444-->
 
-<p class="text-center"><b>
+<p class="text-center" style="padding-top:10px;"><b>
     <!--๑๐. ประวัติการศึกษา ฝึกอบรมและดูงาน-->
     <?=Yii::t('andahrm/person','10. history of education Train and watch')?>
 </b></p>
