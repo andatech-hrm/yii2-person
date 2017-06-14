@@ -201,7 +201,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <table class="table-print">
         <thead>
-            <tr class="header-labels">
+            <tr class="header-labels-edu">
                 <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/person', 'Education Train and watch'); ?></th>
                 <th class="text-center"><?= Yii::t('andahrm/person', 'Start - End Date (Mounth Year)'); ?></th>
                 <th class="text-center"><?= Yii::t('andahrm/person', 'Qualification Specify majors'); ?></th>
