@@ -147,7 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <span class="text-underdot">
                     <?=$modelPerson->birthday?Yii::$app->formatter->asDate($modelPerson->birthday,'long'):null; ?>
                 </span>
-                <p style="line-height: 0.8">
+                <p style="line-height: 1;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 ( <span class="text-underdot" >
                      <?=$dates['birthday']; ?> 
@@ -264,7 +264,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td class="text-center" style="vertical-align: top;padding-left:30px;">
                     <p>
                         <!--ลงชื่อ-->
-                        (<?= Yii::t('andahrm', 'sign');?>)อ)
+                        (<?= Yii::t('andahrm', 'sign');?>)
                         ..............................................................................................
                     </p>
                     <p>
