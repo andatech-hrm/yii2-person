@@ -18,6 +18,7 @@ use andahrm\positionSalary\models\PersonPositionSalary;
 $this->title = Yii::t('andahrm/position-salary', 'Person Position Salaries');
 $this->params['breadcrumbs'][] = $this->title;
 
+//echo $f->format(1432);
 ?>
 
 
@@ -145,11 +146,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 ๒. <?=$modelPerson->getAttributeLabel('birthday'); ?>
                 <span class="text-underdot">
                     <?=$modelPerson->birthday?Yii::$app->formatter->asDate($modelPerson->birthday,'long'):null; ?>
-                </span><br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <span class="text-underdot">
-                (<?=Yii::$app->formatter->asSpellout(Yii::$app->formatter->asDate($modelPerson->birthday,"php:d")) ?>)
                 </span>
+                <p style="line-height: 0.8">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                ( <span class="text-underdot" >
+                     <?=$dates['birthday']; ?> 
+                </span> )
+                </p>
             </th>
             <th class="">
                 ๕. <?=Yii::t('andahrm/person', 'Name').Yii::t('andahrm/person', 'Father'); ?>
@@ -199,13 +202,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <table class="table-print">
         <thead>
             <tr class="header-labels">
-                <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/position-salary', 'Adjust Date'); ?></th>
-                <th class="text-center"><?= Yii::t('andahrm/position-salary', 'Title'); ?></th>
-                <th class="text-center"><?= Yii::t('andahrm/position-salary', 'Title'); ?></th>
+                <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/person', 'Education Train and watch'); ?></th>
+                <th class="text-center"><?= Yii::t('andahrm/person', 'Start - End Date (Mounth Year)'); ?></th>
+                <th class="text-center"><?= Yii::t('andahrm/person', 'Qualification Specify majors'); ?></th>
                 <th class="text-center" style="width: 0.5cm;" > </th>
-                <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/position-salary', 'Adjust Date'); ?></th>
-                <th class="text-center"><?= Yii::t('andahrm/position-salary', 'Title'); ?></th>
-                <th class="text-center cell-right" ><?= Yii::t('andahrm/position-salary', 'Edoc ID'); ?></th>
+                <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/person', 'Education Train and watch'); ?></th>
+                <th class="text-center"><?= Yii::t('andahrm/person', 'Start - End Date (Mounth Year)'); ?></th>
+                <th class="text-center cell-right" ><?= Yii::t('andahrm/person', 'Qualification Specify majors'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -247,18 +250,21 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr >
                 <td class="text-center" width="350" style="vertical-align: top;">
                     <p>
-                        (ลงชื่อ)
+                        <!--ลงชื่อ-->
+                        (<?= Yii::t('andahrm', 'sign');?>)
                         ..............................................................................................
                     </p>
                     <p>
-                        (เจ้าของประวัติ)
+                        <!--เจ้าของประวัติ-->
+                        (<?= Yii::t('andahrm/person', 'History owner');?>)
                     </p>
                     <p>....................../...................../.....................</p>
                 </td>
                 
                 <td class="text-center" style="vertical-align: top;padding-left:30px;">
                     <p>
-                        (ลงชื่อ)
+                        <!--ลงชื่อ-->
+                        (<?= Yii::t('andahrm', 'sign');?>)อ)
                         ..............................................................................................
                     </p>
                     <p>
@@ -266,11 +272,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         (..............................................................................................)
                     </p>
                     <p>
-                        ตำแหน่ง
+                        <!--ตำแหน่ง-->
+                        <?= Yii::t('andahrm/position-salary', 'Position');?>
                         ............................................................................................
                     </p>
                     <p>
-                       หัวหน้าส่วนราชการหรือผู้ที่หัวหน้าส่วนราชการมอบหมาย
+                        <!--หัวหน้าส่วนราชการหรือผู้ที่หัวหน้าส่วนราชการมอบหมาย-->
+                       <?= Yii::t('andahrm/person', 'Head of government agency');?>
                     </p>
                     <p>....................../...................../.....................</p>
                 </td>

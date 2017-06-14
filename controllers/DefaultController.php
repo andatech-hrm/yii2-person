@@ -1565,9 +1565,16 @@ class DefaultController extends Controller
         // print_r($dataDefect);
         // exit();
         
+        $f = new \NumberFormatter("th", \NumberFormatter::SPELLOUT);
+        $dates['birthday'] = $f->format(Yii::$app->formatter->asDate($modelPerson->birthday,"php:d"))
+                        ." ".Yii::$app->formatter->asDate($modelPerson->birthday,'php:F')
+                        ." ".$f->format(Yii::$app->formatter->asDate($modelPerson->birthday,'php:Y'));
+                        
+        $dates['birthday'] = str_replace("\xE2\x80\x8B", "",$dates['birthday']);
         $content = $this->renderPartial('print', [
         //return $this->renderPartial('print', [
         //$content = $this->renderAjax('print', [
+            'dates' => $dates,
             'rowNum' => $rowNum,
             'dataDefect' => $dataDefect,
             'dataProvider' => $dataProvider,
