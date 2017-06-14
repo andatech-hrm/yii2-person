@@ -157,7 +157,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <th class="">
                 ๕. <?=Yii::t('andahrm/person', 'Name').Yii::t('andahrm/person', 'Father'); ?>
                 <span class="text-underdot">
-                    <?=$modelPerson->fullname ?>
+                    <?=$modelPerson->peopleFather->fullname ?>
                 </span>
             </th>
             <th class="cell-right" style="width: 5cm;">
@@ -178,7 +178,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <th class="">
                 ๖. <?=Yii::t('andahrm/person', 'Name').Yii::t('andahrm/person', 'Mother'); ?>
                 <span class="text-underdot">
-                    <?=$modelPerson->fullname ?>
+                    <?=$modelPerson->peopleMother->fullname ?>
                 </span>
             </th>
             <th class="cell-right" >
