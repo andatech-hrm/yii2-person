@@ -13,6 +13,7 @@ use andahrm\structure\models\Position;
 use andahrm\positionSalary\models\PersonPositionSalary;
 
 use yii\bootstrap\Modal;
+use yii\bootstrap\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $searchModel andahrm\positionSalary\models\PersonPositionSalarySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -23,98 +24,96 @@ $this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' 
 //$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
 $this->params['breadcrumbs'][] = $this->title;
 
-// $modals['position'] = Modal::begin([
-//     'header' => Yii::t('andahrm/person', 'Position'),
-//     'size' => Modal::SIZE_LARGE
-// ]);
+$modals['update-position'] = Modal::begin([
+    'header' => Yii::t('andahrm/person', 'Position'),
+    'size' => Modal::SIZE_LARGE
+]);
+Modal::end();
 
-// echo Yii::$app->runAction('/person/default/create-position-old', [
-//     'formAction' => Url::to(['/edoc/default/create-position-old'])
-//     ]);
+$modalOptions = [
+    'form-buttons' => Html::resetButton('<i class="fa fa-recycle"></i> '.Yii::t('andahrm','Reset'), ['class' => 'btn btn-default']) . Html::submitButton('<i class="fa fa-save"></i> '.Yii::t('andahrm','Save'), ['class' => 'btn btn-primary btn-modal-save']),
+    'header-options' => [
+        'class' => 'bg-primary',
+        'style' => 'border-top-left-radius:5px; border-top-right-radius:5px;'
+    ]
+];
 
-// Modal::end();
+$positions = [
+    'PersonPositionSalary'=>['key' => 'position', 'label' => Yii::t('andahrm/person', 'Position New')],
+    'PersonPositionSalaryOld'=>['key' => 'position-old', 'label' => Yii::t('andahrm/person', 'Position Old')],
+];
 ?>
 
 <?php
+
+
 $columns = [
-    'created_at' => 'created_at:datetime',
-    'created_by' => 'created_by',
-    'updated_at' => 'updated_at',
-    'updated_by' => 'updated_by',
-  'edoc_id' => [
-        'attribute'=>'edoc_id',
-        'filter' => Edoc::getList(),
-        'value' => 'edoc.code',
-  //'group'=>true,
+    
+    'adjust_date'=> [
+        'attribute' => 'adjust_date',
+        'contentOptions' => ['class' => 'green'],
+        'format' => 'date'
     ],
-  'user_id'=> [
-        'attribute'=>'user_id',
-        'filter' => Person::getList(),
-        'value' => 'user.fullname'
+    'title' => [
+        'attribute' => 'title',
+        'contentOptions' => ['class' => 'green'],
     ],
-  'position_id'=> [
+    'step' => [
+        'attribute' => 'step',
+        'contentOptions' => ['class' => 'green'],
+    ],
+    'level' => [
+        'attribute' => 'level',
+        'contentOptions' => ['class' => 'green'],
+    ],
+    'position_id'=> [
         'attribute'=>'position_id',
         'filter' => Position::getList(),
-        'value' => 'position.code'
+        'value' => 'position.code',
+        'contentOptions' => ['class' => 'green'],
+        'format' => 'html',
     ],
-  'adjust_date'=>'adjust_date:date',
-  'title'=>'title',
-];
-
-$gridColumns = [
-   ['class' => '\kartik\grid\SerialColumn'],
-    //$columns['user_id'],
-  
-    $columns['adjust_date'],
-    $columns['title'],
-    $columns['position_id'],   
-    $columns['edoc_id'], 
-   
-];
-
-$columns = [
-    'created_at' => 'created_at:datetime',
-    'created_by' => 'created_by',
-    'updated_at' => 'updated_at',
-    'updated_by' => 'updated_by',
     'status' => [
             'attribute'=>'status',
             'filter' => PersonPositionSalary::getItemStatus(),
             'value' => 'statusLabel',
+            'contentOptions' => ['class' => 'green'],
       //'group'=>true,
-        ],
-  'edoc_id' => [
+    ],
+    'salary'=> [
+        'attribute' => 'salary',
+        'format' => 'decimal',
+        'contentOptions' => ['class' => 'green text-right'],
+    ],
+    'edoc_id' => [
         'attribute'=>'edoc_id',
         'filter' => Edoc::getList(),
         'format' => 'html',
         'value' => 'edoc.codeDateTitleFile',
-  //'group'=>true,
+        'contentOptions' => ['class' => 'green'],
+    //'group'=>true,
     ],
-  'user_id'=> [
+    'user_id'=> [
         'attribute'=>'user_id',
         'filter' => Person::getList(),
         'format'=>'html',
         'value' => function($model){
             return $model->user->getInfoMedia(['view','edoc_id'=>$model->edoc_id]);
         },
-        'contentOptions' => ['width' => '200']
-
+        'contentOptions' => ['width' => '200','class' => 'green']
+    
     ],
-  'fullname'=> [
+    'fullname'=> [
         'attribute'=>'user_id',
         'filter' => Person::getList(),
-        'value' => 'user.fullname'
+        'value' => 'user.fullname',
+        'contentOptions' => ['class' => 'green'],
     ],
-  'position_id'=> [
-        'attribute'=>'position_id',
-        'filter' => Position::getList(),
-        'value' => 'position.code'
-    ],
-  'adjust_date'=>'adjust_date:date',
-  'title'=>'title',
-  'salary'=>'salary:decimal',
-  'step'=>'step',
-  'level'=>'level',
+    
+    'created_at' => 'created_at:datetime',
+    'created_by' => 'created_by',
+    'updated_at' => 'updated_at',
+    'updated_by' => 'updated_by',
 ];
 
 $gridColumns = [
@@ -128,8 +127,55 @@ $gridColumns = [
     $columns['salary'],
     $columns['edoc_id'],
     ['class' => '\kartik\grid\ActionColumn',
-    'template'=>"{delete}",
+    'template'=>"{update} {delete}",
     'buttons'=>[
+        
+        'update' => function ($url, $model) use($modals,$positions,$modalOptions, $newModelEdoc) {
+            
+            // $form = ActiveForm::begin();
+            // $key = $model->formName();
+            // $mkey = $positions[$key]['key'];
+            // $modals[$mkey] = Modal::begin([
+            //     'header' => '<i class="fa fa-user-secret"></i> ' . $positions[$key]['label'],
+            //     'size' => Modal::SIZE_LARGE,
+            //     'headerOptions' => $modalOptions['header-options'],
+            //     'footer' => '<div class="pull-left aero"><i>' . Yii::t('andahrm', 'Last Update') . ': ' . 
+            //         Yii::$app->formatter->asDateTime($model->updated_at) . '</i></div>' . 
+            //         $modalOptions['form-buttons'],
+            // ]);
+            // echo $model->formName();
+            // if($key == "PersonPositionSalaryOld"){
+            //     echo $this->render('_form/_update_position-old', ['model' => $model, 'form' => $form,'newModelEdoc'=>$newModelEdoc]);
+            // }else{
+            //     echo $this->render('_form/_update_position-old', ['model' => $model, 'form' => $form,'newModelEdoc'=>$newModelEdoc]);
+            // }
+            
+            // Modal::end();
+            // ActiveForm::end();
+            $old = false;
+            $action = 'update-position-old';
+            if($model->formName()=="PersonPositionSalaryOld"){
+                $positionId = $model->position_old_id;
+                $old = true;
+            }else{
+                $positionId = $model->position_id;
+            }
+            return Html::a('<i class="fa fa-pencil"></i>', [
+                    $action,
+                    'id'=>$model->user_id,
+                    'position_id'=>$positionId,
+                    'edoc_id'=>$model->edoc_id,
+                    'old'=>$old
+                ], [
+                    'class'=>'btn-update-old',
+                    'data-pjax' => 0,
+                    'data-toggle' => 'modal',
+                    'data-target' => '#'.$modals['update-position']->id,
+                    //'onclick' => "javascript::bindUpdatePosition({$model->user_id},{$positionId},{$model->edoc_id});",
+                    'title' => Yii::t('yii', 'Update')
+            ]);
+                       
+        },
         'delete' => function ($url, $model, $key) {
             $options = [
                 'title' => Yii::t('andatech', 'Delete'),
@@ -226,6 +272,7 @@ $fullExportMenu = ExportMenu::widget([
     ]); ?>
 </div>
 <?php
+
 $js[] = "
 $(document).on('click', '#btn-reload-grid', function(e){
     e.preventDefault();
@@ -233,22 +280,49 @@ $(document).on('click', '#btn-reload-grid', function(e){
 });
 ";
 $urlCreatePosition = Url::to(['/person/default/create-position'],true); 
-/*
+$modalId = $modals['update-position']->id;
 $js[] = <<< Js
-var urlCreate = "{$urlCreatePosition}";
-$(document).ready(function() {
-    // $("#{$modals['position']->id}").modal('show');
-    $('#{$modals['position']->id}').on('shown.bs.modal', function() {
-        
-        // var body = $(this).find('.modal-body');
-        // $.get(urlCreate,function(data){
-        //     $(body).html(data);
-        // });
+    // $('.data-grid-container .btn-update-old').each(function(){
+    //   $(this).bind('click', function() {
+    //         aler($(this).attr('href'));
+    //     }); 
+    // });
+    // $(document).ready(function() {
+    // function bindUpdatePosition( id, position_id, edoc_id)
+    // {
+    //     alert(id+" "+position_id+" "+edoc_id);
+    // }
+    // });
+    
+    $(document).ready(function() {
+       $(document).on('click', '.btn-update-old', function(){
+           //console.log($(this).attr('href'));
+            // $("#{$modalId} .madal-body").load($(this).attr('href'));
+            $.get($(this).attr('href'),
+            function (data) {
+                //alert(data);
+                $("#{$modalId}").find('.modal-body').html(data);
+                //$("#{$modalId} .modal-content .madal-body").html(data);
+                //$("#{$modalId}").modal();
+            });
+        });
     });
-});
-
+    
+    
+    
+    
 Js;
-*/
-$this->registerJs(implode("\n", $js));
+$js[] = <<< Js
+    function callbackPosition(result){
+    //e.preventDefault();
+    //alert(555);
+        $.pjax.reload({container: '#data-grid-pjax'});
+        $("#{$modalId}").modal('hide');
+        $('#{$modalId}').on('hidden.bs.modal', function (e) {
+            $(this).find('.modal-body').html('');
+        })
+    }
+Js;
+$this->registerJs(implode("\n", $js), $this::POS_END);
 
 

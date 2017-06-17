@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //     // ],
 // ];
 $modalOptions = [
-    'form-buttons' => Html::resetButton('<i class="fa fa-recycle"></i> Reset', ['class' => 'btn btn-default']) . Html::submitButton('<i class="fa fa-save"></i> Save', ['class' => 'btn btn-primary btn-modal-save']),
+    'form-buttons' => Html::resetButton('<i class="fa fa-recycle"></i> '.Yii::t('andahrm','Reset'), ['class' => 'btn btn-default']) . Html::submitButton('<i class="fa fa-save"></i> '.Yii::t('andahrm','Save'), ['class' => 'btn btn-primary btn-modal-save']),
     'header-options' => [
         'class' => 'bg-primary',
         'style' => 'border-top-left-radius:5px; border-top-right-radius:5px;'
