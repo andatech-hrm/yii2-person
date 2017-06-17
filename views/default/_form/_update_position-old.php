@@ -110,9 +110,12 @@ echo $form->field($model, "edoc_id", [
 ?>
     </div>
 
-<div class="row edoc_area edic_edoc_old_area-<?=$formId?>" style="display:none;">
+
+<div class="edoc_area edic_edoc_old_area-<?=$formId?>" style="display:none;">
+    <?=Html::tag('h2',Yii::t('andahrm','Update').Yii::t('andahrm','Edoc'))?>
+    <div class="row">
                                 
-        <?=$form->field($modelEdoc,"id")->hiddenInput()?>
+        <?=$form->field($modelEdoc,"id")->hiddenInput()->label(false)->hint(false)->error(false)?>
         
         <?=$form->field($modelEdoc,"code",[
         'options' => ['class' => 'form-group col-sm-2']
@@ -141,8 +144,11 @@ echo $form->field($model, "edoc_id", [
             ],
         ]);?>
 </div>    
+</div>
 
-<div class="row edoc_area new_edoc_old_area-<?=$formId?>" style="display:none;">
+<div class="edoc_area new_edoc_old_area-<?=$formId?>" style="display:none;">
+    <?=Html::tag('h2',Yii::t('andahrm','Create').Yii::t('andahrm','Edoc'))?>
+    <div class="row">
                                 
         <?=$form->field($newModelEdoc,"code",[
         'options' => ['class' => 'form-group col-sm-2']
@@ -172,6 +178,8 @@ echo $form->field($model, "edoc_id", [
             
         ]);?>
 </div>    
+</div>
+
 
     <div class="form-group">
         <?= Html::submitButton( Yii::t('andahrm', 'Save') , ['class' =>  'btn btn-success' ]) ?>
@@ -216,8 +224,8 @@ $jsHead[] = <<< JS
             //alert(555);
             $(edcoArea).hide();
             if(!$(this).is('.shown')){
-                $(this).find("i").removeClass('fa-plus');
-                $(this).find("i").addClass('fa-minus');
+                //$(this).find("i").removeClass('fa-plus');
+                //$(this).find("i").addClass('fa-minus');
                 $(this).addClass('shown');
                 $(areaEdic).find('input').attr('disabled',false);
                 $(areaEdic).find("#edoc-file").attr('disabled',false);
@@ -225,8 +233,8 @@ $jsHead[] = <<< JS
                 $(areaEdic).show();
             }else{
                  $(this).removeClass('shown');
-                 $(this).find("i").addClass('fa-plus');
-                 $(this).find("i").removeClass('fa-minus');
+                 //$(this).find("i").addClass('fa-plus');
+                 //$(this).find("i").removeClass('fa-minus');
                  $(areaEdic).find('input').attr('disabled',true);
                 $(areaEdic).find("#edoc-file").attr('disabled',true);
                 $(areaEdic).find("#edoc-file").fileinput('refresh');
