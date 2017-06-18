@@ -23,14 +23,20 @@
                 </tr>
             <?php endforeach; ?>
             <?php 
-                for($i=0;$i<=($rowNum[3]-count($models));$i++) : ?>
+                $totalMod = count($models) % $rowNum[3];
+                $count = $rowNum[3] - count($models);
+                if(count($models)>$rowNum[3]){
+                    $count = $rowNum[3] - $totalMod;
+                }
+                
+                for($i=0;$i<=$count;$i++) : ?>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="cell-right"></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td class="cell-right">&nbsp;</td>
                 </tr>
             <?php endfor; ?>
         </tbody>

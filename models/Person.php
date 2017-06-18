@@ -462,6 +462,11 @@ class Person extends ActiveRecord
         return $this->positionSalary?$this->positionSalary->position:null;
     }
     
+    public function getLevel()
+    {
+        return $this->positionSalary?$this->positionSalary->level:null;
+    }
+    
     public function getPositionOld()
     {
         return $this->positionSalaryOl?$this->positionSalary->position:null;

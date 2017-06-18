@@ -141,7 +141,7 @@ Css;
         $rowNum[0] = 8;
         $rowNum[1] = 9;
         $rowNum[2] = 9;
-        $rowNum[3] = 80; #position
+        $rowNum[3] = 39; #position
         $dataDefect = [];
         $modelDefect = $modelPerson->defects;
         for($i = 0;$i<=$rowNum[0];$i++ ){
@@ -226,8 +226,17 @@ Css;
             ],
             // call mPDF methods on the fly
             'methods' => [
-                'SetHeader'=>"<div style='text-align: center; font-weight: bold;font-style: normal;'>".Yii::t('andahrm/person','13. Position and salary rate.')."</div>",
-                'SetFooter'=>"<div style='border-top:1px solid #000;text-align: center; font-weight: bold;font-style: normal;'>".Yii::t('andahrm/person','13. Position and salary rate.')."</div>",
+                'SetHeader'=>"<div style='text-align: center; font-weight: bold;font-style: normal;font-size:16'>".Yii::t('andahrm/person','13. Position and salary rate.')."</div>",
+                'SetFooter'=>"<div style='border-top:1px solid #000;text-align: center; font-weight: bold;font-style: normal;font-size:16;'>
+                ๑๔. ".Yii::t('andahrm/person', 'Name')."
+                <span class='text-underdot' >&nbsp;&nbsp;&nbsp;&nbsp;".$modelPerson->fullname."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+                .Yii::t('andahrm/position-salary', 'Level')."
+                 <span class='text-underdot'>&nbsp;&nbsp;&nbsp;&nbsp;".$modelPerson->level."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+                 .Yii::t('andahrm/person','ministry')."
+                 <span class='text-underdot'>&nbsp;&nbsp;&nbsp;&nbsp;"."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+                 .Yii::t('andahrm/person','department')."
+                 <span class='text-underdot'>&nbsp;&nbsp;&nbsp;&nbsp;"."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </div>",
             ],
             
             
