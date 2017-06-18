@@ -71,15 +71,16 @@ $module = $this->context->module->id;
             <!-- <a class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Edit Profile</a> -->
             <div class="raw">
                 <div class="col-sm-12">
-                    <?=Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print'),
-                         ['print','id'=>$person->_model->user_id], 
+                    <?=Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print ko-po7 1-12'),
+                         ['/person/print','id'=>$person->_model->user_id], 
                          [
                                 'class' => 'btn btn-default btn-block ',
                                 'target' => '_blank',
                                 'data-pjax' => 0
                         ]);
                     ?>
-                     <?=Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print Position Histories'), ['print-position','id'=>$user_id], [
+                     <?=Html::a('<i class="glyphicon glyphicon-print"></i> '.Yii::t('andahrm/person', 'Print ko-po7 13'), 
+                     ['/person/print/ko-po7-position-salary','id'=>$user_id], [
                         'class' => 'btn btn-default btn-block',
                         'target' => '_blank',
                         'data-pjax' => 0

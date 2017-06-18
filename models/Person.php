@@ -480,6 +480,14 @@ class Person extends ActiveRecord
     public function getNumberCitizenId(){
         return str_replace('-','',$this->citizen_id);
     }
+    
+    /**
+     * Relation Defect
+     * 
+     */
   
+    public function getDefects(){
+        return $this->hasMany(Defect::className(),['user_id'=>'user_id'])->orderBy(['date_defect'=>SORT_DESC]);
+    }
   
 }
