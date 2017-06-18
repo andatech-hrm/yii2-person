@@ -213,7 +213,7 @@ $fullExportMenu = ExportMenu::widget([
     'fontAwesome' => true,
     'pjaxContainerId' => 'kv-pjax-container',
     'dropdownOptions' => [
-        'label' => 'Full',
+        'label' => Yii::t('andahrm', 'Full'),
         'class' => 'btn btn-default',
         'itemsBefore' => [
             '<li class="dropdown-header">Export All Data</li>',
@@ -233,7 +233,7 @@ $fullExportMenu = ExportMenu::widget([
 //        'floatHeader'=>true,
 //        'floatHeaderOptions'=>['scrollingTop'=>'50'],
         'export' => [
-            'label' => Yii::t('yii', 'Page'),
+            'label' => Yii::t('andahrm', 'Page'),
             'fontAwesome' => true,
             'target' => GridView::TARGET_SELF,
             'showConfirmAlert' => false,
