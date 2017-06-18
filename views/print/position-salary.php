@@ -4,7 +4,7 @@
             <tr class="header-labels">
                 <th class="text-center" style="width: 2cm;"><?= Yii::t('andahrm/position-salary', 'Adjust Date'); ?></th>
                 <th class="text-center" ><?= Yii::t('andahrm/position-salary', 'Title'); ?></th>
-                <th class="text-center" style="width: 2cm;"><?= Yii::t('andahrm/position-salary', 'Position Id'); ?></th>
+                <th class="text-center" style="width: 2cm;"><?= Yii::t('andahrm/position-salary', 'Position ID'); ?></th>
                 <th class="text-center" style="width: 1cm;"><?= Yii::t('andahrm/position-salary', 'Level'); ?></th>
                 <th class="text-center" style="width: 2cm;"><?= Yii::t('andahrm/position-salary', 'Salary'); ?></th>
                 <th class="text-center cell-right" style="width: 3cm;"><?= Yii::t('andahrm/position-salary', 'Edoc ID'); ?></th>
