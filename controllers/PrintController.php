@@ -226,8 +226,8 @@ Css;
             ],
             // call mPDF methods on the fly
             'methods' => [
-                'SetHeader'=>"<div style='text-align: center; font-style: normal;font-size:16'>".Yii::t('andahrm/person','13. Position and salary rate.')."</div>",
-                'SetFooter'=>"<div style='border-top:1px solid #000;text-align: center; padding-top:10px;font-style: normal;font-size:16;'>
+                'SetHeader'=>"<div style='text-align: center; font-style: normal;font-size:14;'>".Yii::t('andahrm/person','13. Position and salary rate.')."</div>",
+                'SetFooter'=>"<div style='border-top:1px solid #000;text-align: center; padding-top:10px;font-style: normal;font-size:14;'>
                 ๑๔. ".Yii::t('andahrm/person', 'Name')."
                 <span class='text-underdot' >&nbsp;&nbsp;&nbsp;&nbsp;".$modelPerson->fullname."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
                 .Yii::t('andahrm/position-salary', 'Level')."
