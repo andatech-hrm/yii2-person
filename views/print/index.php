@@ -198,49 +198,71 @@ $this->params['breadcrumbs'][] = $this->title;
 </b></p>
 
 
-
-<table class="table-print">
-        <thead>
-            <tr class="header-labels-edu">
-                <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/person', 'Education Train and watch'); ?></th>
-                <th class="text-center"><?= Yii::t('andahrm/person', 'Start - End Date (Mounth Year)'); ?></th>
-                <th class="text-center"><?= Yii::t('andahrm/person', 'Qualification Specify majors'); ?></th>
-                <th class="text-center" style="width: 0.5cm;" > </th>
-                <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/person', 'Education Train and watch'); ?></th>
-                <th class="text-center"><?= Yii::t('andahrm/person', 'Start - End Date (Mounth Year)'); ?></th>
-                <th class="text-center cell-right" ><?= Yii::t('andahrm/person', 'Qualification Specify majors'); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-           
-            <?php foreach($dataDefect as $key => $model): ?>
-                <tr>
-                    <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
-                    <td><?= $model->title; ?></td>
-                    <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
-                    <td></td>
-                    <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
-                    <td><?= $model->title; ?></td>
-                    <td class="cell-right"><?= $model->edoc->title; ?></td>
+<table style="border-collapse: collapse;">
+    <tbody>
+    <tr>
+        <td style="border-bottom:1px solid #000;">
+        <table class="table-print">
+            <thead>
+                <tr class="header-labels-edu">
+                    <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/person', 'Education Train and watch'); ?></th>
+                    <th class="text-center"><?= Yii::t('andahrm/person', 'Start - End Date (Mounth Year)'); ?></th>
+                    <th class="text-center cell-right" ><?= Yii::t('andahrm/person', 'Qualification Specify majors'); ?></th>
                 </tr>
-            <?php endforeach; ?>
-            <?php 
-                for($i=0;$i<=($rowNum[2]-count($dataDefect));$i++) : ?>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="cell-right"></td>
+            </thead>
+            <tbody>
+               
+                <?php foreach($dataDefect as $key => $model): ?>
+                    <tr>
+                        <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
+                        <td><?= $model->title; ?></td>
+                        <td class="cell-right"><?= $model->edoc->title; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                <?php 
+                    for($i=0;$i<=($rowNum[2]-count($dataDefect));$i++) : ?>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="cell-right"></td>
+                    </tr>
+                <?php endfor; ?>
+            </tbody>
+        </table>
+    </td>
+    <td class="text-center" style="width: 0.3cm;border:1px solid #000;" > </td>
+    <td  style="border-bottom:1px solid #000;">
+        <table class="table-print">
+            <thead>
+                <tr class="header-labels-edu">
+                    <th class="text-center" style="width: 4cm;"><?= Yii::t('andahrm/person', 'Education Train and watch'); ?></th>
+                    <th class="text-center"><?= Yii::t('andahrm/person', 'Start - End Date (Mounth Year)'); ?></th>
+                    <th class="text-center cell-right" ><?= Yii::t('andahrm/person', 'Qualification Specify majors'); ?></th>
                 </tr>
-            <?php endfor; ?>
-        </tbody>
+            </thead>
+            <tbody>
+               
+                <?php foreach($dataDefect as $key => $model): ?>
+                    <tr>
+                        <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
+                        <td><?= $model->title; ?></td>
+                        <td class="cell-right"><?= $model->edoc->title; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                <?php 
+                    for($i=0;$i<=($rowNum[2]-count($dataDefect));$i++) : ?>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="cell-right"></td>
+                    </tr>
+                <?php endfor; ?>
+            </tbody>
+        </table>
+    </td>
+    </tr>
+    </tbody>
     </table>
-    
-    
-    
     
     
     <!--55555555555555555555555-->

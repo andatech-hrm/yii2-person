@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         ?>
                         
-                        <?=$form->field($model,"[{$index}]adjust_date",['options' => ['class' => 'form-group col-sm-2 adjust_date']])
+                        <?=$form->field($model,"[{$index}]adjust_date",['options' => ['class' => 'form-group col-xs-3 col-sm-3 adjust_date']])
                          ->widget(DatePicker::classname(), [              
                           'options' => [
                             'daysOfWeekDisabled' => [0, 6],
@@ -91,11 +91,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);?>
                 
                         <?=$form->field($model,"[{$index}]title",[
-                            'options' => ['class' => 'form-group col-sm-2'],
+                            'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
                         ])->textInput();?>
                         
                          <?=$form->field($model, "[{$index}]position_id",[
-                             'options' => ['class' => 'form-group col-sm-2']
+                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
                              ])
                             ->widget(Select2::classname(),
                                 WidgetSettings::Select2([
@@ -103,15 +103,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'pluginOptions' => [
                                         'tags' => true,
                                         'tokenSeparators' => [',', ' '],
-                                        'maximumInputLength' => 10
+                                        //'maximumInputLength' => 10
                                     ],
                                 ])
                             )->hint(false); ?>
                             
-                        <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group col-sm-1']])
+                        <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group  col-xs-3 col-sm-3']])
                         ->textInput();?>
                         
-                        <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group col-sm-2']])
+                        <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group  col-xs-4 col-sm-3']])
                         ->textInput();?>
 <?php                        
 $edocInputTemplate = <<< HTML
@@ -125,7 +125,7 @@ HTML;
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,
-                             'options' => ['class' => 'form-group col-sm-3'
+                             'options' => ['class' => 'form-group  col-xs-4 col-sm-4'
                              ]])
                          ->widget(Select2::className(), WidgetSettings::Select2(['data' => Edoc::getList()]));
                         ?>
