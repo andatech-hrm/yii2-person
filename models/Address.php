@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 use andahrm\setting\models\Helper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use kuakling\datepicker\behaviors\DateBuddhistBehavior;
+use andahrm\datepicker\behaviors\DateBuddhistBehavior;
 
 /**
  * This is the model class for table "person_address".

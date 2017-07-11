@@ -6,7 +6,7 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\MaskedInput;
 use andahrm\person\models\Title;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model andahrm\person\models\Person */

@@ -5,7 +5,7 @@ namespace andahrm\person\models;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use kuakling\datepicker\behaviors\DateBuddhistBehavior;
+use andahrm\datepicker\behaviors\DateBuddhistBehavior;
 use andahrm\edoc\models\Edoc;
 
 /**

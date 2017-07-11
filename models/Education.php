@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 use andahrm\setting\models\Helper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use kuakling\datepicker\behaviors\YearBuddhistBehavior;
+use andahrm\datepicker\behaviors\YearBuddhistBehavior;
 use andahrm\setting\models\Country;
 
 /**

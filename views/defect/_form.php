@@ -7,7 +7,7 @@ use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Modal;
 use andahrm\person\models\Person;
 use andahrm\edoc\models\Edoc;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 use kartik\widgets\Select2;
 use andahrm\setting\models\WidgetSettings;
 

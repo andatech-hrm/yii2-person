@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use andahrm\person\models\Title;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 use andahrm\setting\models\WidgetSettings;
 use yii\widgets\MaskedInput;
 

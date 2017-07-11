@@ -7,7 +7,7 @@ use yii\bootstrap\ActiveForm;
 
 use yii\widgets\Pjax;
 use yii\bootstrap\Modal;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 use kartik\widgets\FileInput;
 use kartik\widgets\Typeahead;
 use yii\helpers\Json;

@@ -12,7 +12,7 @@ use andahrm\structure\models\Section;
 use kartik\widgets\DepDrop;
 use yii\web\JsExpression;
 use yii\helpers\Json;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 
 use yii\helpers\Url;
 

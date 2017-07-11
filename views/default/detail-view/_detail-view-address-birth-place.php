@@ -3,7 +3,7 @@ use kartik\detail\DetailView;
 use andahrm\person\models\Religion;
 use yii\helpers\ArrayHelper;
 use kartik\widgets\Select2;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 use andahrm\setting\models\WidgetSettings;
 
 

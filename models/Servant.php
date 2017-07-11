@@ -5,7 +5,7 @@ namespace andahrm\person\models;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use kuakling\datepicker\behaviors\YearBuddhistBehavior;
+use andahrm\datepicker\behaviors\YearBuddhistBehavior;
 
 /**
  * This is the model class for table "person_servant".

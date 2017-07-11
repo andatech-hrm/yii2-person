@@ -3,7 +3,7 @@
 use yii\bootstrap\Html;
 use andahrm\setting\models\WidgetSettings;
 use kartik\widgets\Select2;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 
 
 use andahrm\structure\models\FiscalYear;

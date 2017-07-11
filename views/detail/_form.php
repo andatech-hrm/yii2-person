@@ -15,7 +15,7 @@ use andahrm\setting\models\LocalTumbol;
 use andahrm\setting\models\WidgetSettings;
 
 use kartik\widgets\Select2;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model andahrm\person\models\Detail */

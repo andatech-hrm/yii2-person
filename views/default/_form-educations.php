@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use wbraganca\dynamicform\DynamicFormWidget;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 use kartik\widgets\Select2;
 use andahrm\setting\models\WidgetSettings;
 
@@ -56,8 +56,8 @@ use andahrm\setting\models\WidgetSettings;
                     //}
                     ?>
                    <div class="row">
-                        <?= $form->field($model, "[{$index}]year_start", ['options' => ['class' => 'form-group col-sm-2']])->widget(\kuakling\datepicker\YearBuddhist::className()) ?>
-                        <?= $form->field($model, "[{$index}]year_end", ['options' => ['class' => 'form-group col-sm-2']])->widget(\kuakling\datepicker\YearBuddhist::className()) ?>
+                        <?= $form->field($model, "[{$index}]year_start", ['options' => ['class' => 'form-group col-sm-2']])->widget(\andahrm\datepicker\YearBuddhist::className()) ?>
+                        <?= $form->field($model, "[{$index}]year_end", ['options' => ['class' => 'form-group col-sm-2']])->widget(\andahrm\datepicker\YearBuddhist::className()) ?>
                         <?= $form->field($model, "[{$index}]level_id", ['options' => ['class' => 'form-group col-sm-3']])->dropDownList(ArrayHelper::map($this->context->educationLevels, 'id', 'title')) ?>
                         <?= $form->field($model, "[{$index}]degree", ['options' => ['class' => 'form-group col-sm-2']])->textInput(['maxlength' => true]) ?>
                         <?= $form->field($model, "[{$index}]branch", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>

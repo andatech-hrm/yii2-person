@@ -6,7 +6,7 @@ use andahrm\person\models\Religion;
 
 use andahrm\setting\models\WidgetSettings;
 use kartik\widgets\Select2;
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 
 ?>
 <?php
