@@ -12,6 +12,7 @@ use andahrm\structure\models\Position;
 use andahrm\structure\models\PositionOld;
 use yii\bootstrap\ActiveForm;
 use kartik\widgets\FileInput;
+use yii\web\JsExpression;
 /* @var $this yii\web\View */
 
 if($formAction == null){
@@ -94,18 +95,41 @@ $this->params['breadcrumbs'][] = $this->title;
                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
                         ])->textInput();?>
                         
+<?php                   
+$toPositionCreate = Url::to(['/structure/position/create']);
+$positionInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+    <span class="input-group-addon btn btn-success" data-key="{$index}">
+        <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
+    </span>
+</div>
+HTML;
+?>                        
+
                          <?=$form->field($model, "[{$index}]position_id",[
+                             'inputTemplate' => $positionInputTemplate,
                              'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
                              ])
                             ->widget(Select2::classname(),
-                                WidgetSettings::Select2([
+                                [
                                     'data' => Position::getList(),
+                                    'options' => ['placeholder' => 'Search for a position ...'],
                                     'pluginOptions' => [
-                                        'tags' => true,
-                                        'tokenSeparators' => [',', ' '],
-                                        //'maximumInputLength' => 10
+                                        //'tags' => true,
+                                        //'tokenSeparators' => [',', ' '],
+                                        'allowClear'=>true,
+                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                                        'ajax'=>[
+                                            'url'=>Url::to(['/structure/position/position-list']),
+                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
+                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                                         ],
+                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                        'templateResult' => new JsExpression('function(position) { return position.text; }'),
+                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
                                     ],
-                                ])
+                                ]
                             )->hint(false); ?>
                             
                         <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group  col-xs-3 col-sm-3']])
