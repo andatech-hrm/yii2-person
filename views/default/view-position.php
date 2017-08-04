@@ -251,13 +251,13 @@ $fullExportMenu = ExportMenu::widget([
 //             'type'=>'primary',
             'before'=> ' '.
                 Html::beginTag('div',['class'=>'btn-group']).
-                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position New'), ['create-position','id'=>$user_id], [
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position New'), ['create-position','id'=>$models['person']->user_id], [
                          //'data-toggle'=>"modal",
                          //'data-target'=>"#{$modals['position']->id}",
                         'class' => 'btn btn-success btn-flat',
                         'data-pjax' => 0
                     ]) . ' '. 
-                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$user_id], [
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$models['person']->user_id], [
                         'class' => 'btn btn-success btn-flat',
                         'data-pjax' => 0
                     ]).

@@ -444,7 +444,7 @@ class Person extends ActiveRecord
     
     public function getPositionSalaries()
     {
-        return $this->hasMany(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_DESC]);
+        return $this->hasMany(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_ASC]);
     }
     
     
