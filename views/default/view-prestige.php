@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
+use kartik\export\ExportMenu;
 use yii\widgets\Pjax;
 
 use andahrm\insignia\models\InsigniaRequest;
@@ -20,36 +21,20 @@ $this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' 
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="insignia-request-index">
-    <p>
-        <?= Html::a(Yii::t('andahrm/insignia', 'Create Insignia Request'), ['request'], ['class' => 'btn btn-success']) ?>
-    </p>
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     
+    <?php
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
 
-            //'id',
-            // [
-            //     'attribute'=> 'person_type_id',
-            //     'filter'=>PersonType::getForInsignia(),
-            //     'headerOptions'=>['width'=>'150'],
-            //     'value' => 'personType.title'
-                
-            //     ],
-                [
+$columns = [
+    
+                'year'=>[
                 'attribute'=> 'insigniaRequest.year',
                 'filter'=>FiscalYear::getList(),
                 'value' => function($model){
                     return $model->insigniaRequest->yearTh;
                     }
                 ],
-                [
+                'insignia_type_id'=>[
                 'attribute'=> 'insignia_type_id',
                 'filter'=>InsigniaType::getList(),
                 'format'=>'html',
@@ -57,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 
                 
-                [
+                 'status'=>[
                 'attribute'=> 'insigniaRequest.status',
                 'filter'=>InsigniaRequest::getItemStatus(),
                 'value' => function($model){
@@ -66,9 +51,83 @@ $this->params['breadcrumbs'][] = $this->title;
                 
                 ],
            
+];
 
-            
+$gridColumns = [
+    ['class' => '\kartik\grid\SerialColumn'],
+    $columns['year'],
+    //$columns['user_id'], 
+    $columns['insignia_type_id'],
+    $columns['status'],   
+    ['class' => '\kartik\grid\ActionColumn']
+];
+
+$fullExportMenu = ExportMenu::widget([
+    'dataProvider' => $dataProvider,
+    'columns' => $columns,
+    'filename' => $this->title,
+    'showConfirmAlert' => false,
+    'target' => ExportMenu::TARGET_BLANK,
+    'fontAwesome' => true,
+    'pjaxContainerId' => 'kv-pjax-container',
+    'dropdownOptions' => [
+        'label' => Yii::t('andahrm', 'Full'),
+        'class' => 'btn btn-default',
+        'itemsBefore' => [
+            '<li class="dropdown-header">Export All Data</li>',
         ],
+    ],
+]);
+?>
+    
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        //'filterModel' => $searchModel,
+        'id' => 'data-grid',
+        'pjax'=>true,
+//        'resizableColumns'=>true,
+//        'resizeStorageKey'=>Yii::$app->user->id . '-' . date("m"),
+//        'floatHeader'=>true,
+//        'floatHeaderOptions'=>['scrollingTop'=>'50'],
+        'export' => [
+            'label' => Yii::t('andahrm', 'Page'),
+            'fontAwesome' => true,
+            'target' => GridView::TARGET_SELF,
+            'showConfirmAlert' => false,
+        ],
+//         'exportConfig' => [
+//             GridView::HTML=>['filename' => $exportFilename],
+//             GridView::CSV=>['filename' => $exportFilename],
+//             GridView::TEXT=>['filename' => $exportFilename],
+//             GridView::EXCEL=>['filename' => $exportFilename],
+//             GridView::PDF=>['filename' => $exportFilename],
+//             GridView::JSON=>['filename' => $exportFilename],
+//         ],
+        'panel' => [
+            //'heading'=>'<h3 class="panel-title"><i class="fa fa-th"></i> '.Html::encode($this->title).'</h3>',
+//             'type'=>'primary',
+            'before'=> ' '.
+                Html::beginTag('div',['class'=>'btn-group']).
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/insignia', 'Create Insignia Request'), ['create-insignia','id'=>$user_id], [
+                         //'data-toggle'=>"modal",
+                         //'data-target'=>"#{$modals['position']->id}",
+                        'class' => 'btn btn-success btn-flat',
+                        'data-pjax' => 0
+                    ]) . ' '. 
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/insignia', 'Create Insignia Request'), ['/insignia/default/request','step'=>'reset'], [
+                        'class' => 'btn btn-success btn-flat',
+                        'data-pjax' => 0
+                    ]).
+                Html::endTag('div'),
+                'heading'=>false,
+                //'footer'=>false,
+        ],
+        'toolbar' => [
+            '{export}',
+            '{toggleData}',
+            $fullExportMenu,
+        ],
+        'columns' => $gridColumns,
     ]); ?>
-    <?php Pjax::end(); ?>
+    
 </div>

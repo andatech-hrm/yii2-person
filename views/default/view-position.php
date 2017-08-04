@@ -250,16 +250,18 @@ $fullExportMenu = ExportMenu::widget([
             //'heading'=>'<h3 class="panel-title"><i class="fa fa-th"></i> '.Html::encode($this->title).'</h3>',
 //             'type'=>'primary',
             'before'=> ' '.
-                Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position New'), ['create-position','id'=>$user_id], [
-                     //'data-toggle'=>"modal",
-                     //'data-target'=>"#{$modals['position']->id}",
-                    'class' => 'btn btn-success btn-flat',
-                    'data-pjax' => 0
-                ]) . ' '. 
-                Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$user_id], [
-                    'class' => 'btn btn-success btn-flat',
-                    'data-pjax' => 0
-                ])                ,
+                Html::beginTag('div',['class'=>'btn-group']).
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position New'), ['create-position','id'=>$user_id], [
+                         //'data-toggle'=>"modal",
+                         //'data-target'=>"#{$modals['position']->id}",
+                        'class' => 'btn btn-success btn-flat',
+                        'data-pjax' => 0
+                    ]) . ' '. 
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$user_id], [
+                        'class' => 'btn btn-success btn-flat',
+                        'data-pjax' => 0
+                    ]).
+                Html::endTag('div'),
                 'heading'=>false,
                 //'footer'=>false,
         ],

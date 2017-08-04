@@ -30,6 +30,8 @@ use andahrm\positionSalary\models\PersonPositionSalary;
 use andahrm\positionSalary\models\PersonPositionSalaryOld;
 use andahrm\person\models\Contract;
 use andahrm\person\models\Servant;
+use andahrm\insignia\models\InsigniaRequest;
+use andahrm\insignia\models\InsigniaPerson;
 
 use andahrm\edoc\models\Edoc;
 
@@ -340,7 +342,7 @@ class DefaultController extends Controller
             'newModelEdoc'=>$newModelEdoc,
             //'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'user_id' => $id
+            
         ]);
         
         // echo Yii::$app->runAction('profile/position/index');
@@ -382,7 +384,79 @@ class DefaultController extends Controller
             'models'=>$models,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'user_id' => $id
         ]);
+    }
+    
+    public function actionCreateInsignia($formAction=null,$id,$modal_edoc_id=null)
+    {
+        // if(!$formAction){
+        //     $this->layout = 'view';
+        // }
+        $modelsInsigniaPerson = [new InsigniaPerson(['user_id'=>$id])];
+        $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
+        $post = Yii::$app->request->post();
+        if($post){
+            if(Yii::$app->request->isAjax){
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            }
+           
+           
+            
+            $success = false;
+            $result=null;
+            $errorMassages = [];
+            if(Model::loadMultiple($modelsPosition,$post)){
+                Model::loadMultiple($modelsEdoc,$post);
+                //$edoc = $post("Edoc");
+                 foreach ($modelsPosition as $key => $modelPosition ) {
+                    //Try to save the models. Validation is not needed as it's already been done.
+                    if($modelPosition->edoc_id == null){
+                        $modelsEdoc[$key]->save();
+                        $modelPosition->edoc_id = $modelsEdoc[$key]->id;
+                        //exit();
+                    }
+                    //echo $modelPosition->edoc_id;
+                    if($modelPosition->edoc_id){
+                        if(!$modelPosition->getExists() && $modelPosition->save(false)){
+                             $success = true;
+                             $result = $modelPosition->attributes;
+                             $errorMassages[] = $modelPosition->getErrors();
+                        }
+                    }
+                }
+                //  print_r($post);
+                // exit();
+            }
+            
+            if(Yii::$app->request->isAjax){
+                return [
+                    'success' => $success,
+                    'result' => $result,
+                    'errorMassages' => $errorMassages
+                    ];
+            }else{
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$id]);
+            }
+        }
+        
+        $options = [
+                'model' => $this->findModel($id),
+                'models' => $modelsInsigniaPerson,
+                'modelsEdoc' => $modelsEdoc,
+                'formAction' => $formAction,
+                'modal_edoc_id' => $modal_edoc_id
+            ];
+       
+        if($formAction){
+            return $this->renderPartial('_form/_insignia', $options);
+        }else{
+            return $this->render('_form/_insignia', $options);
+        }
     }
     
     
@@ -1572,9 +1646,10 @@ class DefaultController extends Controller
         return $this->renderAjax('photo-update', ['model' => $model]);
     }
     
-    public function actionPhotoDelete($id, $person_id)
+    public function actionPhotoDelete($id, $year)
     {
-        $model = Education::findOne($id);
+        //$model = Education::findOne($id);
+        $model = Photo::find()->where(['user_id' => $id])->andWhere(['year' => $year])->one();
         if($model->delete()){
             Yii::$app->getSession()->setFlash('deleted',[
                 'type' => 'success',
@@ -1587,7 +1662,7 @@ class DefaultController extends Controller
             ]);
         }
         
-        return $this->redirect(['view', 'id' => $person_id]);
+        return $this->redirect(['view', 'id' => $id]);
     }
     
     public function actionCheckUsername($firstname_en,$lastname_en){
