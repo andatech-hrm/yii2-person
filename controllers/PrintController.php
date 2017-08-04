@@ -169,7 +169,7 @@ Css;
             'allModels' => ArrayHelper::merge($modelPositionOld,$modelPosition),
             'pagination' => false,
             'sort' => [
-                'attributes' => ['adjust_date' => SORT_DESC],
+               // 'attributes' => ['adjust_date' => SORT_DESC],
             ],
         ]);
         
