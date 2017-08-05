@@ -12,6 +12,7 @@ use andahrm\structure\models\Position;
 use andahrm\structure\models\PositionOld;
 use yii\bootstrap\ActiveForm;
 use kartik\widgets\FileInput;
+use kartik\widgets\Typeahead;
 use yii\web\JsExpression;
 /* @var $this yii\web\View */
 
@@ -93,7 +94,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 
                         <?=$form->field($model,"[{$index}]title",[
                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
-                        ])->textInput();?>
+                        ])->widget(Typeahead::classname(),[
+    'options' => ['placeholder' => 'Filter as you type ...'],
+    'pluginOptions' => ['highlight'=>true],
+    'dataset' => [
+        [
+            'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
+            'display' => 'value',
+            'prefetch' => Url::to(['/structure/position/get-title']),
+            'remote' => [
+                'url' => Url::to(['/structure/position/get-title']) . '?q=%QUERY' ,
+                'wildcard' => '%QUERY'
+            ]
+        ]
+    ]
+]);
+?>
                         
 <?php                   
 $toPositionCreate = Url::to(['/structure/position/create']);
@@ -134,6 +150,10 @@ HTML;
                             
                         <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group  col-xs-3 col-sm-3']])
                         ->textInput();?>
+</div>
+
+<div class="row">
+    
                         
                         <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group  col-xs-4 col-sm-3']])
                         ->textInput();?>
@@ -215,7 +235,8 @@ HTML;
 <?php
 $this->registerJs("
 function initSelect2Loading(a,b){ initS2Loading(a,b); }
-function initSelect2DropStyle(id, kvClose, ev){ initS2Open(id, kvClose, ev); }", 
+function initSelect2DropStyle(id, kvClose, ev){ initS2Open(id, kvClose, ev); }
+", 
 $this::POS_HEAD);
 
 
