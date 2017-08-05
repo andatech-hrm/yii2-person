@@ -11,6 +11,7 @@ use andahrm\edoc\models\Edoc;
 use andahrm\structure\models\PositionOld;
 use yii\bootstrap\ActiveForm;
 use kartik\widgets\FileInput;
+use yii\web\JsExpression;
 /* @var $this yii\web\View */
 
 if($formAction == null){
@@ -92,21 +93,56 @@ $this->params['breadcrumbs'][] = $this->title;
                             'options' => ['class' => 'form-group col-sm-2'],
                         ])->textInput();?>
                         
+                
+<?php                   
+$toPositionCreate = Url::to(['/structure/position-old/create']);
+$positionInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+    <span class="input-group-addon btn btn-success" data-key="{$index}">
+        <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
+    </span>
+</div>
+HTML;
+?>  
                          <?=$form->field($model, "[{$index}]position_old_id",[
+                             'inputTemplate' => $positionInputTemplate,
                              'options' => ['class' => 'form-group col-sm-2']
                              ])
-                            ->widget(Select2::classname(),
-                                WidgetSettings::Select2([
+                             ->hint(false)
+                             ->widget(Select2::classname(),
+                                [
                                     'data' => PositionOld::getList(),
-                                    //'options'=>['tab-index'=>false],
+                                    'options' => ['placeholder' => 'Search for a position ...'],
                                     'pluginOptions' => [
-                                        //'tab-index' => false,
-                                        'tags' => true,
-                                        'tokenSeparators' => [',', ' '],
-                                        'maximumInputLength' => 10
+                                        //'tags' => true,
+                                        //'tokenSeparators' => [',', ' '],
+                                        'allowClear'=>true,
+                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                                        'ajax'=>[
+                                            'url'=>Url::to(['/structure/position-old/position-list']),
+                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
+                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                                         ],
+                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                        'templateResult' => new JsExpression('function(position) { return position.text; }'),
+                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
                                     ],
-                                ])
-                            ); ?>
+                                ]
+                            )
+                            // ->widget(Select2::classname(),
+                            //     WidgetSettings::Select2([
+                            //         'data' => PositionOld::getList(),
+                            //         //'options'=>['tab-index'=>false],
+                            //         'pluginOptions' => [
+                            //             //'tab-index' => false,
+                            //             'tags' => true,
+                            //             'tokenSeparators' => [',', ' '],
+                            //             'maximumInputLength' => 10
+                            //         ],
+                            //     ])
+                            // ); 
+                            ?>
                             
                         <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group col-sm-1']])
                         ->textInput();?>
