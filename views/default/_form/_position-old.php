@@ -113,7 +113,7 @@ HTML;
                              ->widget(Select2::classname(),
                                 [
                                     'data' => PositionOld::getList(),
-                                    'options' => ['placeholder' => 'Search for a position ...'],
+                                    'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position old')],
                                     'pluginOptions' => [
                                         //'tags' => true,
                                         //'tokenSeparators' => [',', ' '],

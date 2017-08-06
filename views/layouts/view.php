@@ -118,8 +118,8 @@ if(count($data) === 0) : ?>
 <div class="alert alert-warning" role="alert">
     <?= $person->fullname; ?> ยังไม่มีประวัติการทำงาน
     <div class="pull-right">
-        <?= Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position New'), ['create-position','id'=>$person->getModel()->user_id], ['class' => 'btn btn-warning btn-xs',]); ?>
-        <?= Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$person->getModel()->user_id], ['class' => 'btn btn-warning btn-xs',]); ?>
+        <?= Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position New'), ['create-position','id'=>$person->getModel()->user_id], ['class' => 'btn btn-success btn-xs',]); ?>
+        <?= Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$person->getModel()->user_id], ['class' => 'btn btn-success btn-xs',]); ?>
         <!--<a href="#" class="alert-link">...</a>-->
     </div>
   
