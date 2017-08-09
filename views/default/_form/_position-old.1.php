@@ -6,7 +6,6 @@ use yii\helpers\ArrayHelper;
 use wbraganca\dynamicform\DynamicFormWidget;
 use andahrm\datepicker\DatePicker;
 use kartik\widgets\Select2;
-use kartik\widgets\Typeahead;
 use andahrm\setting\models\WidgetSettings;
 use andahrm\edoc\models\Edoc;
 use andahrm\structure\models\PositionOld;
@@ -96,37 +95,39 @@ $this->params['breadcrumbs'][] = $this->title;
                         
                 
 <?php                   
-// $toPositionCreate = Url::to(['/structure/position-old/create']);
-// $positionInputTemplate = <<< HTML
-// <div class="input-group">
-//     {input}
-//     <span class="input-group-addon btn btn-success" data-key="{$index}">
-//         <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
-//     </span>
-// </div>
-// HTML;
+$toPositionCreate = Url::to(['/structure/position-old/create']);
+$positionInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+    <span class="input-group-addon btn btn-success" data-key="{$index}">
+        <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
+    </span>
+</div>
+HTML;
 ?>  
                          <?=$form->field($model, "[{$index}]position_old_id",[
-                             //'inputTemplate' => $positionInputTemplate,
+                             'inputTemplate' => $positionInputTemplate,
                              'options' => ['class' => 'form-group col-sm-2']
                              ])
                              ->hint(false)
-                             ->widget(Typeahead::classname(),
+                             ->widget(Select2::classname(),
                                 [
-                                    'options' => ['placeholder' => 'Filter as you type ...'],
-                                    'pluginOptions' => ['highlight'=>true],
-                                    'dataset' => [
-                                        [
-                                            'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
-                                            'display' => 'value',
-                                            //'prefetch' => $baseUrl . '/samples/countries.json',
-                                            'prefetch' => Url::to(['/structure/position-old/position-list']),
-                                            'remote' => [
-                                                'url' => Url::to(['/structure/position-old/position-list']) . '?q=%QUERY',
-                                                'wildcard' => '%QUERY'
-                                            ]
-                                        ]
-                                    ]
+                                    'data' => PositionOld::getList(),
+                                    'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position old')],
+                                    'pluginOptions' => [
+                                        //'tags' => true,
+                                        //'tokenSeparators' => [',', ' '],
+                                        'allowClear'=>true,
+                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                                        'ajax'=>[
+                                            'url'=>Url::to(['/structure/position-old/position-list']),
+                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
+                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                                         ],
+                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                        'templateResult' => new JsExpression('function(position) { return position.text; }'),
+                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
+                                    ],
                                 ]
                             )
                             // ->widget(Select2::classname(),

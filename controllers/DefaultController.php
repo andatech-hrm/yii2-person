@@ -709,7 +709,7 @@ class DefaultController extends Controller
                     if($modelPosition->edoc_id){
                         $modelPosition->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
                             'code'=>$modelPosition->position_old_id
-                        ]);
+                        ],'id',['title'=>$modelPosition->title]);
                         if(!$modelPosition->getExists() && $modelPosition->save(false)){
                              $success = true;
                              $result = $modelPosition->attributes;
@@ -852,7 +852,7 @@ class DefaultController extends Controller
         
     }
     
-    public function chkDb($tb,$find,$id='id'){
+    public function chkDb($tb,$find,$id='id',$otherField=null){
         $key = array_keys($find);
         if($find){
             if($model = $tb::find()->where($find)->one()){
@@ -862,6 +862,10 @@ class DefaultController extends Controller
             }else{
                 $model = new $tb;
                 $model->$key[0] = $find[$key[0]];
+                if($otherField){
+                    foreach($otherField as $k=>$v)
+                    $model->$k = $v;
+                }
                 if($model->save()){
                      return $model->$id;
                 }else{
