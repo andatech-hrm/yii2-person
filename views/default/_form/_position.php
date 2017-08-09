@@ -198,7 +198,7 @@ HTML;
                                 
                                  <?= $form->field($modelsEdoc[0], "[{$index}]file",['options' => ['class' => 'form-group col-sm-4']])
                                  ->widget(FileInput::classname(), [
-                                    'options' => ['accept' => 'pdf/*,image/*','disabled'=>'disabled'],
+                                    'options' => ['disabled'=>'disabled'],
                                     'pluginOptions' => [
                                       'previewFileType' => 'pdf',
                                       'elCaptionText' => '#customCaption',

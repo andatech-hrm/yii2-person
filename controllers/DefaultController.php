@@ -629,6 +629,7 @@ class DefaultController extends Controller
                  foreach ($modelsPosition as $key => $modelPosition ) {
                     //Try to save the models. Validation is not needed as it's already been done.
                     if($modelPosition->edoc_id == null){
+                        $modelsEdoc[$key]->scenario = 'insert';
                         $modelsEdoc[$key]->save();
                         $modelPosition->edoc_id = $modelsEdoc[$key]->id;
                         //exit();
@@ -700,6 +701,7 @@ class DefaultController extends Controller
                  foreach ($modelsPosition as $key => $modelPosition ) {
                     //Try to save the models. Validation is not needed as it's already been done.
                     if($modelPosition->edoc_id == null){
+                        $modelsEdoc[$key]->scenario = 'insert';
                         $modelsEdoc[$key]->save();
                         $modelPosition->edoc_id = $modelsEdoc[$key]->id;
                         //exit();
