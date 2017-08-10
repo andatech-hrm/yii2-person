@@ -183,10 +183,11 @@ HTML;
               //'change' => "function(event, id, value, count) { alert(value); }",
               ]
         ]); */ ?>
-        </div>
-      </div>
+        
+        
+<!--      </div>-->
 
-<div class="row">
+<!--<div class="row">-->
     
                         
                         <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group  col-xs-4 col-sm-3']])
