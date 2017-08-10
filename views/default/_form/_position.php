@@ -14,6 +14,10 @@ use yii\bootstrap\ActiveForm;
 use kartik\widgets\FileInput;
 use kartik\widgets\Typeahead;
 use yii\web\JsExpression;
+
+use andahrm\structure\models\PositionType;
+use andahrm\structure\models\PositionLevel;
+use kartik\widgets\DepDrop;
 /* @var $this yii\web\View */
 
 if($formAction == null){
@@ -49,6 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'adjust_date',
             'title',
             'position_id',
+            'position_type_id',
+            'position_level_id',
             'level',
             'salary',
             'edoc_id',
@@ -148,9 +154,37 @@ HTML;
                                 ]
                             )->hint(false); ?>
                             
-                        <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group  col-xs-3 col-sm-3']])
-                        ->textInput();?>
-</div>
+                        <?php 
+                        //echo $form->field($model,"[{$index}]level",['options' => ['class' => 'form-group  col-xs-3 col-sm-3']])
+                        //->textInput();
+                        ?>
+
+
+          <?= $form->field($model, "[{$index}]position_type_id",[
+              'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
+              ])->dropDownList(PositionType::getList(),['prompt'=>Yii::t('app','Select')]);
+          //->dropDownList(PositionType::getList(),['prompt'=>Yii::t('app','Select')])
+          ?>
+          <?= $form->field($model, "[{$index}]position_level_id",[
+              'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
+              ])->dropDownList(
+              PositionLevel::getList(),['prompt'=>Yii::t('app','Select')]);
+          
+          /*->widget(DepDrop::classname(), [
+            'options'=>['id'=>"ddl-position_level-{$index}"],
+            'data'=> PositionLevel::getPositionLevels($model->person_type_id,$model->position_type_id),
+            'type'=>DepDrop::TYPE_SELECT2,
+            'pluginOptions'=>[
+                'depends'=>["ddl-position_type-{$index}"],
+                'placeholder'=>Yii::t('app','Select'),
+                'url'=>Url::to(['/structure/position/get-position-level'])
+            ],
+            'pluginEvents' => [
+              //'change' => "function(event, id, value, count) { alert(value); }",
+              ]
+        ]); */ ?>
+        </div>
+      </div>
 
 <div class="row">
     
