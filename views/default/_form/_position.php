@@ -18,6 +18,8 @@ use yii\web\JsExpression;
 use andahrm\structure\models\PositionType;
 use andahrm\structure\models\PositionLevel;
 use kartik\widgets\DepDrop;
+
+use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 
 if($formAction == null){
@@ -28,6 +30,18 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Position'
 //$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
 $this->params['breadcrumbs'][] = $this->title;
 }
+
+
+
+$modals['position'] = Modal::begin([
+    'header' => Yii::t('andahrm/structure', 'Create Position'),
+    'size' => Modal::SIZE_LARGE
+]);
+// echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
+echo Yii::$app->runAction('/structure/position/create-ajax', ['formAction' => Url::to(['/structure/position/create-ajax'])]);
+// echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
+            
+Modal::end();
 ?>
 <?php 
   $formOptions['options'] = ['data-pjax' => ''];
@@ -122,8 +136,8 @@ $toPositionCreate = Url::to(['/structure/position/create']);
 $positionInputTemplate = <<< HTML
 <div class="input-group">
     {input}
-    <span class="input-group-addon btn btn-success" data-key="{$index}">
-        <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
+    <span class="input-group-addon btn btn-success btn-create-position" data-key="{$index}" role="position" data-toggle="modal" data-target="#{$modals['position']->id}" >
+        <i class="fa fa-plus"></i>
     </span>
 </div>
 HTML;
@@ -278,6 +292,7 @@ $this::POS_HEAD);
 $listLabel = Yii::t('andahrm', 'List');
 $js[] = <<< JS
 bindBtnAddEdoc();
+bindBtnAddPosition();
 jQuery(".positions_dynamicform_wrapper").on('afterInsert', function(e, item) {
     
     
@@ -303,6 +318,7 @@ jQuery(".positions_dynamicform_wrapper").on('afterInsert', function(e, item) {
     
     
     bindBtnAddEdoc();
+    bindBtnAddPosition();
     
 });
 
@@ -310,6 +326,7 @@ jQuery(".positions_dynamicform_wrapper").on("afterDelete", function(e) {
     jQuery(".positions_dynamicform_wrapper .panel-title-positions").each(function(index) {
         jQuery(this).html("{$listLabel}: " + (index + 1));
     });
+    bindBtnAddPosition();
 });
 
 
@@ -342,40 +359,38 @@ function bindBtnAddEdoc(){
         });
     });
 }
+var input_position = '';
+function bindBtnAddPosition(){
+    $(".positions_dynamicform_wrapper .btn-create-position").each(function(index) {
+        $(this).unbind("click");
+        $(this).bind("click",function(){
+            $(this).attr('data-key',index);
+            input_position = $(this).attr('data-key');
+            alert(input_position);
+            
+        });
+    });
+}
 JS;
     
 $this->registerJs(implode("\n", $js), $this::POS_END);
 
 
+$positionInputId = Html::getInputId($model, 'position_id');
 
-///Surakit
-if($formAction !== null) {
-$js[] = <<< JS
-$(document).on('submit', '#{$form->id}', function(e){
-  e.preventDefault();
-  var form = $(this);
-  var formData = new FormData(form[0]);
-  // alert(form.serialize());
-  
-  $.ajax({
-    url: form.attr('action'),
-    type : 'POST',
-    data: formData,
-    contentType:false,
-    cache: false,
-    processData:false,
-    dataType: "json",
-    success: function(data) {
-      if(data.success){
-        callbackPosition(data.result);
-      }else{
-        alert('Fail');
-      }
-    }
-  });
-});
-JS;
-
-$this->registerJs(implode("\n", $js));
+$jsHead[] = <<< JS
+function callbackPosition(result)
+{   
+    $("#personpositionsalary-"+input_position+"-position_id").append($('<option>', {
+        value: result.id,
+        text: result.code + ' - ' + result.title
+    }));
+    $("#personpositionsalary-"+input_position+"-position_id").val(result.id).trigger('change.select2');
+    
+    $("#{$modals['position']->id}").modal('hide');
+    
+    
 }
+JS;
+$this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);
 ?>
