@@ -115,7 +115,7 @@ Modal::end();
                         <?=$form->field($model,"[{$index}]title",[
                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
                         ])->widget(Typeahead::classname(),[
-    'options' => ['placeholder' => 'Filter as you type ...'],
+    'options' => ['placeholder' => 'Filter as you type ...','id'=>"personpositionsalary-{$index}-title"],
     'pluginOptions' => ['highlight'=>true],
     'dataset' => [
         [
@@ -205,7 +205,7 @@ HTML;
     
                         
                         <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group  col-xs-4 col-sm-3']])
-                        ->textInput();?>
+                        ->textInput(['type'=>'number']);?>
 <?php                        
 $edocInputTemplate = <<< HTML
 <div class="input-group">
@@ -282,6 +282,10 @@ HTML;
 
     <?php ActiveForm::end(); ?>
 <?php
+###############################################################################################################################
+###############################################################################################################################
+###############################################################################################################################
+
 $this->registerJs("
 function initSelect2Loading(a,b){ initS2Loading(a,b); }
 function initSelect2DropStyle(id, kvClose, ev){ initS2Open(id, kvClose, ev); }
@@ -366,8 +370,7 @@ function bindBtnAddPosition(){
         $(this).bind("click",function(){
             $(this).attr('data-key',index);
             input_position = $(this).attr('data-key');
-            alert(input_position);
-            
+            //alert(input_position);
         });
     });
 }
