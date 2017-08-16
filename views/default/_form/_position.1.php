@@ -41,14 +41,14 @@ $modals['position'] = Modal::begin([
 echo Yii::$app->runAction('/structure/position/create-ajax', ['formAction' => Url::to(['/structure/position/create-ajax'])]);
 // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
             
-Modal::end();
+Modal::end
 
 $modals['edoc'] = Modal::begin([
     'header' => Yii::t('andahrm/structure', 'Create Position'),
     'size' => Modal::SIZE_LARGE
 ]);
 // echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
-echo Yii::$app->runAction('/edoc/default/create-ajax1', ['formAction' => Url::to(['/edoc/default/create-ajax1'])]);
+echo Yii::$app->runAction('/structure/position/create-ajax', ['formAction' => Url::to(['/edoc/default/create-ajax'])]);
 // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
             
 Modal::end();
@@ -223,7 +223,7 @@ HTML;
 $edocInputTemplate = <<< HTML
 <div class="input-group">
     {input}
-   <span class="input-group-addon btn btn-success btn-create-edoc"  role="edoc" data-toggle="modal" data-target="#{$modals['edoc']->id}">
+    <span class="input-group-addon btn btn-success new_edoc" data-key="{$index}">
         <i class="fa fa-plus"></i>
     </span>
 </div>
@@ -231,29 +231,9 @@ HTML;
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,
-                             'options' => ['class' => 'form-group  col-xs-6 col-sm-6'
+                             'options' => ['class' => 'form-group  col-xs-4 col-sm-4'
                              ]])
-                         ->widget(Select2::className(),
-                         [
-                                    'data' => Edoc::getList(),
-                                    'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a edoc')],
-                                    'pluginOptions' => [
-                                        //'tags' => true,
-                                        //'tokenSeparators' => [',', ' '],
-                                        'allowClear'=>true,
-                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
-                                        'ajax'=>[
-                                            'url'=>Url::to(['/edoc/default/get-list']),
-                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
-                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
-                                         ],
-                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                        'templateResult' => new JsExpression('function(position) { return position.text; }'),
-                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
-                                    ],
-                                ]
-                         
-                         );
+                         ->widget(Select2::className(), WidgetSettings::Select2(['data' => Edoc::getList()]));
                         ?>
                     </div>
                     
@@ -363,47 +343,38 @@ jQuery(".positions_dynamicform_wrapper").on("afterDelete", function(e) {
     jQuery(".positions_dynamicform_wrapper .panel-title-positions").each(function(index) {
         jQuery(this).html("{$listLabel}: " + (index + 1));
     });
-    bindBtnAddEdoc();
     bindBtnAddPosition();
 });
 
-var input_edoc = '';
+
 function bindBtnAddEdoc(){
-    //$(".positions_dynamicform_wrapper .new_edoc").each(function(index) {
-        $(".positions_dynamicform_wrapper .btn-create-edoc").each(function(index) {
-            $(this).unbind("click");
-            $(this).bind("click",function(){
-                $(this).attr('data-key',index);
-                input_edoc = $(this).attr('data-key');
-                alert(input_edoc);
-            });
+    $(".positions_dynamicform_wrapper .new_edoc").each(function(index) {
+        $(this).attr('data-key',index);
+        //var key = index;
+        var area = $(".positions_dynamicform_wrapper .new_edoc_area:eq("+index+")").attr('data-key',index);
+        
+        
+        $(this).unbind('click');
+        $(this).bind('click',function(){
+            if(!$(this).is('.shown')){
+                $(this).find("i").removeClass('fa-plus');
+                $(this).find("i").addClass('fa-minus');
+                $(this).addClass('shown');
+                $(area).find('input').attr('disabled',false);
+                $(area).find("#edoc-"+index+"-file").attr('disabled',false);
+                $(area).find("#edoc-"+index+"-file").fileinput('refresh');
+                $(area).show();
+            }else{
+                 $(this).removeClass('shown');
+                 $(this).find("i").addClass('fa-plus');
+                 $(this).find("i").removeClass('fa-minus');
+                 $(area).find('input').attr('disabled',true);
+                $(area).find("#edoc-"+index+"-file").attr('disabled',true);
+                $(area).find("#edoc-"+index+"-file").fileinput('refresh');
+                $(area).hide();
+            }
         });
-        // $(this).attr('data-key',index);
-        // //var key = index;
-        // var area = $(".positions_dynamicform_wrapper .new_edoc_area:eq("+index+")").attr('data-key',index);
-        
-        
-        // $(this).unbind('click');
-        // $(this).bind('click',function(){
-        //     if(!$(this).is('.shown')){
-        //         $(this).find("i").removeClass('fa-plus');
-        //         $(this).find("i").addClass('fa-minus');
-        //         $(this).addClass('shown');
-        //         $(area).find('input').attr('disabled',false);
-        //         $(area).find("#edoc-"+index+"-file").attr('disabled',false);
-        //         $(area).find("#edoc-"+index+"-file").fileinput('refresh');
-        //         $(area).show();
-        //     }else{
-        //          $(this).removeClass('shown');
-        //          $(this).find("i").addClass('fa-plus');
-        //          $(this).find("i").removeClass('fa-minus');
-        //          $(area).find('input').attr('disabled',true);
-        //         $(area).find("#edoc-"+index+"-file").attr('disabled',true);
-        //         $(area).find("#edoc-"+index+"-file").fileinput('refresh');
-        //         $(area).hide();
-        //     }
-        // });
-    //});
+    });
 }
 var input_position = '';
 function bindBtnAddPosition(){
@@ -440,11 +411,11 @@ $edocInputId = Html::getInputId($model, 'edoc_id');
 $jsHead[] = <<< JS
 function callbackEdoc(result,form)
 {   
-    $("#personpositionsalary-"+input_edoc+"-edoc_id").append($('<option>', {
+    $("#{$edocInputId}").append($('<option>', {
         value: result.id,
-        text: result.code + ' ' + result.date_code + ' ' + result.title
+        text: result.code + ' - ' + result.title
     }));
-    $("#personpositionsalary-"+input_edoc+"-edoc_id").val(result.id).trigger('change.select2');
+    $("#{$edocInputId}").val(result.id).trigger('change.select2');
     
     $("#{$modals['edoc']->id}").modal('hide');
     $(form).trigger("reset");
