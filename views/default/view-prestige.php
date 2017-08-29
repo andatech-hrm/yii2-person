@@ -114,10 +114,7 @@ $fullExportMenu = ExportMenu::widget([
                         'class' => 'btn btn-success btn-flat',
                         'data-pjax' => 0
                     ]) . ' '. 
-                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/insignia', 'Create Insignia Request'), ['/insignia/default/request','step'=>'reset'], [
-                        'class' => 'btn btn-success btn-flat',
-                        'data-pjax' => 0
-                    ]).
+                   
                 Html::endTag('div'),
                 'heading'=>false,
                 //'footer'=>false,

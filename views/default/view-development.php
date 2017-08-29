@@ -20,6 +20,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'),
 $this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
 //$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
 $this->params['breadcrumbs'][] = $this->title;
+
+$user_id = $models['person']->user_id;
 ?>
 
 
@@ -100,7 +102,21 @@ $fullExportMenu = ExportMenu::widget([
             'showConfirmAlert' => false,
         ],
         'panel' => [
-            'before'=> false,
+            //'heading'=>'<h3 class="panel-title"><i class="fa fa-th"></i> '.Html::encode($this->title).'</h3>',
+//             'type'=>'primary',
+            'before'=> ' '.
+                Html::beginTag('div',['class'=>'btn-group']).
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/insignia', 'Create Insignia Request'), ['create-insignia','id'=>$user_id], [
+                         //'data-toggle'=>"modal",
+                         //'data-target'=>"#{$modals['position']->id}",
+                        'class' => 'btn btn-success btn-flat',
+                        'data-pjax' => 0
+                    ]) . ' '. 
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/insignia', 'Create Insignia Request'), ['/insignia/default/request','step'=>'reset'], [
+                        'class' => 'btn btn-success btn-flat',
+                        'data-pjax' => 0
+                    ]).
+                Html::endTag('div'),
                 'heading'=>false,
                 //'footer'=>false,
         ],

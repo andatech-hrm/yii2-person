@@ -401,32 +401,70 @@ class DefaultController extends Controller
                 \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             }
            
-           
-            
             $success = false;
             $result=null;
             $errorMassages = [];
-            if(Model::loadMultiple($modelsPosition,$post)){
+            
+            // print_r($post);
+            // exit();
+            if(Model::loadMultiple($modelsInsigniaPerson,$post)){
                 Model::loadMultiple($modelsEdoc,$post);
                 //$edoc = $post("Edoc");
-                 foreach ($modelsPosition as $key => $modelPosition ) {
+                 foreach ($modelsInsigniaPerson as $key => $modelSinsignia ) {
                     //Try to save the models. Validation is not needed as it's already been done.
-                    if($modelPosition->edoc_id == null){
-                        $modelsEdoc[$key]->save();
-                        $modelPosition->edoc_id = $modelsEdoc[$key]->id;
-                        //exit();
+                    //echo $modelSinsignia->year;
+                    @list($d,$m,$year) = @explode('/',$modelSinsignia->year);
+                    $find=[
+                        'person_type_id' => $modelSinsignia->person_type_id,
+                        'insignia_type_id' => $modelSinsignia->insignia_type_id,
+                        'gender' => $modelSinsignia->gender,
+                        'year' => ($year-543),
+                        ];
+            //             echo "<pre>";
+            //              print_r($find);
+            //              print_r($modelsInsigniaPerson);
+            // exit();
+            
+                    $modelSinsignia->last_adjust_date = $modelSinsignia->year;
+                    if($modelSinsignia->edoc_id == null){
+                            $modelsEdoc[$key]->save();
+                            $modelSinsignia->edoc_id = $modelsEdoc[$key]->id;
+                            //exit();
                     }
-                    //echo $modelPosition->edoc_id;
-                    if($modelPosition->edoc_id){
-                        if(!$modelPosition->getExists() && $modelPosition->save(false)){
-                             $success = true;
-                             $result = $modelPosition->attributes;
-                             $errorMassages[] = $modelPosition->getErrors();
+                    //echo $modelSinsignia->edoc_id;
+                    if($modelSinsignia->edoc_id){
+                        if($modelRequest = InsigniaRequest::find()->where($find)->one()){
+                             $modelRequest->attributes = $find;
+                             $modelRequest->save(false);
+                            $modelSinsignia->insignia_request_id = $modelRequest->id;
+                        }else{
+                            $modelRequest = new InsigniaRequest();
+                            $modelRequest->attributes = $find;
+                            $modelRequest->save(false);
+                            $modelSinsignia->insignia_request_id = $modelRequest->id;
                         }
+                            $modelSinsignia->attributes = $find;
+                        
+                        
+                            if(!$modelSinsignia->getExists()){
+                                if($modelSinsignia->save()){
+                                     $success = true;
+                                    //  print_r($find);
+                                    //  exit();
+                                }else{
+                                     $result = $modelSinsignia->attributes;
+                                     $errorMassages[] = $modelSinsignia->getErrors();
+                                     
+                                }
+                            }
                     }
+                    
+                    
                 }
-                //  print_r($post);
-                // exit();
+                if($errorMassages){
+                     print_r($errorMassages);
+                    exit();
+                }
             }
             
             if(Yii::$app->request->isAjax){
@@ -440,7 +478,7 @@ class DefaultController extends Controller
                         'type' => 'success',
                         'msg' => Yii::t('andahrm', 'Save operation completed.')
                     ]);
-                return $this->redirect(['view-position','id'=>$id]);
+                return $this->redirect(['view-prestige','id'=>$id]);
             }
         }
         

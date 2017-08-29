@@ -20,7 +20,7 @@ use andahrm\insignia\models\PersonInsignia;
 use andahrm\insignia\models\InsigniaType;
 
 if($formAction == null){
-$this->title = Yii::t('andahrm/person', 'Create Position New');
+$this->title = Yii::t('andahrm/person', 'Create Insignia New');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->fullname, 'url' => ['view', 'id' => $model->user_id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Position'), 'url' => ['view-position', 'id' => $model->user_id]];
@@ -54,6 +54,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'gender',
             'certificate_offer_name',
             'insignia_type_id',
+            'last_position_id',
+            'last_salary',
             //'edoc_id',
         ],
     ]); ?>
@@ -100,13 +102,42 @@ $this->params['breadcrumbs'][] = $this->title;
                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
                         ])->dropDownList(PersonInsignia::getGenders(),['prompt'=>Yii::t('app','Select')]) ?>
                         
+                        
+                         <?=$form->field($model,"[{$index}]insignia_type_id",[
+                            'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
+                        ])->dropDownList(InsigniaType::getList()) ?>
+                        
                     </div>
                     
                     
                      <div class="row">
-                         <?=$form->field($model,"[{$index}]insignia_type_id",[
+                         
+                         <?=$form->field($model,"[{$index}]last_salary",[
                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
-                        ])->dropDownList(InsigniaType::getList()) ?>
+                        ])->textInput(['type'=>'number','min'=>0]) ?>
+                        
+                        <?=$form->field($model,"[{$index}]last_position_id",[
+                            'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
+                        ])->widget(Select2::classname(),
+                                [
+                                    'data' => Position::getList(),
+                                    'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
+                                    'pluginOptions' => [
+                                        //'tags' => true,
+                                        //'tokenSeparators' => [',', ' '],
+                                        'allowClear'=>true,
+                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                                        'ajax'=>[
+                                            'url'=>Url::to(['/structure/position/position-list']),
+                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
+                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                                         ],
+                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                        'templateResult' => new JsExpression('function(position) { return position.text; }'),
+                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
+                                    ],
+                                ]
+                            )->hint(false); ?>
 <?php   
 /*
 $toPositionCreate = Url::to(['/structure/position/create']);
