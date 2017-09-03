@@ -19,7 +19,7 @@ use andahrm\development\models\DevelopmentProject;
 use andahrm\development\models\DevelopmentActivityChar;
 
 if($formAction == null){
-    $this->title = Yii::t('andahrm/person', 'Create Insignia New');
+    $this->title = Yii::t('andahrm/person', 'Create Development New');
     $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
     $this->params['breadcrumbs'][] = ['label' => $model->fullname, 'url' => ['view', 'id' => $model->user_id]];
     $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Position'), 'url' => ['view-position', 'id' => $model->user_id]];
