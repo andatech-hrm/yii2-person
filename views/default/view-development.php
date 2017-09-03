@@ -35,7 +35,7 @@ $columns = [
     'dev_activity_char_id' =>  [
                     'attribute' => 'dev_activity_char_id',
                     'filter' => DevelopmentActivityChar::getList(),
-                    'value' => 'devChar.title',
+                    'value' => 'devCharList',
                     'contentOptions' => ['nowrap' => 'nowrap']
                 ],
   'dev_project_id' => [
@@ -106,16 +106,12 @@ $fullExportMenu = ExportMenu::widget([
 //             'type'=>'primary',
             'before'=> ' '.
                 Html::beginTag('div',['class'=>'btn-group']).
-                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/insignia', 'Create Insignia Request'), ['create-insignia','id'=>$user_id], [
+                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/development', 'Create'), ['create-development','id'=>$user_id], [
                          //'data-toggle'=>"modal",
                          //'data-target'=>"#{$modals['position']->id}",
                         'class' => 'btn btn-success btn-flat',
                         'data-pjax' => 0
-                    ]) . ' '. 
-                    Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/insignia', 'Create Insignia Request'), ['/insignia/default/request','step'=>'reset'], [
-                        'class' => 'btn btn-success btn-flat',
-                        'data-pjax' => 0
-                    ]).
+                    ]) .
                 Html::endTag('div'),
                 'heading'=>false,
                 //'footer'=>false,

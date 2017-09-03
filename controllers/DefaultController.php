@@ -32,6 +32,7 @@ use andahrm\person\models\Contract;
 use andahrm\person\models\Servant;
 use andahrm\insignia\models\InsigniaRequest;
 use andahrm\insignia\models\InsigniaPerson;
+use andahrm\development\models\DevelopmentPerson;
 
 use andahrm\edoc\models\Edoc;
 
@@ -356,6 +357,7 @@ class DefaultController extends Controller
         $searchModel = new \andahrm\profile\models\SelfDevelopmentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->where(['user_id'=>$id]);
+        $dataProvider->query->groupBy(['dev_project_id']);
         //$dataProvider->sort->defaultOrder = ['development_project.start'=>SORT_DESC];
 
         return $this->render('view-development', [
@@ -387,6 +389,100 @@ class DefaultController extends Controller
             'user_id' => $id
         ]);
     }
+    
+    public function actionCreateDevelopment($formAction=null,$id,$modal_edoc_id=null)
+    {
+        // if(!$formAction){
+        //     $this->layout = 'view';
+        // }
+        $modelsDevelopmentPersons = [new DevelopmentPerson()];
+        $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
+        $post = Yii::$app->request->post();
+        if($post){
+            if(Yii::$app->request->isAjax){
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            }
+           
+            $success = false;
+            $result=null;
+            $errorMassages = [];
+            
+            // print_r($post);
+            // exit();
+            if(Model::loadMultiple($modelsDevelopmentPersons,$post)){
+               
+                //$edoc = $post("Edoc");
+                 foreach ($modelsDevelopmentPersons as $key => $modelDevelopment ) {
+                     foreach ($modelDevelopment->dev_activity_char_id as $activity_char_id ) {
+                    //Try to save the models. Validation is not needed as it's already been done.
+                    //echo $modelSinsignia->year;
+                    $find=[
+                        'user_id' => $id,
+                        'dev_project_id' => $modelDevelopment->dev_project_id,
+                        'dev_activity_char_id' => $activity_char_id,
+                        ];
+                        // echo "<pre>";
+                        //  print_r($find);
+                        //  print_r($modelDevelopment);
+                        // exit();
+            
+                    
+                        if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
+                             $modelDevelopmentPerson->attributes = $find;
+                             if(!$modelDevelopmentPerson->save()){
+                                $result = $modelDevelopmentPerson->attributes;
+                                $errorMassages[] = $modelDevelopmentPerson->getErrors();
+                            }
+                        }else{
+                            $modelDevelopmentPerson = new DevelopmentPerson();
+                            $modelDevelopmentPerson->attributes = $find;
+                            if(!$modelDevelopmentPerson->save()){
+                                $result = $modelDevelopmentPerson->attributes;
+                                $errorMassages[] = $modelDevelopmentPerson->getErrors();
+                            }
+                        }
+                           
+                    }
+                }
+                    
+                
+                if($errorMassages){
+                    print_r($errorMassages);
+                    exit();
+                }
+            }
+            
+            if(Yii::$app->request->isAjax){
+                return [
+                    'success' => $success,
+                    'result' => $result,
+                    'errorMassages' => $errorMassages,
+                    ];
+            }else{
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-development','id'=>$id]);
+            }
+            }
+        
+        
+        $options = [
+                'model' => $this->findModel($id),
+                'models' => $modelsDevelopmentPersons,
+                'modelsEdoc' => $modelsEdoc,
+                'formAction' => $formAction,
+                'modal_edoc_id' => $modal_edoc_id
+            ];
+       
+        if($formAction){
+            return $this->renderPartial('_form/_development', $options);
+        }else{
+            return $this->render('_form/_development', $options);
+        }
+    }
+    
     
     public function actionCreateInsignia($formAction=null,$id,$modal_edoc_id=null)
     {
