@@ -63,6 +63,8 @@ Modal::end();
             //'user_id',
             'dev_project_id',
             'dev_activity_char_id',
+            'start',
+            'end'
         ],
     ]); ?>
     
@@ -86,7 +88,8 @@ Modal::end();
                     
                    <div class="row">
                        <?php #echo $form->errorSummary($model); ?>
-                        
+                         <div class="col-sm-8">
+                             
 <?php                        
 $edocInputTemplate = <<< HTML
 <div class="input-group">
@@ -101,7 +104,7 @@ HTML;
                         
             <?= $form->field($model, "[{$index}]dev_project_id",[
                 'inputTemplate' => $edocInputTemplate,
-                'options' => ['class' => 'form-group  col-xs-6 col-sm-6'],
+               // 'options' => ['class' => 'form-group  col-xs-6 col-sm-6'],
             ])->widget(Select2::classname(),
                                 [
                                     'data' => DevelopmentProject::getList(),
@@ -124,6 +127,22 @@ HTML;
                             )->hint(false);
                             ?>
             
+            <div class="row">
+                                <?= $form->field($model, "[{$index}]start", [
+                                    'options' => [
+                                        'class' => 'form-group col-sm-6 dev-p-start' 
+                                    ]  
+                                ])->widget(DatePicker::className());
+                                ?>
+                                <?= $form->field($model, "[{$index}]end", [
+                                    'options' => [
+                                        'class' => 'form-group col-sm-6 dev-p-end' 
+                                    ]  
+                                ])->widget(DatePicker::className());
+                                ?>
+                            </div>
+            
+            
             <?php /*= $form->field($model, "[{$index}]dev_activity_char_id",[
                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
                         ])->widget(Select2::className(), [
@@ -137,15 +156,20 @@ HTML;
                 ],
             ])->hint(false);*/
             ?>
+            </div>
+            <div class="col-sm-4">
             
             <?= $form->field($model, "[{$index}]dev_activity_char_id",[
-                            'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
+                            //'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
                         ])->dropDownList( DevelopmentActivityChar::getList(),
                 [
                     'placeholder' => 'เลือก..',
-                    'multiple' => true
-            ])->hint(false);
+                    'multiple' => true,
+                    'size'=>4,
+            ])->hint(Yii::t('andahrm/development', 'Can select multiple by click Ctrl'));
             ?>
+            
+            </div>
                 </div>
 
     

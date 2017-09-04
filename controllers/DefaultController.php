@@ -413,20 +413,42 @@ class DefaultController extends Controller
                
                 //$edoc = $post("Edoc");
                  foreach ($modelsDevelopmentPersons as $key => $modelDevelopment ) {
-                     foreach ($modelDevelopment->dev_activity_char_id as $activity_char_id ) {
-                    //Try to save the models. Validation is not needed as it's already been done.
-                    //echo $modelSinsignia->year;
-                    $find=[
-                        'user_id' => $id,
-                        'dev_project_id' => $modelDevelopment->dev_project_id,
-                        'dev_activity_char_id' => $activity_char_id,
+                     if(count($modelDevelopment->dev_activity_char_id)>0){
+                         foreach ($modelDevelopment->dev_activity_char_id as $activity_char_id ) {
+                        //Try to save the models. Validation is not needed as it's already been done.
+                        //echo $modelSinsignia->year;
+                        $find=[
+                            'user_id' => $id,
+                            'dev_project_id' => $modelDevelopment->dev_project_id,
+                            'dev_activity_char_id' => $activity_char_id,
+                            ];
+                            // echo "<pre>";
+                            //  print_r($find);
+                            //  print_r($modelDevelopment);
+                            // exit();
+                
+                        
+                            if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
+                                 $modelDevelopmentPerson->attributes = $find;
+                                 if(!$modelDevelopmentPerson->save()){
+                                    $result = $modelDevelopmentPerson->attributes;
+                                    $errorMassages[] = $modelDevelopmentPerson->getErrors();
+                                }
+                            }else{
+                                $modelDevelopmentPerson = new DevelopmentPerson();
+                                $modelDevelopmentPerson->attributes = $find;
+                                if(!$modelDevelopmentPerson->save()){
+                                    $result = $modelDevelopmentPerson->attributes;
+                                    $errorMassages[] = $modelDevelopmentPerson->getErrors();
+                                }
+                            }
+                         }
+                           
+                    }else{
+                        $find=[
+                            'user_id' => $id,
+                            'dev_project_id' => $modelDevelopment->dev_project_id,
                         ];
-                        // echo "<pre>";
-                        //  print_r($find);
-                        //  print_r($modelDevelopment);
-                        // exit();
-            
-                    
                         if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
                              $modelDevelopmentPerson->attributes = $find;
                              if(!$modelDevelopmentPerson->save()){
@@ -441,7 +463,6 @@ class DefaultController extends Controller
                                 $errorMassages[] = $modelDevelopmentPerson->getErrors();
                             }
                         }
-                           
                     }
                 }
                     
