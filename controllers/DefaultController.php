@@ -428,8 +428,12 @@ class DefaultController extends Controller
                             // exit();
                 
                         
+                                
                             if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
                                  $modelDevelopmentPerson->attributes = $find;
+                                  $modelDevelopmentPerson->start = $modelDevelopment->start;
+                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
+                                 
                                  if(!$modelDevelopmentPerson->save()){
                                     $result = $modelDevelopmentPerson->attributes;
                                     $errorMassages[] = $modelDevelopmentPerson->getErrors();
@@ -437,6 +441,8 @@ class DefaultController extends Controller
                             }else{
                                 $modelDevelopmentPerson = new DevelopmentPerson();
                                 $modelDevelopmentPerson->attributes = $find;
+                                 $modelDevelopmentPerson->start = $modelDevelopment->start;
+                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
                                 if(!$modelDevelopmentPerson->save()){
                                     $result = $modelDevelopmentPerson->attributes;
                                     $errorMassages[] = $modelDevelopmentPerson->getErrors();
@@ -449,8 +455,11 @@ class DefaultController extends Controller
                             'user_id' => $id,
                             'dev_project_id' => $modelDevelopment->dev_project_id,
                         ];
+                        
                         if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
                              $modelDevelopmentPerson->attributes = $find;
+                              $modelDevelopmentPerson->start = $modelDevelopment->start;
+                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
                              if(!$modelDevelopmentPerson->save()){
                                 $result = $modelDevelopmentPerson->attributes;
                                 $errorMassages[] = $modelDevelopmentPerson->getErrors();
@@ -458,6 +467,8 @@ class DefaultController extends Controller
                         }else{
                             $modelDevelopmentPerson = new DevelopmentPerson();
                             $modelDevelopmentPerson->attributes = $find;
+                             $modelDevelopmentPerson->start = $modelDevelopment->start;
+                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
                             if(!$modelDevelopmentPerson->save()){
                                 $result = $modelDevelopmentPerson->attributes;
                                 $errorMassages[] = $modelDevelopmentPerson->getErrors();

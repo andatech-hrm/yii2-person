@@ -63,13 +63,14 @@ Modal::end();
             //'user_id',
             'dev_project_id',
             'dev_activity_char_id',
+            'qualification',
             'start',
             'end'
         ],
     ]); ?>
     
     <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
-        <span class="text-muted"><?=Yii::t('andahrm/person', 'Position History')?></span>
+        <span class="text-muted"><?=Yii::t('andahrm/person', 'Development History')?></span>
         <button type="button" class="pull-right insignias-add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> <?=Yii::t('andahrm', 'Add List')?></button>
     </h2> 
     
@@ -126,7 +127,12 @@ HTML;
                                 ]
                             )->hint(false);
                             ?>
-            
+            <?= $form->field($model, "[{$index}]qualification", [
+                                    'options' => [
+                                       // 'class' => 'form-group col-sm-6 dev-p-start' 
+                                    ]  
+                                ])->textInput();
+                                ?>
             <div class="row">
                                 <?= $form->field($model, "[{$index}]start", [
                                     'options' => [
@@ -165,7 +171,7 @@ HTML;
                 [
                     'placeholder' => 'เลือก..',
                     'multiple' => true,
-                    'size'=>4,
+                    'size'=>7,
             ])->hint(Yii::t('andahrm/development', 'Can select multiple by click Ctrl'));
             ?>
             
