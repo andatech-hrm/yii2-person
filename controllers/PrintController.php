@@ -32,7 +32,7 @@ class PrintController extends \yii\web\Controller
         
         $rowNum[0] = 8;
         $rowNum[1] = 9;
-        $rowNum[2] = 9;
+        $rowNum[2] = 4;
         $rowNum[3] = 80; #position
         $dataDefect = [];
         $modelDefect = $modelPerson->defects;
@@ -65,6 +65,48 @@ class PrintController extends \yii\web\Controller
             ],
         ]);
         
+        ## Development & Educations ##
+        $modelEducation= $modelPerson->educations;
+        $modelDevelopments= $modelPerson->developments;
+        $arrEduDev = [];
+        $newArrEduDev = [];
+        foreach($modelEducation as $edu){
+            $arrEduDev[$edu->year_start][]=[
+                'range'=>$edu->year_start.' - '.$edu->year_end,
+                'institution'=>$edu->institution,
+                'branch'=>$edu->branch,
+            ];
+        }
+        foreach($modelDevelopments as $edu){
+            $arrEduDev[(Yii::$app->formatter->asDate($edu->start,'Y')-543)][]=[
+                'range'=>Yii::$app->formatter->asDate($edu->start,'php:m/Y').' - '.Yii::$app->formatter->asDate($edu->end,'php:m/Y'),
+                'institution'=>$edu->devProject->title,
+                'branch'=>$edu->qualification,
+            ];
+        }
+        ksort($arrEduDev);
+        foreach($arrEduDev as $key => $eduDevs){
+            foreach($eduDevs as $eduDev){
+            $newArrEduDev[]=[
+                'year' => $key,
+                'range'=>$eduDev['range'],
+                'institution'=>$eduDev['institution'],
+                'branch'=>$eduDev['branch'],
+            ];
+            }
+        }
+        
+        $dataEduDev = $newArrEduDev;
+        // $dataEduDev = new ArrayDataProvider([
+        //     'allModels' => $arrEduDev,
+        //     'pagination' => false,
+        //     'sort' => [
+        //         'attributes' => ['adjust_date' => SORT_ASC],
+        //     ],
+        // ]);
+        // echo "<pre>";
+        // print_r($dataEduDev);
+        // exit();
         
         $content = $this->renderPartial('index', [
         //return $this->renderPartial('print', [
@@ -73,6 +115,7 @@ class PrintController extends \yii\web\Controller
             'rowNum' => $rowNum,
             'dataDefect' => $dataDefect,
             'dataPositionSaraly' => $dataPositionSaraly,
+            'dataEduDev'=>$dataEduDev,
             'modelPerson' => $modelPerson,
             'user_id' => $id
         ]);

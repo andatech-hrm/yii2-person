@@ -212,15 +212,26 @@ $this->params['breadcrumbs'][] = $this->title;
             </thead>
             <tbody>
                
-                <?php foreach($dataDefect as $key => $model): ?>
-                    <tr>
-                        <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
-                        <td><?= $model->title; ?></td>
-                        <td class="cell-right"><?= $model->edoc->title; ?></td>
-                    </tr>
-                <?php endforeach; ?>
                 <?php 
-                    for($i=0;$i<=($rowNum[2]-count($dataDefect));$i++) : ?>
+                $lastKey = 0;
+                $dataEduDev2 = [];
+                foreach($dataEduDev as $key => $model): 
+                        if($rowNum[2]>=$lastKey){
+                            ++$lastKey;
+                        
+                        ?>
+                            <tr>
+                                <td><?= $model['institution']; ?></td>
+                                <td><?= $model['range']; ?></td>
+                                <td class="cell-right"><?= $model['branch'] ?></td>
+                            </tr>
+                        <?php 
+                        }else{
+                            $dataEduDev2[] = $model;
+                        }
+                    endforeach; ?>
+                <?php 
+                    for($i=0;$i<=($rowNum[2]-$lastKey);$i++) : ?>
                     <tr>
                         <td></td>
                         <td></td>
@@ -242,15 +253,22 @@ $this->params['breadcrumbs'][] = $this->title;
             </thead>
             <tbody>
                
-                <?php foreach($dataDefect as $key => $model): ?>
-                    <tr>
-                        <td><?= Yii::$app->formatter->asDate($model->date_defect); ?></td>
-                        <td><?= $model->title; ?></td>
-                        <td class="cell-right"><?= $model->edoc->title; ?></td>
-                    </tr>
-                <?php endforeach; ?>
                 <?php 
-                    for($i=0;$i<=($rowNum[2]-count($dataDefect));$i++) : ?>
+                $lastKey = 0;
+                foreach($dataEduDev2 as $key => $model): 
+                        if($rowNum[2]>=$lastKey){
+                            ++$lastKey;
+                        ?>
+                            <tr>
+                                <td><?= $model['institution']; ?></td>
+                                <td><?= $model['range']; ?></td>
+                                <td class="cell-right"><?= $model['branch'] ?></td>
+                            </tr>
+                        <?php 
+                        }
+                    endforeach; ?>
+                <?php 
+                    for($i=0;$i<=($rowNum[2]-$lastKey);$i++) : ?>
                     <tr>
                         <td></td>
                         <td></td>

@@ -19,6 +19,7 @@ use andahrm\positionSalary\models\PersonContractOld; #mad
 use andahrm\positionSalary\models\PersonPositionSalary; #mad
 use andahrm\positionSalary\models\PersonPositionSalaryOld; #mad
 use andahrm\leave\models\LeaveRelatedPerson; #mad
+use andahrm\development\models\DevelopmentPerson; #mad
 use andahrm\person\PersonApi;
 
 /**
@@ -283,6 +284,11 @@ class Person extends ActiveRecord
     public function getEducations()
     {
         return $this->hasMany(Education::className(), ['user_id' => 'user_id']);
+    }
+    
+    public function getDevelopments()
+    {
+        return $this->hasMany(DevelopmentPerson::className(), ['user_id' => 'user_id']);
     }
     
     public function getPhotos()
