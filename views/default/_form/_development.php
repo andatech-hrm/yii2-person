@@ -245,6 +245,7 @@ $this->registerJs(implode("\n", $js), $this::POS_END);
 $jsHead[] = <<< JS
 function callbackProject(result,form)
 {   console.log(result);
+
     $("#developmentperson-"+input_project+"-dev_project_id").append($('<option>', {
         value: result.id,
         text: result.title
