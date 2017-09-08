@@ -89,7 +89,9 @@ $columns = [
         'attribute'=>'edoc_id',
         'filter' => Edoc::getList(),
         'format' => 'html',
-        'value' => 'edoc.codeDateTitleFile',
+        'content' => function($model){
+          return $model->edoc->codeDateTitleFile;
+        },
         'contentOptions' => ['class' => 'green'],
     //'group'=>true,
     ],
