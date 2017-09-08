@@ -244,6 +244,7 @@ $jsHead[] = <<< JS
 JS;
 
 $jsHead[] = <<< JS
+var index=0;
 $(document).on('submit', '#{$formId}', function(e){
   e.preventDefault();
   var form = $(this);
