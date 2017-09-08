@@ -308,28 +308,32 @@ $this->registerJs(implode("\n", $js), $this::POS_END);
 ///Surakit
 if($formAction !== null) {
 $js[] = <<< JS
+var index = 0;
 $(document).on('submit', '#{$form->id}', function(e){
   e.preventDefault();
   var form = $(this);
   var formData = new FormData(form[0]);
   // alert(form.serialize());
   
-  $.ajax({
-    url: form.attr('action'),
-    type : 'POST',
-    data: formData,
-    contentType:false,
-    cache: false,
-    processData:false,
-    dataType: "json",
-    success: function(data) {
-      if(data.success){
-        callbackPosition(data.result);
-      }else{
-        alert('Fail');
-      }
-    }
-  });
+  ++index;
+  if(index==1){
+      $.ajax({
+        url: form.attr('action'),
+        type : 'POST',
+        data: formData,
+        contentType:false,
+        cache: false,
+        processData:false,
+        dataType: "json",
+        success: function(data) {
+          if(data.success){
+            callbackPosition(data.result);
+          }else{
+            alert('Fail');
+          }
+        }
+      });
+  }
 });
 JS;
 
