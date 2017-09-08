@@ -316,6 +316,7 @@ $(document).on('submit', '#{$form->id}', function(e){
   // alert(form.serialize());
   
   ++index;
+  console.log('index='.index);
   if(index==1){
       $.ajax({
         url: form.attr('action'),
