@@ -250,22 +250,26 @@ $(document).on('submit', '#{$formId}', function(e){
   var formData = new FormData(form[0]);
   // alert(form.serialize());
   
-  $.ajax({
-    url: form.attr('action'),
-    type : 'POST',
-    data: formData,
-    contentType:false,
-    cache: false,
-    processData:false,
-    dataType: "json",
-    success: function(data) {
-      if(data.success){
-        callbackPosition(data.result);
-      }else{
-        alert('Fail');
-      }
-    }
-  });
+  ++index;
+  console.log('index='.index);
+  if(index==1){
+      $.ajax({
+        url: form.attr('action'),
+        type : 'POST',
+        data: formData,
+        contentType:false,
+        cache: false,
+        processData:false,
+        dataType: "json",
+        success: function(data) {
+          if(data.success){
+            callbackPosition(data.result);
+          }else{
+            alert('Fail');
+          }
+        }
+      });
+  }
 });
 JS;
 
