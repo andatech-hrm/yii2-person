@@ -23,7 +23,11 @@ use yii\helpers\Json;
 /* @var $this yii\web\View */
 /* @var $model andahrm\positionSalary\models\PersonPostionSalary */
 /* @var $form yii\widgets\ActiveForm */
-$form = ActiveForm::begin();
+ //$formOptions['options'] = ['data-pjax' => ''];
+  //$formOptions['options'] = ['enctype' => 'multipart/form-data'];
+  $formOptions = [];
+  if(isset($formAction) && $formAction !== null)  $formOptions['action'] = Url::to([$formAction],false);
+$form = ActiveForm::begin($formOptions);
 ?>
     <?php echo $form->field($model,'user_id')->hiddenInput()->label(false)->hint(false)->error(false);?>
          
@@ -192,6 +196,8 @@ ActiveForm::end();
 
 
 <?php
+
+$formId = $form->id;
 $jsHead[] = <<< JS
 
         var form = $("form#{$formId}");
@@ -242,14 +248,16 @@ $jsHead[] = <<< JS
             }
         });
 JS;
-
+if($formAction !== null) {
+    /*
 $jsHead[] = <<< JS
 var index=0;
-$(document).on('submit', '#{$formId}', function(e){
+$(document).on('submit', "#{$formId}", function(e){
   e.preventDefault();
-  var form = $(this);
+  var form = $("#{$formId}");
   var formData = new FormData(form[0]);
   // alert(form.serialize());
+  alert(form.attr('action'));
   
   ++index;
   console.log('index='+index);
@@ -273,7 +281,8 @@ $(document).on('submit', '#{$formId}', function(e){
   }
 });
 JS;
-
+*/
+}
 
 $this->registerJs(implode("\n", $jsHead));
 ?>

@@ -155,7 +155,7 @@ $gridColumns = [
             // Modal::end();
             // ActiveForm::end();
             $old = false;
-            $action = 'update-position-old';
+            $action = '/person/default/update-position-old';
             if($model->formName()=="PersonPositionSalaryOld"){
                 $positionId = $model->position_old_id;
                 $old = true;
@@ -167,7 +167,8 @@ $gridColumns = [
                     'id'=>$model->user_id,
                     'position_id'=>$positionId,
                     'edoc_id'=>$model->edoc_id,
-                    'old'=>$old
+                    'old'=>$old,
+                    //'formAction'=>$action
                 ], [
                     'class'=>'btn-update-old',
                     'data-pjax' => 0,

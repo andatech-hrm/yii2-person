@@ -225,7 +225,7 @@ class DefaultController extends Controller
     }
     
     
-    public function actionUpdatePositionOld($id,$position_id,$edoc_id,$old=null)
+    public function actionUpdatePositionOld($id,$position_id,$edoc_id,$old=null,$formAction=null)
     {
         if($old){
             $model = PersonPositionSalaryOld::find()->where([
@@ -293,6 +293,9 @@ class DefaultController extends Controller
                     ]);
                 return $this->redirect(['view-position','id'=>$id]);
             }
+        }elseif($post){
+            print_r($model->getErrors());
+            exit();
         }
         
         
@@ -300,7 +303,8 @@ class DefaultController extends Controller
             'model'=>$model,
             'modelEdoc'=>$modelEdoc,
             'newModelEdoc'=>$newModelEdoc,
-            'old'=>$old
+            'old'=>$old,
+            'formAction' =>$formAction
         ];
          
         if(Yii::$app->request->isAjax){
