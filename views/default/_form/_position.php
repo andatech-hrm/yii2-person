@@ -44,7 +44,7 @@ echo Yii::$app->runAction('/structure/position/create-ajax', ['formAction' => Ur
 Modal::end();
 
 $modals['edoc'] = Modal::begin([
-    'header' => Yii::t('andahrm/structure', 'Create Position'),
+    'header' => Yii::t('andahrm/edoc', 'Create Edoc')
     'size' => Modal::SIZE_LARGE
 ]);
 // echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
@@ -374,7 +374,7 @@ function bindBtnAddEdoc(){
             $(this).bind("click",function(){
                 $(this).attr('data-key',index);
                 input_edoc = $(this).attr('data-key');
-                alert(input_edoc);
+                //alert(input_edoc);
             });
         });
         // $(this).attr('data-key',index);
