@@ -188,7 +188,11 @@ $gridColumns = [
                 'title' => Yii::t('andatech', 'Delete'),
                 'aria-label' => Yii::t('andatech', 'Delete'),
                 'class' => 'btnDelete',
-                //'data-pjax' => 1,
+                 'data' => [
+                    'confirm' => Yii::t('andahrm', 'Are you sure you want to delete this item?'),
+                    'method' => 'post',
+                ],
+                'data-pjax' => 0,
             ];
             
             if($model->formName() == 'PersonPositionSalaryOld' && isset($model->position_old_id)){

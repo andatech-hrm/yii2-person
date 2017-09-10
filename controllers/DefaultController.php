@@ -836,7 +836,7 @@ class DefaultController extends Controller
     public function actionDeletePosition($user_id,$position_id,$edoc_id,$step=null){
         $model = PersonPositionSalary::find()
         ->where(['user_id'=>$user_id,'position_id'=>$position_id,'edoc_id'=>$edoc_id]);
-        if($model->one() && $model->delete()){
+        if($model->delete()){
             if(Yii::$app->request->isAjax && $step){
                return $this->redirect(['create','id'=>$user_id,'step'=>$step]);
             }elseif(Yii::$app->request->isAjax){
@@ -844,7 +844,7 @@ class DefaultController extends Controller
             }else{
                 Yii::$app->getSession()->setFlash('saved',[
                         'type' => 'success',
-                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                        'msg' => Yii::t('andahrm', 'Delete completed.')
                     ]);
                return $this->redirect(['view-position','id'=>$user_id]);
             }
@@ -855,13 +855,13 @@ class DefaultController extends Controller
     public function actionDeletePositionOld($user_id,$position_id,$edoc_id,$step=null){
         $model = PersonPositionSalaryOld::find()
         ->where(['user_id'=>$user_id,'position_old_id'=>$position_id,'edoc_id'=>$edoc_id]);
-        if($model->one() && $model->delete()){
+        if($model->delete()){
             if(Yii::$app->request->isAjax && $step){
                return $this->redirect(['create','id'=>$user_id,'step'=>$step]);
             }else{
                 Yii::$app->getSession()->setFlash('saved',[
                         'type' => 'success',
-                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                        'msg' => Yii::t('andahrm', 'Delete completed.')
                     ]);
                return $this->redirect(['view-position','id'=>$user_id]);
             }
