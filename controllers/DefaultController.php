@@ -227,20 +227,104 @@ class DefaultController extends Controller
     
     public function actionUpdatePositionOld($id,$position_id,$edoc_id,$old=null,$formAction=null)
     {
-        if($old){
+        
             $model = PersonPositionSalaryOld::find()->where([
                 'user_id'=>$id,
                 'position_old_id'=>$position_id,
                 'edoc_id'=>$edoc_id
             ])->one();
-        }else{
-            $model = PersonPositionSalary::find()->where([
-                'user_id'=>$id,
-                'position_id'=>$position_id,
-                'edoc_id'=>$edoc_id
-            ])->one();
-            $model->scenario = 'update';
+       
+        $modelEdoc = $model->edoc;
+        $newModelEdoc = new Edoc();
+        
+        $post = Yii::$app->request->post();
+        if($model->load($post)){
+            
+            if(Yii::$app->request->isAjax){
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            }
+            
+             $model->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
+                            'code'=>$model->position_old_id
+                        ],'id',['title'=>$model->title]);
+            
+            $edoc_id = $model->edoc_id;
+            $success = false;
+            $result=null;
+            $errorMassages = [];
+            //Try to save the models. Validation is not needed as it's already been done.
+            if($modelEdoc->load($post) && !$modelEdoc->isNewRecord){
+                $modelEdoc->save();
+                $edoc_id = $modelEdoc->id;
+            }elseif($newModelEdoc->load($post) && $newModelEdoc->isNewRecord){
+                $newModelEdoc->save();
+                $edoc_id = $newModelEdoc->id;
+            }
+            
+            //echo $modelPosition->edoc_id;
+            if($edoc_id){
+                $model->edoc_id = $edoc_id;
+                if($model->save(false)){
+                     $success = true;
+                     $result = $model->attributes;
+                }else{
+                     $result = $model->attributes;
+                     $errorMassages[] = $model->getErrors();
+                }
+            }
+            // echo $edoc_id;
+            // echo "<pre>";
+            // print_r($post);
+            // exit();
+                
+            if(Yii::$app->request->isAjax){
+                return [
+                    'success' => $success,
+                    'result' => $result,
+                    'errorMassages' => $errorMassages
+                    ];
+            }else{
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$id]);
+            }
+        }elseif($post){
+            print_r($model->getErrors());
+            exit();
         }
+        
+        echo $model->position_old_id;
+        //exit();
+        if($model->position_old_id)
+        $model->position_old_id = $model->position->code;
+        
+        $options = [
+            'model'=>$model,
+            'modelEdoc'=>$modelEdoc,
+            'newModelEdoc'=>$newModelEdoc,
+            'old'=>$old,
+            'formAction' =>$formAction
+        ];
+        
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('_form/_update_position-old', $options);
+        }else{
+            return $this->render('_form/_update_position-old', $options);
+        }
+    }
+    
+    public function actionUpdatePosition($id,$position_id,$edoc_id,$old=null,$formAction=null)
+    {
+        
+        $model = PersonPositionSalary::find()->where([
+            'user_id'=>$id,
+            'position_id'=>$position_id,
+            'edoc_id'=>$edoc_id
+        ])->one();
+        $model->scenario = 'update';
+        
         $modelEdoc = $model->edoc;
         $newModelEdoc = new Edoc();
         
@@ -297,7 +381,7 @@ class DefaultController extends Controller
             print_r($model->getErrors());
             exit();
         }
-        
+        //echo 555;
         
         $options = [
             'model'=>$model,
@@ -306,13 +390,15 @@ class DefaultController extends Controller
             'old'=>$old,
             'formAction' =>$formAction
         ];
-         
+        $old=$old?'-old':'';
+        
         if(Yii::$app->request->isAjax){
-            return $this->renderAjax('_form/_update_position-old', $options);
+            return $this->renderAjax('_form/_update_position', $options);
         }else{
-            return $this->render('_form/_update_position-old', $options);
+            return $this->render('_form/_update_position', $options);
         }
     }
+    
     
     public function actionViewPosition($id)
     {

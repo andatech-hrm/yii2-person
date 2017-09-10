@@ -11,6 +11,8 @@ use andahrm\edoc\models\Edoc;
 use andahrm\person\models\Person;
 use andahrm\structure\models\Position;
 use andahrm\positionSalary\models\PersonPositionSalary;
+use andahrm\positionSalary\models\PersonPositionSalaryOld;
+
 
 use yii\bootstrap\Modal;
 use yii\bootstrap\ActiveForm;
@@ -155,27 +157,29 @@ $gridColumns = [
             // Modal::end();
             // ActiveForm::end();
             $old = false;
-            $action = '/person/default/update-position-old';
-            if($model->formName()=="PersonPositionSalaryOld"){
+            $action = '';
+            //return $model->formName().'=='.PersonPositionSalaryOld::getClassName();
+            if($model->formName()=='PersonPositionSalaryOld'){
                 $positionId = $model->position_old_id;
-                $old = true;
+                $action = '/person/default/update-position-old';
             }else{
                 $positionId = $model->position_id;
+                $action = '/person/default/update-position';
             }
+            
             return Html::a('<i class="fa fa-pencil"></i>', [
                     $action,
                     'id'=>$model->user_id,
                     'position_id'=>$positionId,
                     'edoc_id'=>$model->edoc_id,
-                    'old'=>$old,
                     //'formAction'=>$action
                 ], [
-                    'class'=>'btn-update-old',
+                    //'class'=>'btn-update-old',
                     'data-pjax' => 0,
-                    'data-toggle' => 'modal',
-                    'data-target' => '#'.$modals['update-position']->id,
+                    //'data-toggle' => 'modal',
+                    //'data-target' => '#'.$modals['update-position']->id,
                     //'onclick' => "javascript::bindUpdatePosition({$model->user_id},{$positionId},{$model->edoc_id});",
-                    'title' => Yii::t('yii', 'Update')
+                    //'title' => Yii::t('yii', 'Update')
             ]);
                        
         },

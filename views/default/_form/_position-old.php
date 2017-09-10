@@ -110,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                              //'inputTemplate' => $positionInputTemplate,
                              'options' => ['class' => 'form-group col-sm-2']
                              ])
-                             /*->hint(false)
+                             ->hint(false)
                              ->widget(Typeahead::classname(),
                                 [
                                     'options' => ['placeholder' => 'Filter as you type ...'],
@@ -127,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ]
                                         ]
                                     ]
-                                ]*/
+                                ]
                             )
                             // ->widget(Select2::classname(),
                             //     WidgetSettings::Select2([

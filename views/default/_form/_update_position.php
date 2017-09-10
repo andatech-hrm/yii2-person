@@ -25,6 +25,16 @@ use yii\helpers\Json;
 /* @var $form yii\widgets\ActiveForm */
  //$formOptions['options'] = ['data-pjax' => ''];
   //$formOptions['options'] = ['enctype' => 'multipart/form-data'];
+  
+    $modals['position'] = Modal::begin([
+        'header' => Yii::t('andahrm/structure', 'Create Position'),
+        'size' => Modal::SIZE_LARGE
+    ]);
+    // echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
+    echo Yii::$app->runAction('/structure/position/create-ajax', ['formAction' => Url::to(['/structure/position/create-ajax'])]);
+    // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
+    Modal::end();
+  
   $formOptions = [];
   if(isset($formAction) && $formAction !== null)  $formOptions['action'] = Url::to([$formAction],false);
 $form = ActiveForm::begin($formOptions);
@@ -33,8 +43,9 @@ $form = ActiveForm::begin($formOptions);
          
 
     <div class="row">
-       
-          <?=$form->field($model,'adjust_date',['options'=>['class'=>'form-group col-sm-4']])
+        
+         
+          <?=$form->field($model,'adjust_date',['options'=>['class'=>'form-group col-sm-3']])
           ->widget(DatePicker::classname(), [              
           'options' => [
             'daysOfWeekDisabled' => [0, 6],
@@ -43,28 +54,45 @@ $form = ActiveForm::begin($formOptions);
 
         <?= $form->field($model,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput();?>
     
-        
-        <?=$form->field($model, 'position_old_id',['options'=>['class'=>'form-group col-sm-4']])
-                ->hint(false)
-                 ->widget(Typeahead::classname(),
-                    [
-                        'options' => ['placeholder' => 'Filter as you type ...'],
-                        'pluginOptions' => ['highlight'=>true],
-                        'dataset' => [
-                            [
-                                'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
-                                'display' => 'value',
-                                //'prefetch' => $baseUrl . '/samples/countries.json',
-                                'prefetch' => Url::to(['/structure/position-old/position-list']),
-                                'remote' => [
-                                    'url' => Url::to(['/structure/position-old/position-list']) . '?q=%QUERY',
-                                    'wildcard' => '%QUERY'
+<?php
+$toPositionCreate = Url::to(['/structure/position/create']);
+$positionInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+    <span class="input-group-addon btn btn-success btn-create-position"  role="position" data-toggle="modal" data-target="#{$modals['position']->id}" >
+        <i class="fa fa-plus"></i>
+    </span>
+</div>
+HTML;
+?>  
+
+         <?=$form->field($model, 'position_id',[
+             'inputTemplate' => $positionInputTemplate,
+             'options'=>['class'=>'form-group col-sm-3']
+             ])->widget(Select2::classname(),
+                                [
+                                    'data' => Position::getList(),
+                                    'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
+                                    'pluginOptions' => [
+                                        //'tags' => true,
+                                        //'tokenSeparators' => [',', ' '],
+                                        'allowClear'=>true,
+                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                                        'ajax'=>[
+                                            'url'=>Url::to(['/structure/position/position-list']),
+                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
+                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                                         ],
+                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                        'templateResult' => new JsExpression('function(position) { return position.text; }'),
+                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
+                                    ],
                                 ]
-                            ]
-                        ]
-                    ]
-         ); ?>
-        
+                            )->hint(false); ?>
+         
+         <?= $form->field($model,'status',['options'=>['class'=>'form-group col-sm-2']])->dropDownList(PersonPositionSalary::getItemStatus());?>
+         
+         
  </div>
  
      <div class="row">
