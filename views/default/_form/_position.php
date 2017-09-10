@@ -155,7 +155,7 @@ HTML;
 
                          <?=$form->field($model, "[{$index}]position_id",[
                              'inputTemplate' => $positionInputTemplate,
-                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
+                             'options' => ['class' => 'form-group col-xs-3 col-sm-3']
                              ])
                             ->widget(Select2::classname(),
                                 [
@@ -177,6 +177,8 @@ HTML;
                                     ],
                                 ]
                             )->hint(false); ?>
+                        
+                         <?php echo $form->field($model,"[{$index}]level",['options'=>['class'=>'form-group col-sm-3']])->textInput();?>
                             
                         <?php 
                         //echo $form->field($model,"[{$index}]level",['options' => ['class' => 'form-group  col-xs-3 col-sm-3']])
@@ -184,18 +186,19 @@ HTML;
                         ?>
 
 
-          <?= $form->field($model, "[{$index}]position_type_id",[
+          <?php /*= $form->field($model, "[{$index}]position_type_id",[
               'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
               ])->dropDownList(PositionType::getList(),['prompt'=>Yii::t('app','Select')]);
           //->dropDownList(PositionType::getList(),['prompt'=>Yii::t('app','Select')])
-          ?>
+          */?>
           
 </div>
 <div class="row">
-          <?= $form->field($model, "[{$index}]position_level_id",[
+          <?php /*= $form->field($model, "[{$index}]position_level_id",[
               'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
               ])->dropDownList(
               PositionLevel::getList(),['prompt'=>Yii::t('app','Select')]);
+              */
           
           /*->widget(DepDrop::classname(), [
             'options'=>['id'=>"ddl-position_level-{$index}"],
