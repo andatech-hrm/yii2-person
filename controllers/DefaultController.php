@@ -244,10 +244,12 @@ class DefaultController extends Controller
                 \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             }
             
-             $model->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
-                            'code'=>$model->position_old_id
-                        ],'id',['title'=>$model->title]);
-            
+            list($code) = @explode(' ',$model->position_old_id);
+            //$modelPosition->position_old_id = $code;
+            $model->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
+                'code'=>$code
+            ],'id',['title'=>$model->title]);
+
             $edoc_id = $model->edoc_id;
             $success = false;
             $result=null;
@@ -418,13 +420,24 @@ class DefaultController extends Controller
             ->orderBy(['adjust_date'=> SORT_ASC])
             ->all();
         
+        // $modelPosition = ArrayHelper::index($modelPosition,'adjust_date');
+        // ksort($modelPosition);
+        // $modelPositionOld = ArrayHelper::index($modelPositionOld,'adjust_date');
+        // ksort($modelPositionOld);
+        //echo "<pre>";
+        
         $data = ArrayHelper::merge($modelPositionOld,$modelPosition);
+        //$data = ArrayHelper::multisort($data, ['adjust_date'], [SORT_ASC]);
+        
+        
+        //print_r($data);
+        //exit();
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $data,
             'pagination' => false,
             'sort' => [
-                'attributes' => ['adjust_date' => SORT_ASC],
+                //'attributes' => ['adjust_date' => SORT_ASC],
             ],
         ]);
 
@@ -978,18 +991,26 @@ class DefaultController extends Controller
                     
                     //echo $modelPosition->edoc_id;
                     if($modelPosition->edoc_id){
+                        list($code) = @explode(' ',$modelPosition->position_old_id);
+                        //$modelPosition->position_old_id = $code;
                         $modelPosition->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
-                            'code'=>$modelPosition->position_old_id
+                            'code'=>$code
                         ],'id',['title'=>$modelPosition->title]);
                         if(!$modelPosition->getExists() && $modelPosition->save(false)){
                              $success = true;
                              $result = $modelPosition->attributes;
+                        }else{
+                            $success = false;
                              $errorMassages[] = $modelPosition->getErrors();
                         }
                     }
                 }
                 //  print_r($post);
                 // exit();
+                if(!$success){
+                    print_r($errorMassages);
+                    exit();
+                }
             }
             
             if(Yii::$app->request->isAjax){

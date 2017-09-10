@@ -72,18 +72,20 @@ class PrintController extends \yii\web\Controller
         $newArrEduDev = [];
         foreach($modelEducation as $edu){
             $arrEduDev[$edu->year_start][]=[
-                'range'=>$edu->year_start.' - '.$edu->year_end,
+                'range'=>$edu->year_start?$edu->yearStartBuddhist.' - '.$edu->yearEndBuddhist:'',
                 'institution'=>$edu->institution,
                 'branch'=>$edu->branch,
             ];
         }
+          
         foreach($modelDevelopments as $edu){
             $arrEduDev[(Yii::$app->formatter->asDate($edu->start,'Y')-543)][]=[
-                'range'=>Yii::$app->formatter->asDate($edu->start,'php:m/Y').' - '.Yii::$app->formatter->asDate($edu->end,'php:m/Y'),
+                'range'=>$edu->start?Yii::$app->formatter->asDate($edu->start,'php:m/Y').' - '.Yii::$app->formatter->asDate($edu->end,'php:m/Y'):'',
                 'institution'=>$edu->devProject->title,
                 'branch'=>$edu->qualification,
             ];
         }
+        
         ksort($arrEduDev);
         foreach($arrEduDev as $key => $eduDevs){
             foreach($eduDevs as $eduDev){
