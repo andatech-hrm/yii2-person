@@ -92,18 +92,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         
                 
 <?php                   
-// $toPositionCreate = Url::to(['/structure/position-old/create']);
-// $positionInputTemplate = <<< HTML
-// <div class="input-group">
-//     {input}
-//     <span class="input-group-addon btn btn-success" data-key="{$index}">
-//         <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
-//     </span>
-// </div>
-// HTML;
+$toPositionCreate = Url::to(['/structure/position-old/create']);
+$positionInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+    <span class="input-group-addon btn btn-success" data-key="{$index}">
+        <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
+    </span>
+</div>
+HTML;
 ?>  
                          <?=$form->field($model, "[{$index}]position_old_id",[
-                             //'inputTemplate' => $positionInputTemplate,
+                             'inputTemplate' => $positionInputTemplate,
                              'options' => ['class' => 'form-group col-sm-2']
                              ])
                              ->hint(false)
@@ -238,7 +238,7 @@ jQuery(".positions_old_dynamicform_wrapper").on('afterInsert', function(e, item)
            $(this).find('input').datepicker({
                "language":"th-th",
                "autoclose":true,
-               "daysOfWeekDisabled":[0,6],
+               //"daysOfWeekDisabled":[0,6],
             });
       });   
       
@@ -246,7 +246,7 @@ jQuery(".positions_old_dynamicform_wrapper").on('afterInsert', function(e, item)
            $(this).find('input').datepicker({
                "language":"th-th",
                "autoclose":true,
-               "daysOfWeekDisabled":[0,6],
+               //"daysOfWeekDisabled":[0,6],
             });
       }); 
       

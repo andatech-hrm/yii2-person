@@ -151,7 +151,7 @@ HTML;
 
                          <?=$form->field($model, "[{$index}]position_id",[
                              'inputTemplate' => $positionInputTemplate,
-                             'options' => ['class' => 'form-group col-xs-3 col-sm-3']
+                             'options' => ['class' => 'form-group col-xs-6 col-sm-6']
                              ])
                             ->widget(Select2::classname(),
                                 [
@@ -174,7 +174,7 @@ HTML;
                                 ]
                             )->hint(false); ?>
                         
-                         <?php echo $form->field($model,"[{$index}]level",['options'=>['class'=>'form-group col-sm-3']])->textInput();?>
+                         
                             
                         <?php 
                         //echo $form->field($model,"[{$index}]level",['options' => ['class' => 'form-group  col-xs-3 col-sm-3']])
@@ -190,6 +190,7 @@ HTML;
           
 </div>
 <div class="row">
+    <?php echo $form->field($model,"[{$index}]level",['options'=>['class'=>'form-group col-sm-3']])->textInput();?>
           <?php /*= $form->field($model, "[{$index}]position_level_id",[
               'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
               ])->dropDownList(
@@ -336,7 +337,7 @@ jQuery(".positions_dynamicform_wrapper").on('afterInsert', function(e, item) {
            $(this).find('input').datepicker({
                "language":"th-th",
                "autoclose":true,
-               "daysOfWeekDisabled":[0,6],
+               //"daysOfWeekDisabled":[0,6],
             });
       });   
       
@@ -344,7 +345,7 @@ jQuery(".positions_dynamicform_wrapper").on('afterInsert', function(e, item) {
            $(this).find('input').datepicker({
                "language":"th-th",
                "autoclose":true,
-               "daysOfWeekDisabled":[0,6],
+               //"daysOfWeekDisabled":[0,6],
             });
       }); 
       
