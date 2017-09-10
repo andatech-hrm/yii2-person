@@ -35,11 +35,7 @@ $form = ActiveForm::begin($formOptions);
     <div class="row">
        
           <?=$form->field($model,'adjust_date',['options'=>['class'=>'form-group col-sm-4']])
-          ->widget(DatePicker::classname(), [              
-          'options' => [
-            'daysOfWeekDisabled' => [0, 6],
-          ]
-        ]);?>
+          ->widget(DatePicker::classname(), WidgetSettings::DatePicker());?>
 
         <?= $form->field($model,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput();?>
     

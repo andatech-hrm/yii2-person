@@ -297,7 +297,7 @@ class DefaultController extends Controller
             exit();
         }
         
-        echo $model->position_old_id;
+        //echo $model->position_old_id;
         //exit();
         if($model->position_old_id)
         $model->position_old_id = $model->position->code;

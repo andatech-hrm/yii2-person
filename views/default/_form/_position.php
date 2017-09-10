@@ -116,11 +116,7 @@ Modal::end();
                         ?>
                         
                         <?=$form->field($model,"[{$index}]adjust_date",['options' => ['class' => 'form-group col-xs-3 col-sm-3 adjust_date']])
-                         ->widget(DatePicker::classname(), [              
-                          'options' => [
-                            'daysOfWeekDisabled' => [0, 6],
-                          ],
-                        ]);?>
+                         ->widget(DatePicker::classname(), WidgetSettings::DatePicker());?>
                 
                         <?=$form->field($model,"[{$index}]title",[
                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
