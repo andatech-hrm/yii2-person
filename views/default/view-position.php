@@ -92,7 +92,7 @@ $columns = [
         'filter' => Edoc::getList(),
         'format' => 'html',
         'content' => function($model){
-          return $model->edoc->codeDateTitleFile;
+          return $model->edoc->codeDateTitle;
         },
         'contentOptions' => ['class' => 'green'],
     //'group'=>true,
