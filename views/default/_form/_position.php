@@ -44,7 +44,7 @@ echo Yii::$app->runAction('/structure/position/create-ajax', ['formAction' => Ur
 Modal::end();
 
 $modals['edoc'] = Modal::begin([
-    'header' => Yii::t('andahrm/edoc', 'Create Edoc')
+    'header' => Yii::t('andahrm/edoc', 'Create Edoc')ม
     'size' => Modal::SIZE_LARGE
 ]);
 // echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
