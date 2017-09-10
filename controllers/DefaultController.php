@@ -991,11 +991,11 @@ class DefaultController extends Controller
                     
                     //echo $modelPosition->edoc_id;
                     if($modelPosition->edoc_id){
-                        list($code) = @explode(' ',$modelPosition->position_old_id);
-                        //$modelPosition->position_old_id = $code;
-                        $modelPosition->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
-                            'code'=>$code
-                        ],'id',['title'=>$modelPosition->title]);
+                        //list($code) = @explode(' ',$modelPosition->position_old_id);
+                        // $modelPosition->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
+                        //     'code'=>$code
+                        // ],'id',['title'=>$modelPosition->title]);
+                        
                         if(!$modelPosition->getExists() && $modelPosition->save(false)){
                              $success = true;
                              $result = $modelPosition->attributes;

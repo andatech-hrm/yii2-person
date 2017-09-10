@@ -269,7 +269,7 @@ $fullExportMenu = ExportMenu::widget([
                         'data-pjax' => 0
                     ]) . ' '. 
                     Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Position Old'), ['create-position-old','id'=>$models['person']->user_id], [
-                        'class' => 'btn btn-success btn-flat',
+                        'class' => 'btn btn-warning btn-flat',
                         'data-pjax' => 0
                     ]).
                 Html::endTag('div'),

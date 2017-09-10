@@ -13,6 +13,7 @@ use andahrm\structure\models\PositionOld;
 use yii\bootstrap\ActiveForm;
 use kartik\widgets\FileInput;
 use yii\web\JsExpression;
+use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 
 if($formAction == null){
@@ -21,6 +22,27 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'),
 $this->params['breadcrumbs'][] = ['label' => $model->fullname, 'url' => ['view', 'id' => $model->user_id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Position'), 'url' => ['view-position', 'id' => $model->user_id]];
 $this->params['breadcrumbs'][] = $this->title;
+
+
+$modals['position'] = Modal::begin([
+    'header' => Yii::t('andahrm/structure', 'Create Position'),
+    'size' => Modal::SIZE_LARGE
+]);
+// echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
+echo Yii::$app->runAction('/structure/position-old/create-ajax', ['formAction' => Url::to(['/structure/position-old/create-ajax'])]);
+// echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
+            
+Modal::end();
+
+$modals['edoc'] = Modal::begin([
+    'header' => Yii::t('andahrm/edoc', 'Create Edoc'),
+    'size' => Modal::SIZE_LARGE
+]);
+// echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
+echo Yii::$app->runAction('/edoc/default/create-ajax1', ['formAction' => Url::to(['/edoc/default/create-ajax1'])]);
+// echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
+            
+Modal::end();
 }
 ?>
 <?php 
@@ -83,11 +105,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         ?>
                         
-                        <?=$form->field($model,"[{$index}]adjust_date",['options' => ['class' => 'form-group col-sm-2 adjust_date']])
+                        <?=$form->field($model,"[{$index}]adjust_date",['options' => ['class' => 'form-group col-sm-3 adjust_date']])
                          ->widget(DatePicker::classname(), WidgetSettings::DatePicker());?>
                 
                         <?=$form->field($model,"[{$index}]title",[
-                            'options' => ['class' => 'form-group col-sm-2'],
+                            'options' => ['class' => 'form-group col-sm-3'],
                         ])->textInput();?>
                         
                 
@@ -96,35 +118,56 @@ $toPositionCreate = Url::to(['/structure/position-old/create']);
 $positionInputTemplate = <<< HTML
 <div class="input-group">
     {input}
-    <span class="input-group-addon btn btn-success" data-key="{$index}">
-        <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
+    <span class="input-group-addon btn btn-success btn-create-position" data-key="{$index}" role="position" data-toggle="modal" data-target="#{$modals['position']->id}" >
+        <i class="fa fa-plus"></i>
     </span>
 </div>
 HTML;
 ?>  
                          <?=$form->field($model, "[{$index}]position_old_id",[
                              'inputTemplate' => $positionInputTemplate,
-                             'options' => ['class' => 'form-group col-sm-2']
+                             'options' => ['class' => 'form-group col-sm-6']
                              ])
-                             ->hint(false)
-                             ->widget(Typeahead::classname(),
+                             ->widget(Select2::classname(),
                                 [
-                                    'options' => ['placeholder' => 'Filter as you type ...'],
-                                    'pluginOptions' => ['highlight'=>true],
-                                    'dataset' => [
-                                        [
-                                            'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
-                                            'display' => 'value',
-                                            //'prefetch' => $baseUrl . '/samples/countries.json',
-                                            'prefetch' => Url::to(['/structure/position-old/position-list']),
-                                            'remote' => [
-                                                'url' => Url::to(['/structure/position-old/position-list']) . '?q=%QUERY',
-                                                'wildcard' => '%QUERY'
-                                            ]
-                                        ]
-                                    ]
+                                    'data' => PositionOld::getListTitle(),
+                                    'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
+                                    'pluginOptions' => [
+                                        //'tags' => true,
+                                        //'tokenSeparators' => [',', ' '],
+                                        'allowClear'=>true,
+                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                                        'ajax'=>[
+                                            'url'=>Url::to(['/structure/position-old/position-list']),
+                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
+                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                                         ],
+                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                        'templateResult' => new JsExpression('function (position) { return position.text; }'),
+                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
+                                    ],
                                 ]
-                            )
+                            )->hint(false); 
+                            
+                            // ->hint(false)
+                            //  ->widget(Typeahead::classname(),
+                            //     [
+                            //         'options' => ['placeholder' => 'Filter as you type ...'],
+                            //         'pluginOptions' => ['highlight'=>true],
+                            //         'dataset' => [
+                            //             [
+                            //                 'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
+                            //                 'display' => 'value',
+                            //                 //'prefetch' => $baseUrl . '/samples/countries.json',
+                            //                 'prefetch' => Url::to(['/structure/position-old/position-list']),
+                            //                 'remote' => [
+                            //                     'url' => Url::to(['/structure/position-old/position-list']) . '?q=%QUERY',
+                            //                     'wildcard' => '%QUERY'
+                            //                 ]
+                            //             ]
+                            //         ]
+                            //     ]
+                            // )
                             // ->widget(Select2::classname(),
                             //     WidgetSettings::Select2([
                             //         'data' => PositionOld::getList(),
@@ -139,16 +182,28 @@ HTML;
                             // ); 
                             ?>
                             
-                        <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group col-sm-1']])
+                             </div>
+                    
+                        <div class="row">
+                            
+                        <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group col-sm-3']])
                         ->textInput();?>
 
-                        <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group col-sm-2']])
+                        <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group col-sm-3']])
                         ->textInput();?>
 <?php                        
+// $edocInputTemplate = <<< HTML
+// <div class="input-group">
+//     {input}
+//     <span class="input-group-addon btn btn-success new_edoc_old" data-key="{$index}">
+//         <i class="fa fa-plus"></i>
+//     </span>
+// </div>
+// HTML;                  
 $edocInputTemplate = <<< HTML
 <div class="input-group">
     {input}
-    <span class="input-group-addon btn btn-success new_edoc_old" data-key="{$index}">
+   <span class="input-group-addon btn btn-success btn-create-edoc"  role="edoc" data-toggle="modal" data-target="#{$modals['edoc']->id}">
         <i class="fa fa-plus"></i>
     </span>
 </div>
@@ -156,7 +211,7 @@ HTML;
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,
-                             'options' => ['class' => 'form-group col-sm-3','id'=>'edoc_id_old']])
+                             'options' => ['class' => 'form-group col-sm-6','id'=>'edoc_id_old']])
                              ->widget(Select2::className(), 
                              WidgetSettings::Select2([
                                  'data' => Edoc::getList(),
@@ -230,7 +285,9 @@ $this::POS_HEAD);
 
 $listLabel = Yii::t('andahrm', 'List');
 $js[] = <<< JS
-bindBtnAddEdocOld();
+//bindBtnAddEdocOld();
+bindBtnAddEdoc();
+bindBtnAddPosition();
 jQuery(".positions_old_dynamicform_wrapper").on('afterInsert', function(e, item) {
     
     
@@ -255,7 +312,9 @@ jQuery(".positions_old_dynamicform_wrapper").on('afterInsert', function(e, item)
     });
      //alert(555);
     
-    bindBtnAddEdocOld();
+    //bindBtnAddEdocOld();
+    bindBtnAddEdoc();
+    bindBtnAddPosition();
     
 });
 
@@ -263,39 +322,68 @@ jQuery(".positions_old_dynamicform_wrapper").on("afterDelete", function(e) {
     jQuery(".positions_old_dynamicform_wrapper .panel-title-positions_old").each(function(index) {
         jQuery(this).html("{$listLabel}: " + (index + 1));
     });
+    bindBtnAddEdoc();
+    bindBtnAddPosition();
 });
 
 
-function bindBtnAddEdocOld(){
-   console.log(555);
-    $(".positions_old_dynamicform_wrapper #edoc_id_old .new_edoc_old").each(function(index) {
-        $(this).attr('data-key',index);
-        //var key = index;
-        var area = $(".positions_old_dynamicform_wrapper .new_edoc_old_area:eq("+index+")").attr('data-key',index);
+// function bindBtnAddEdocOld(){
+//   console.log(555);
+//     $(".positions_old_dynamicform_wrapper #edoc_id_old .new_edoc_old").each(function(index) {
+//         $(this).attr('data-key',index);
+//         //var key = index;
+//         var area = $(".positions_old_dynamicform_wrapper .new_edoc_old_area:eq("+index+")").attr('data-key',index);
         
-        $(this).unbind('click');
-        $(this).bind('click',function(){
-            if(!$(this).is('.shown')){
-                $(this).find("i").removeClass('fa-plus');
-                $(this).find("i").addClass('fa-minus');
-                $(this).addClass('shown');
-                $(area).find('input').attr('disabled',false);
-                $(area).find("#edoc-"+index+"-file").attr('disabled',false);
-                $(area).find("#edoc-"+index+"-file").fileinput('refresh');
-                $(area).show();
-            }else{
-                 $(this).removeClass('shown');
-                 $(this).find("i").addClass('fa-plus');
-                 $(this).find("i").removeClass('fa-minus');
-                 $(area).find('input').attr('disabled',true);
-                $(area).find("#edoc-"+index+"-file").attr('disabled',true);
-                $(area).find("#edoc-"+index+"-file").fileinput('refresh');
-                $(area).hide();
-            }
+//         $(this).unbind('click');
+//         $(this).bind('click',function(){
+//             if(!$(this).is('.shown')){
+//                 $(this).find("i").removeClass('fa-plus');
+//                 $(this).find("i").addClass('fa-minus');
+//                 $(this).addClass('shown');
+//                 $(area).find('input').attr('disabled',false);
+//                 $(area).find("#edoc-"+index+"-file").attr('disabled',false);
+//                 $(area).find("#edoc-"+index+"-file").fileinput('refresh');
+//                 $(area).show();
+//             }else{
+//                  $(this).removeClass('shown');
+//                  $(this).find("i").addClass('fa-plus');
+//                  $(this).find("i").removeClass('fa-minus');
+//                  $(area).find('input').attr('disabled',true);
+//                 $(area).find("#edoc-"+index+"-file").attr('disabled',true);
+//                 $(area).find("#edoc-"+index+"-file").fileinput('refresh');
+//                 $(area).hide();
+//             }
+//         });
+//     });
+// }
+
+var input_edoc = '';
+function bindBtnAddEdoc(){
+        $(".positions_old_dynamicform_wrapper .btn-create-edoc").each(function(index) {
+            $(this).unbind("click");
+            $(this).bind("click",function(){
+                $(this).attr('data-key',index);
+                input_edoc = $(this).attr('data-key');
+                console.log(input_edoc);
+            });
+        });
+       
+}
+
+var input_position = '';
+function bindBtnAddPosition(){
+    $(".positions_old_dynamicform_wrapper .btn-create-position").each(function(index) {
+        $(this).unbind("click");
+        $(this).bind("click",function(){
+            $(this).attr('data-key',index);
+            input_position = $(this).attr('data-key');
+            console.log(input_position);
         });
     });
 }
+
 JS;
+
     
 $this->registerJs(implode("\n", $js), $this::POS_END);
 
@@ -336,4 +424,38 @@ JS;
 
 $this->registerJs(implode("\n", $js));
 }
+
+
+$positionInputId = Html::getInputId($model, 'position_id');
+$jsHead[] = <<< JS
+function callbackPosition(result,form)
+{   
+    $("#personpositionsalaryold-"+input_position+"-position_old_id").append($('<option>', {
+        value: result.id,
+        text: result.code + ' - ' + result.title
+    }));
+    $("#personpositionsalaryold-"+input_position+"-position_old_id").val(result.id).trigger('change.select2');
+    
+    $("#{$modals['position']->id}").modal('hide');
+    //alert(form);
+    $(form).trigger("reset");
+}
+JS;
+$edocInputId = Html::getInputId($model, 'edoc_id');
+$jsHead[] = <<< JS
+function callbackEdoc(result,form)
+{   
+    $("#personpositionsalaryold-"+input_edoc+"-edoc_id").append($('<option>', {
+        value: result.id,
+        text: result.code + ' ' + result.date_code + ' ' + result.title
+    }));
+    $("#personpositionsalaryold-"+input_edoc+"-edoc_id").val(result.id).trigger('change.select2');
+    
+    $("#{$modals['edoc']->id}").modal('hide');
+    $(form).trigger("reset");
+}
+JS;
+
+
+$this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);
 ?>

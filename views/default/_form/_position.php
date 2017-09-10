@@ -155,7 +155,7 @@ HTML;
                              ])
                             ->widget(Select2::classname(),
                                 [
-                                    'data' => Position::getList(),
+                                    'data' => Position::getListTitle(),
                                     'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
                                     'pluginOptions' => [
                                         //'tags' => true,
@@ -168,7 +168,7 @@ HTML;
                                             'data'=>new JsExpression('function(params) { return {q:params.term};}')
                                          ],
                                         'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                        'templateResult' => new JsExpression('function(position) { return position.text; }'),
+                                        'templateResult' => new JsExpression('function (position) { return position.text; }'),
                                         'templateSelection' => new JsExpression('function (position) { return position.text; }'),
                                     ],
                                 ]
