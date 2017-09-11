@@ -235,7 +235,7 @@ $css = <<< Css
     .table-print{ width: 100%; border-spacing: 0px; }
     .table-print th, .table-print td {border-right: #000 1px solid; padding: 8px;line-height: 0.5;vertical-align: top;}
     .table-print th.cell-right,.table-print td.cell-right{ border-right: none; }
-    .table-print tr td{ border-bottom: #000 1px dotted; }
+    .table-print tr td{ border-bottom: #000 1px dotted; line-height: 0.9;font-size:11pt; }
     .header-labels th{border-top:#000 1px solid; border-bottom:#000 1px solid;}
     .header-labels-edu th{border-top:#000 1px solid; border-bottom:#000 1px solid;line-height: 0.8;}
     .body-labels-first th{border-top:#000 1px solid;border-bottom:#000 1px solid; line-height: 1;}
