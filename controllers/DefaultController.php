@@ -1039,6 +1039,7 @@ class DefaultController extends Controller
         if($formAction){
             return $this->renderPartial('_form/_position-old', $options);
         }else{
+            //$this->layout = 'position';
             return $this->render('_form/_position-old', $options);
         }
     }

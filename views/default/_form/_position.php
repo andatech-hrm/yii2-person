@@ -50,7 +50,6 @@ $modals['edoc'] = Modal::begin([
 // echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
 echo Yii::$app->runAction('/edoc/default/create-ajax1', ['formAction' => Url::to(['/edoc/default/create-ajax1'])]);
 // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
-            
 Modal::end();
 ?>
 <?php 
@@ -90,8 +89,11 @@ Modal::end();
     ]); ?>
     
     <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
-        <span class="text-muted"><?=Yii::t('andahrm/person', 'Position History')?></span>
-        <button type="button" class="pull-right positions-add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> <?=Yii::t('andahrm', 'Add List')?></button>
+        <span class="label label-success">
+            <?=Yii::t('andahrm/person', 'Position History')?>
+        </span>
+        <button type="button" class="pull-right positions-add-item btn btn-success btn-xs"><i class="fa fa-plus"></i> 
+        <?=Yii::t('andahrm', 'Add List')?></button>
     </h2> 
     
         <div class="positions-container-items">
