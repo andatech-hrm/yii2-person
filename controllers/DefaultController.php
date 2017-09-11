@@ -999,6 +999,9 @@ class DefaultController extends Controller
                         if(!$modelPosition->getExists() && $modelPosition->save(false)){
                              $success = true;
                              $result = $modelPosition->attributes;
+                        }elseif($modelPosition->getExists()){
+                            $success = false;
+                             $errorMassages[] = 'ข้อมูลซ่ำกัน';
                         }else{
                             $success = false;
                              $errorMassages[] = $modelPosition->getErrors();

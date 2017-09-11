@@ -14,6 +14,7 @@ use yii\bootstrap\ActiveForm;
 use kartik\widgets\FileInput;
 use yii\web\JsExpression;
 use yii\bootstrap\Modal;
+use andahrm\positionSalary\models\PersonPositionSalaryOld;
 /* @var $this yii\web\View */
 
 if($formAction == null){
@@ -76,6 +77,7 @@ Modal::end();
             'edoc[title]',
             'edoc[date_code]',
             'edoc[file]',
+            'status',
         ],
     ]); ?>
     
@@ -108,9 +110,10 @@ Modal::end();
                         <?=$form->field($model,"[{$index}]adjust_date",['options' => ['class' => 'form-group col-sm-3 adjust_date']])
                          ->widget(DatePicker::classname(), WidgetSettings::DatePicker());?>
                 
-                        <?=$form->field($model,"[{$index}]title",[
+                        <?php /*echo $form->field($model,"[{$index}]title",[
                             'options' => ['class' => 'form-group col-sm-3'],
-                        ])->textInput();?>
+                        ])->textInput()->label($model->getAttributeLabel('title-list'));*/ ?>
+                        
                         
                 
 <?php                   
@@ -147,7 +150,7 @@ HTML;
                                         'templateSelection' => new JsExpression('function (position) { return position.text; }'),
                                     ],
                                 ]
-                            )->hint(false); 
+                            )->hint(false);
                             
                             // ->hint(false)
                             //  ->widget(Typeahead::classname(),
@@ -181,7 +184,7 @@ HTML;
                             //     ])
                             // ); 
                             ?>
-                            
+                            <?= $form->field($model,"[{$index}]status",['options'=>['class'=>'form-group col-sm-2']])->dropDownList(PersonPositionSalaryOld::getItemStatus());?>
                              </div>
                     
                         <div class="row">

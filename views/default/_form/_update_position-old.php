@@ -37,10 +37,10 @@ $form = ActiveForm::begin($formOptions);
           <?=$form->field($model,'adjust_date',['options'=>['class'=>'form-group col-sm-4']])
           ->widget(DatePicker::classname(), WidgetSettings::DatePicker());?>
 
-        <?= $form->field($model,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput();?>
+        <?php /*echo $form->field($model,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput();*/?>
     
         
-        <?=$form->field($model, 'position_old_id',['options'=>['class'=>'form-group col-sm-4']])
+        <?=$form->field($model, 'position_old_id',['options'=>['class'=>'form-group col-sm-6']])
                 ->hint(false)
                  ->widget(Typeahead::classname(),
                     [
@@ -60,6 +60,8 @@ $form = ActiveForm::begin($formOptions);
                         ]
                     ]
          ); ?>
+         
+          <?= $form->field($model,'status',['options'=>['class'=>'form-group col-sm-2']])->dropDownList(PersonPositionSalary::getItemStatus());?>
         
  </div>
  
