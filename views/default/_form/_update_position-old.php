@@ -19,7 +19,15 @@ use andahrm\structure\models\PositionOld;
 use andahrm\positionSalary\models\PersonPositionSalary;
 use yii\helpers\Json;
 
-
+$modals['position'] = Modal::begin([
+    'header' => Yii::t('andahrm/structure', 'Create Position'),
+    'size' => Modal::SIZE_LARGE
+]);
+// echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
+echo Yii::$app->runAction('/structure/position-old/create-ajax', ['formAction' => Url::to(['/structure/position-old/create-ajax'])]);
+// echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
+            
+Modal::end();
 /* @var $this yii\web\View */
 /* @var $model andahrm\positionSalary\models\PersonPostionSalary */
 /* @var $form yii\widgets\ActiveForm */
@@ -39,27 +47,62 @@ $form = ActiveForm::begin($formOptions);
 
         <?php /*echo $form->field($model,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput();*/?>
     
-        
-        <?=$form->field($model, 'position_old_id',['options'=>['class'=>'form-group col-sm-6']])
-                ->hint(false)
-                 ->widget(Typeahead::classname(),
-                    [
-                        'options' => ['placeholder' => 'Filter as you type ...'],
-                        'pluginOptions' => ['highlight'=>true],
-                        'dataset' => [
-                            [
-                                'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
-                                'display' => 'value',
-                                //'prefetch' => $baseUrl . '/samples/countries.json',
-                                'prefetch' => Url::to(['/structure/position-old/position-list']),
-                                'remote' => [
-                                    'url' => Url::to(['/structure/position-old/position-list']) . '?q=%QUERY',
-                                    'wildcard' => '%QUERY'
+       
+<?php                   
+$toPositionCreate = Url::to(['/structure/position-old/create']);
+$positionInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+    <span class="input-group-addon btn btn-success btn-create-position" role="position" data-toggle="modal" data-target="#{$modals['position']->id}" >
+        <i class="fa fa-plus"></i>
+    </span>
+</div>
+HTML;
+?>  
+        <?=$form->field($model, 'position_old_id',[
+            'inputTemplate' => $positionInputTemplate,
+             'options' => ['class' => 'form-group col-sm-6']
+            ])->widget(Select2::classname(),
+                                [
+                                    'data' => PositionOld::getListTitle(),
+                                    //'value'=>$model->position_old_id,
+                                    'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
+                                    'pluginOptions' => [
+                                        //'tags' => true,
+                                        //'tokenSeparators' => [',', ' '],
+                                        'allowClear'=>true,
+                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                                        'ajax'=>[
+                                            'url'=>Url::to(['/structure/position-old/position-list']),
+                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
+                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                                         ],
+                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                        'templateResult' => new JsExpression('function (position) { return position.text; }'),
+                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
+                                    ],
                                 ]
-                            ]
-                        ]
-                    ]
-         ); ?>
+                            )->hint(false);
+            //     ->hint(false)
+            //      ->widget(Typeahead::classname(),
+            //         [
+            //             'options' => ['placeholder' => 'Filter as you type ...'],
+            //             'pluginOptions' => ['highlight'=>true],
+            //             'dataset' => [
+            //                 [
+            //                     'datumTokenizer' => "Bloodhound.tokenizers.obj.whitespace('value')",
+            //                     'display' => 'value',
+            //                     //'prefetch' => $baseUrl . '/samples/countries.json',
+            //                     'prefetch' => Url::to(['/structure/position-old/position-list']),
+            //                     'remote' => [
+            //                         'url' => Url::to(['/structure/position-old/position-list']) . '?q=%QUERY',
+            //                         'wildcard' => '%QUERY'
+            //                     ]
+            //                 ]
+            //             ]
+            //         ]
+            //  ); 
+         ?>
          
           <?= $form->field($model,'status',['options'=>['class'=>'form-group col-sm-2']])->dropDownList(PersonPositionSalary::getItemStatus());?>
         

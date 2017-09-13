@@ -244,11 +244,12 @@ class DefaultController extends Controller
                 \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             }
             
+            /*
             list($code) = @explode(' ',$model->position_old_id);
             //$modelPosition->position_old_id = $code;
             $model->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
                 'code'=>$code
-            ],'id',['title'=>$model->title]);
+            ],'id',['title'=>$model->title]);*/
 
             $edoc_id = $model->edoc_id;
             $success = false;
@@ -299,8 +300,8 @@ class DefaultController extends Controller
         
         //echo $model->position_old_id;
         //exit();
-        if($model->position_old_id)
-        $model->position_old_id = $model->position->code;
+        // if($model->position_old_id)
+        // $model->position_old_id = $model->position->code;
         
         $options = [
             'model'=>$model,
