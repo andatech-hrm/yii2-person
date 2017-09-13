@@ -17,6 +17,7 @@ use yii\web\JsExpression;
 
 use andahrm\structure\models\PositionType;
 use andahrm\structure\models\PositionLevel;
+use andahrm\positionSalary\models\PersonPositionSalary;
 use kartik\widgets\DepDrop;
 
 use yii\bootstrap\Modal;
@@ -80,6 +81,7 @@ Modal::end();
             'position_level_id',
             'level',
             'salary',
+            'status',
             'edoc_id',
             'edoc[code]',
             'edoc[title]',
@@ -120,7 +122,7 @@ Modal::end();
                         <?=$form->field($model,"[{$index}]adjust_date",['options' => ['class' => 'form-group col-xs-3 col-sm-3 adjust_date']])
                          ->widget(DatePicker::classname(), WidgetSettings::DatePicker());?>
                 
-                        <?=$form->field($model,"[{$index}]title",[
+                        <?php /*=$form->field($model,"[{$index}]title",[
                             'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
                         ])->widget(Typeahead::classname(),[
     'options' => ['placeholder' => 'Filter as you type ...','id'=>"personpositionsalary-{$index}-title"],
@@ -136,8 +138,11 @@ Modal::end();
             ]
         ]
     ]
-]);
+]);*/
 ?>
+
+
+         
                         
 <?php                   
 $toPositionCreate = Url::to(['/structure/position/create']);
@@ -176,7 +181,8 @@ HTML;
                                 ]
                             )->hint(false); ?>
                         
-                         
+                        <?= $form->field($model,"[{$index}]status",['options'=>['class'=>'form-group col-sm-3']])->dropDownList(PersonPositionSalary::getItemStatus());?>
+
                             
                         <?php 
                         //echo $form->field($model,"[{$index}]level",['options' => ['class' => 'form-group  col-xs-3 col-sm-3']])
