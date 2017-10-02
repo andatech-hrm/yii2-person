@@ -61,8 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'buttons'=>[
               'delete' => function ($url, $model, $key) use($step) {
                 $options = [
-                    'title' => Yii::t('andatech', 'Delete'),
-                    'aria-label' => Yii::t('andatech', 'Delete'),
+                    'title' => Yii::t('andahrm', 'Delete'),
+                    'aria-label' => Yii::t('andahrm', 'Delete'),
                     'class' => 'btnDelete',
                     //'data-pjax' => 1,
                 ];
@@ -140,8 +140,8 @@ $this->params['breadcrumbs'][] = $this->title;
        'buttons'=>[
           'delete' => function ($url, $model, $key) use($step) {
             $options = [
-                'title' => Yii::t('andatech', 'Delete'),
-                'aria-label' => Yii::t('andatech', 'Delete'),
+                'title' => Yii::t('andahrm', 'Delete'),
+                'aria-label' => Yii::t('andahrm', 'Delete'),
                 'class' => 'btnDelete',
                 //'data-pjax' => 1,
             ];

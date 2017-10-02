@@ -185,8 +185,8 @@ $gridColumns = [
         },
         'delete' => function ($url, $model, $key) {
             $options = [
-                'title' => Yii::t('andatech', 'Delete'),
-                'aria-label' => Yii::t('andatech', 'Delete'),
+                'title' => Yii::t('andahrm', 'Delete'),
+                'aria-label' => Yii::t('andahrm', 'Delete'),
                 'class' => 'btnDelete',
                  'data' => [
                     'confirm' => Yii::t('andahrm', 'Are you sure you want to delete this item?'),
