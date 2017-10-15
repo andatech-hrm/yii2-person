@@ -286,6 +286,11 @@ class Person extends ActiveRecord
         return $this->hasMany(Education::className(), ['user_id' => 'user_id']);
     }
     
+    public function getEducation()
+    {
+        return $this->hasOne(Education::className(), ['user_id' => 'user_id'])->orderBy(['year_end'=>SORT_DESC]);
+    }
+    
     public function getDevelopments()
     {
         return $this->hasMany(DevelopmentPerson::className(), ['user_id' => 'user_id']);
