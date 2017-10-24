@@ -868,7 +868,10 @@ class DefaultController extends Controller
     
     public function actionDeletePositionOld($user_id,$position_id,$edoc_id,$step=null){
         $model = PersonPositionSalaryOld::find()
-        ->where(['user_id'=>$user_id,'position_old_id'=>$position_id,'edoc_id'=>$edoc_id]);
+        ->where(['user_id'=>$user_id,'position_old_id'=>$position_id,'edoc_id'=>$edoc_id])->one();
+        // print_r($model->one());
+        // exit();
+        
         if($model->delete()){
             if(Yii::$app->request->isAjax && $step){
                return $this->redirect(['create','id'=>$user_id,'step'=>$step]);
