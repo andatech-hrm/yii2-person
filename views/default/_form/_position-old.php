@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 $modals['position'] = Modal::begin([
-    'header' => Yii::t('andahrm/structure', 'Create Position'),
+    'header' => Yii::t('andahrm/structure', 'Create Position Old'),
     'size' => Modal::SIZE_LARGE
 ]);
 // echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
