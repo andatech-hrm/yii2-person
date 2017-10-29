@@ -15,7 +15,7 @@
             <?php foreach($models as $key => $model): ?>
                 <tr>
                     <td><?= Yii::$app->formatter->asDate($model->adjust_date); ?></td>
-                    <td><?= $model->title; ?></td>
+                    <td><?= $model->getTitle(); ?></td>
                     <td class="text-center"><?= $model->position->code; ?></td>
                     <td class="text-center"><?= $model->level; ?></td>
                     <td class="text-right"><?= Yii::$app->formatter->asDecimal($model->salary); ?></td>
