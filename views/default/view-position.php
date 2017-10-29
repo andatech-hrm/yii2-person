@@ -125,7 +125,7 @@ $gridColumns = [
    ['class' => '\kartik\grid\SerialColumn'],
    $columns['adjust_date'],
     //$columns['user_id'], 
-    //$columns['title'],
+    $columns['title'],
     $columns['position_id'],   
     //$columns['status'],
     $columns['level'],
