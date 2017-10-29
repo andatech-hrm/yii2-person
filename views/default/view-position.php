@@ -58,6 +58,7 @@ $columns = [
     ],
     'title' => [
         'attribute' => 'title',
+        'value'=>'title',
         'contentOptions' => ['class' => 'green'],
     ],
     'step' => [
