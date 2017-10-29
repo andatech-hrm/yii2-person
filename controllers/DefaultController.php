@@ -12,6 +12,7 @@ use andahrm\person\models\Person;
 use andahrm\person\models\Photo;
 use andahrm\person\models\PersonSearch;
 use andahrm\person\models\Detail;
+use andahrm\person\models\Retire;
 use andahrm\person\models\AddressContact;
 use andahrm\person\models\AddressBirthPlace;
 use andahrm\person\models\AddressRegister;
@@ -1110,11 +1111,7 @@ class DefaultController extends Controller
             //echo $modelPosition->edoc_id;
             if($model->edoc_id){
                 if($model->position_old){
-                    $modelOld->position_id = $model->position_id;
-                    $modelOld->edoc_id = $model->edoc_id;
-                    $modelOld->start_date = $model->start_date;
-                    $modelOld->end_date = $model->end_date;
-                    $modelOld->work_date = $model->work_date;
+                    $modelOld->attributes = $model->attributes;
                     if(!$modelOld->getExists() && $modelOld->save(false)){
                          if($modelOld->save()) {
                             $success = true;
@@ -1158,6 +1155,82 @@ class DefaultController extends Controller
                 ]);
             }else{
                 return $this->render('_form/_contract', [
+                    //'model' => $model,
+                    'model' => $model,
+                    'modelEdoc' => $modelEdoc,
+                    'formAction' => $formAction
+                ]);
+            }
+        
+    }
+    
+    public function actionCreateRetire($formAction=null,$id)
+    {
+        $post = Yii::$app->request->post();
+        $model = new PersonContract(['user_id'=>$id]);
+        $modelOld = new PersonContractOld(['user_id'=>$id]);
+        
+        
+        $modelEdoc = new Edoc(['scenario'=>'insert']);
+        
+        $success = false;
+        $result = [];
+        $errorMassages = [];
+        
+        if ($model->load(Yii::$app->request->post())){
+            
+            if(Yii::$app->request->isAjax){
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            }
+            
+            
+            //echo $modelPosition->edoc_id;
+            if($model->edoc_id){
+                if($model->position_old){
+                    $modelOld->attributes = $model->attributes;
+                    if(!$modelOld->getExists() && $modelOld->save(false)){
+                         if($modelOld->save()) {
+                            $success = true;
+                            $result = $model->attributes;
+                            $errorMassages[] = $modelOld->getErrors();
+                           }
+                    }
+                }else{
+                    if(!$model->getExists() && $model->save(false)){
+                         if($model->save()) {
+                            $success = true;
+                            $result = $model->attributes;
+                            $errorMassages[] = $model->getErrors();
+                           }
+                    }
+                }
+            }
+        
+            if(Yii::$app->request->isAjax){
+                return [
+                    'success' => $success,
+                    'result' => $result,
+                    'errorMassages' => $errorMassages
+                    ];
+            }else{
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$id]);
+            }
+        }
+        
+       
+            if($formAction){
+                return $this->renderPartial('_form/_retire', [
+                    //'model' => $model,
+                    'model' => $model,
+                    'modelEdoc' => $modelEdoc,
+                    'formAction' => $formAction
+                ]);
+            }else{
+                return $this->render('_form/_retire', [
                     //'model' => $model,
                     'model' => $model,
                     'modelEdoc' => $modelEdoc,

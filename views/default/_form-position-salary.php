@@ -27,13 +27,22 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="person-index">
     <h2 class="page-header dark" style="margin-top: 0; padding-top: 9px;">
         <i class="<?= $this->context->formSteps[$step]['icon']; ?>"></i> Step <?=$step?>.1 
-        <span class="text-muted"><?=Yii::t('andahrm/position-salary', 'Contracts')?></span>
-         <?= Html::button('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Contract'), [
+        
+        <span class="text-muted"><?=Yii::t('andahrm/position-salary', 'Retire & Contracts')?></span>
+        
+         <?= Html::button('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Retire'), [
+            'class' => 'pull-right btn btn-success btn-xs',
+            'data-pjax' => 0,
+            'data-toggle'=>"modal",
+            'data-target'=>"#{$modals['retire']->id}"
+        ]);?>
+        
+         <?php /*= Html::button('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Contract'), [
             'class' => 'pull-right btn btn-success btn-xs',
             'data-pjax' => 0,
             'data-toggle'=>"modal",
             'data-target'=>"#{$modals['contract']->id}"
-        ]);?>
+        ]);*/ ?>
     </h2> 
     <?php $pjaxs['contract'] = Pjax::begin();?>
     <?php
@@ -123,7 +132,14 @@ $this->params['breadcrumbs'][] = $this->title;
     $columns = [
       ['class' => 'yii\grid\SerialColumn'],
       'adjust_date'=>'adjust_date:date',
-      'title',
+      //'title',
+      [
+            'attribute'=>'title',
+            'format'=>'html',
+            'value' => function($model){
+                return $model->getTitle();
+            }
+        ],
         [
             'attribute'=>'position_id',
             'value' => 'position.code'

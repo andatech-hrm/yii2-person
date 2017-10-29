@@ -49,6 +49,17 @@ switch($step){
                 ]);
         Modal::end();
         
+        $modals['retire'] = Modal::begin([
+            'header' => Yii::t('andahrm/person', 'Retire'),
+            'size' => Modal::SIZE_LARGE
+            ]);
+            echo Yii::$app->runAction('/person/default/create-retire', [
+                'formAction' => Url::to(['/person/default/create-retire','id'=>$this->context->user_id]),
+                'id'=>$this->context->user_id,
+                //'modal_edoc_id'=>$modals['edoc']->id,
+                ]);
+        Modal::end();
+        
         
         break;
 }
