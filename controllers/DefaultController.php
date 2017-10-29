@@ -1414,6 +1414,10 @@ class DefaultController extends Controller
             }
             
             #Childs
+            // echo "<pre>";
+            // foreach($post['PeopleChild'])
+            // print_r($post);
+            // exit();
             $saveChilds = $this->createDynamicForm($models['PeopleChilds'], ChildModel::className(), $models['User']);
             if($saveChilds[0] === false) {
                 $errorMassages[] = $saveChilds[1];
@@ -1434,9 +1438,6 @@ class DefaultController extends Controller
         $models['Educations'] = $models['Person']->educations ? $models['Person']->educations : [new Education(['country_id' => Country::DEFAULT_COUNTRY])];
         $errorMassages=[];        
         if($post){
-            // echo "<pre>";
-            // print_r($post);
-            // exit();
             $saveEducations = $this->createDynamicForm($models['Educations'], EducationModel::className(), $models['User']);
             if($saveEducations[0] === false) {
                 $errorMassages[] = $saveEducations[1];
@@ -1511,6 +1512,11 @@ class DefaultController extends Controller
             
             foreach ($models as $model) {
                 $model->user_id = $mainModel->id;
+                if(isset($model->name) || isset($model->surname)){
+                    if(empty($model->name) && empty($model->surname)){
+                        continue;
+                    }
+                }
                 if (! ($flag = $model->save(false))) {
                     $errorMassages[] = $model->getErrors();
                     break;
