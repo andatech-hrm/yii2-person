@@ -62,12 +62,21 @@ $labels = [
                     }
                     ?>
                    <div class="row">
-                        <?= $form->field($model, "[{$index}]citizen_id", [
+                       <?php /*echo $form->field($model, "[{$index}]citizen_id", [
                                 'options' => ['class' => 'form-group col-sm-3']
                             ])->widget(
                                 MaskedInput::className(),[
-                                'mask' => '9-9999-99999-99-9'
-                            ]) ?>
+                                'mask' => '9-9999-99999-99-9',
+                                'options'=>['class'=>'form-control peoplechild-citizen_id']
+                            ])*/ ?>
+                        <?php echo $form->field($model, "[{$index}]citizen_id", [
+                                'options' => ['class' => 'form-group col-sm-3']
+                            ])->textInput([
+                                'maxlength' => true,
+                                'class'=>'form-control peoplechild-citizen_id'
+                            ])
+                            
+                             ?>
                         <?= $form->field($model, "[{$index}]name", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
                         <?= $form->field($model, "[{$index}]surname", ['options' => ['class' => 'form-group col-sm-3']])->textInput(['maxlength' => true]) ?>
                         <?= $form->field($model, "[{$index}]birthday", ['options' => ['class' => 'form-group col-sm-3 birthday']])->widget(DatePicker::className(), WidgetSettings::DatePicker()) ?>
@@ -114,7 +123,18 @@ jQuery(".dynamicform_wrapper").on('afterInsert', function(e, item) {
     jQuery(".dynamicform_wrapper .panel-title-address").each(function(index) {
         jQuery(this).html("{$labels['num-child']}: " + (index + 1))
     });
+    //['data-plugin-inputmask'!='']
+    bindInputMask();
+    
 });
+bindInputMask();
+function bindInputMask(){
+    jQuery("input.peoplechild-citizen_id").each(function(index){
+       //alert($(this).val()); 
+       var inputmask_db6017ec = {"mask":"9-9999-99999-99-9"};
+       jQuery("#"+$(this).attr('id')).inputmask(inputmask_db6017ec);
+    });
+}
 
 jQuery(".dynamicform_wrapper").on("afterDelete", function(e) {
     jQuery(".dynamicform_wrapper .panel-title-address").each(function(index) {
