@@ -59,7 +59,7 @@ $columns = [
     'title' => [
         'attribute' => 'title',
         'value'=>function($model){
-          return $model->title.$thit->status;  
+          return $model->title.$model->status;  
         },
         'contentOptions' => ['class' => 'green'],
     ],
