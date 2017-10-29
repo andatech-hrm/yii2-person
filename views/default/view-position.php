@@ -58,7 +58,9 @@ $columns = [
     ],
     'title' => [
         'attribute' => 'title',
-        'value'=>'title',
+        'value'=>function($model){
+          return $model->title;  
+        },
         'contentOptions' => ['class' => 'green'],
     ],
     'step' => [
