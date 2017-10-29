@@ -58,6 +58,7 @@ $columns = [
     ],
     'title' => [
         'attribute' => 'title',
+        'format'=>'html',
         'value'=>function($model){
           return $model->getTitle();  
         },
