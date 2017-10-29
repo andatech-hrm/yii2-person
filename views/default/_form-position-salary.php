@@ -37,12 +37,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'data-target'=>"#{$modals['retire']->id}"
         ]);?>
         
-         <?php /*= Html::button('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Contract'), [
+         <?= Html::button('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm/person', 'Create Contract'), [
             'class' => 'pull-right btn btn-success btn-xs',
             'data-pjax' => 0,
             'data-toggle'=>"modal",
             'data-target'=>"#{$modals['contract']->id}"
-        ]);*/ ?>
+        ]); ?>
     </h2> 
     <?php $pjaxs['contract'] = Pjax::begin();?>
     <?php
