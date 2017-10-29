@@ -21,7 +21,7 @@ switch($step){
             'size' => Modal::SIZE_LARGE
             ]);
             echo Yii::$app->runAction('/person/default/create-position-old', [
-                'formAction' => Url::to(['/person/default/create-position-old','id'=>$this->context->user_id]),
+                'formAction' => Url::to(['/person/default/create-position-old','id'=>$this->context->user_id,'from'=>'tab']),
                 'id'=>$this->context->user_id,
                 //'modal_edoc_id'=>$modals['edoc']->id,
                 ]);
@@ -32,7 +32,7 @@ switch($step){
             'size' => Modal::SIZE_LARGE
             ]);
             echo Yii::$app->runAction('/person/default/create-position', [
-                'formAction' => Url::to(['/person/default/create-position','id'=>$this->context->user_id]),
+                'formAction' => Url::to(['/person/default/create-position','id'=>$this->context->user_id,'from'=>'tab']),
                 'id'=>$this->context->user_id,
                 //'modal_edoc_id'=>$modals['edoc']->id,
                 ]);

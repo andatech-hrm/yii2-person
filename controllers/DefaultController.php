@@ -886,7 +886,7 @@ class DefaultController extends Controller
     }
     
     
-     public function actionCreatePosition($formAction=null,$id,$modal_edoc_id=null)
+     public function actionCreatePosition($formAction=null,$id,$modal_edoc_id=null,$from=null)
     {
         // if(!$formAction){
         //     $this->layout = 'view';
@@ -944,7 +944,12 @@ class DefaultController extends Controller
                         'type' => 'success',
                         'msg' => Yii::t('andahrm', 'Save operation completed.')
                     ]);
-                return $this->redirect(['view-position','id'=>$id]);
+                    
+                if($from){
+                    return $this->redirect(['create','step'=>5,'id'=>$id]);
+                }else{
+                    return $this->redirect(['view-position','id'=>$id]);
+                }
             }
         }
         
@@ -963,7 +968,7 @@ class DefaultController extends Controller
         }
     }
     
-    public function actionCreatePositionOld($formAction=null,$id,$modal_edoc_id=null)
+    public function actionCreatePositionOld($formAction=null,$id,$modal_edoc_id=null,$from=null)
     {
         // if(!$formAction){
         //     $this->layout = 'view';
@@ -983,18 +988,20 @@ class DefaultController extends Controller
             $errorMassages = [];
             if(Model::loadMultiple($modelsPosition,$post)){
                 Model::loadMultiple($modelsEdoc,$post);
+                // print_r($post);
+                // exit();
                 //$edoc = $post("Edoc");
                  foreach ($modelsPosition as $key => $modelPosition ) {
                     //Try to save the models. Validation is not needed as it's already been done.
-                    if($modelPosition->edoc_id == null){
-                        $modelsEdoc[$key]->scenario = 'insert';
-                        $modelsEdoc[$key]->save();
-                        $modelPosition->edoc_id = $modelsEdoc[$key]->id;
-                        //exit();
-                    }
+                    // if($modelPosition->edoc_id == null){
+                    //     $modelsEdoc[$key]->scenario = 'insert';
+                    //     $modelsEdoc[$key]->save();
+                    //     $modelPosition->edoc_id = $modelsEdoc[$key]->id;
+                    //     //exit();
+                    // }
                     
                     //echo $modelPosition->edoc_id;
-                    if($modelPosition->edoc_id){
+                    //if($modelPosition->edoc_id){
                         //list($code) = @explode(' ',$modelPosition->position_old_id);
                         // $modelPosition->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
                         //     'code'=>$code
@@ -1004,13 +1011,16 @@ class DefaultController extends Controller
                              $success = true;
                              $result = $modelPosition->attributes;
                         }elseif($modelPosition->getExists()){
-                            $success = false;
+                             $success = false;
                              $errorMassages[] = 'ข้อมูลซ่ำกัน';
+                             echo $modelPosition->user_id;
+                             echo $modelPosition->position_old_id;
+                             print_r($modelPosition->getErrors());
                         }else{
                             $success = false;
                              $errorMassages[] = $modelPosition->getErrors();
                         }
-                    }
+                    //}
                 }
                 //  print_r($post);
                 // exit();
@@ -1019,7 +1029,7 @@ class DefaultController extends Controller
                     exit();
                 }
             }
-            
+            //exit();
             if(Yii::$app->request->isAjax){
                 return [
                     'success' => $success,
@@ -1031,7 +1041,12 @@ class DefaultController extends Controller
                         'type' => 'success',
                         'msg' => Yii::t('andahrm', 'Save operation completed.')
                     ]);
-                return $this->redirect(['view-position','id'=>$id]);
+                    
+                if($from){
+                    return $this->redirect(['create','step'=>5,'id'=>$id]);
+                }else{
+                    return $this->redirect(['view-position','id'=>$id]);
+                }
             }
         }
         
@@ -1461,7 +1476,7 @@ class DefaultController extends Controller
         $models['PositionOld'] = $this->modelPerson->positionSalaryOlds;
         
         $data = ArrayHelper::merge($models['PositionOld'],$models['Position']);
-        $data = $models['Position'];
+        //$data = $models['Position'];
 
         $models['dataProvider'] = new ArrayDataProvider([
             'allModels' => $data,

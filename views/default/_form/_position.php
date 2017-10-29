@@ -146,6 +146,18 @@ Modal::end();
                         
 <?php                   
 $toPositionCreate = Url::to(['/structure/position/create']);
+if($formAction){
+$positionInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+    <span class="input-group-addon btn btn-success btn-create-position" data-key="{$index}" >
+    <a href="{$toPositionCreate}" target="_bank">
+        <i class="fa fa-plus"></i>
+    </a>
+    </span>
+</div>
+HTML;
+}else{
 $positionInputTemplate = <<< HTML
 <div class="input-group">
     {input}
@@ -154,6 +166,7 @@ $positionInputTemplate = <<< HTML
     </span>
 </div>
 HTML;
+}
 ?>                        
 
                          <?=$form->field($model, "[{$index}]position_id",[
@@ -227,7 +240,20 @@ HTML;
                         
                         <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group  col-xs-4 col-sm-3']])
                         ->textInput(['type'=>'number']);?>
-<?php                        
+<?php
+$toEdocCreate = Url::to(['/edoc/default/create']);
+if($formAction){
+$edocInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+   <span class="input-group-addon btn btn-success btn-create-edoc" >
+    <a href="{$toEdocCreate}" target="_bank">
+        <i class="fa fa-plus"></i>
+    </a>
+    </span>
+</div>
+HTML;
+}else{
 $edocInputTemplate = <<< HTML
 <div class="input-group">
     {input}
@@ -236,6 +262,7 @@ $edocInputTemplate = <<< HTML
     </span>
 </div>
 HTML;
+}
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,

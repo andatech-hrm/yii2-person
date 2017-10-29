@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'),
 $this->params['breadcrumbs'][] = ['label' => $model->fullname, 'url' => ['view', 'id' => $model->user_id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Position'), 'url' => ['view-position', 'id' => $model->user_id]];
 $this->params['breadcrumbs'][] = $this->title;
-
+}
 
 $modals['position'] = Modal::begin([
     'header' => Yii::t('andahrm/structure', 'Create Position Old'),
@@ -44,7 +44,7 @@ echo Yii::$app->runAction('/edoc/default/create-ajax1', ['formAction' => Url::to
 // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
             
 Modal::end();
-}
+
 ?>
 <?php 
   $formOptions['options'] = ['data-pjax' => ''];
@@ -118,6 +118,18 @@ Modal::end();
                 
 <?php                   
 $toPositionCreate = Url::to(['/structure/position-old/create']);
+if($formAction){
+$positionInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+    <span class="input-group-addon btn btn-success btn-create-position" data-key="{$index}" >
+        <a href="{$toPositionCreate}" target="_bank">
+            <i class="fa fa-plus"></i>
+        </a>
+    </span>
+</div>
+HTML;
+}else{
 $positionInputTemplate = <<< HTML
 <div class="input-group">
     {input}
@@ -126,6 +138,7 @@ $positionInputTemplate = <<< HTML
     </span>
 </div>
 HTML;
+}
 ?>  
                          <?=$form->field($model, "[{$index}]position_old_id",[
                              'inputTemplate' => $positionInputTemplate,
@@ -184,7 +197,7 @@ HTML;
                             //     ])
                             // ); 
                             ?>
-                            <?= $form->field($model,"[{$index}]status",['options'=>['class'=>'form-group col-sm-2']])->dropDownList(PersonPositionSalaryOld::getItemStatus());?>
+                            <?= $form->field($model,"[{$index}]status",['options'=>['class'=>'form-group col-sm-3']])->dropDownList(PersonPositionSalaryOld::getItemStatus());?>
                              </div>
                     
                         <div class="row">
@@ -194,15 +207,22 @@ HTML;
 
                         <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group col-sm-3']])
                         ->textInput();?>
-<?php                        
-// $edocInputTemplate = <<< HTML
-// <div class="input-group">
-//     {input}
-//     <span class="input-group-addon btn btn-success new_edoc_old" data-key="{$index}">
-//         <i class="fa fa-plus"></i>
-//     </span>
-// </div>
-// HTML;                  
+
+
+<?php
+$toEdocCreate = Url::to(['/edoc/default/create']);
+if($formAction){
+$edocInputTemplate = <<< HTML
+<div class="input-group">
+    {input}
+   <span class="input-group-addon btn btn-success btn-create-edoc" >
+    <a href="{$toEdocCreate}" target="_bank">
+        <i class="fa fa-plus"></i>
+    </a>
+    </span>
+</div>
+HTML;
+}else{
 $edocInputTemplate = <<< HTML
 <div class="input-group">
     {input}
@@ -211,14 +231,31 @@ $edocInputTemplate = <<< HTML
     </span>
 </div>
 HTML;
+}
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,
                              'options' => ['class' => 'form-group col-sm-6','id'=>'edoc_id_old']])
-                             ->widget(Select2::className(), 
-                             WidgetSettings::Select2([
-                                 'data' => Edoc::getList(),
-                            ]));
+                             ->widget(Select2::className(), [
+                                 
+                                    'data' => Edoc::getList(),
+                                    'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a edoc')],
+                                    'pluginOptions' => [
+                                        //'tags' => true,
+                                        //'tokenSeparators' => [',', ' '],
+                                        'allowClear'=>true,
+                                        'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                                        'ajax'=>[
+                                            'url'=>Url::to(['/edoc/default/get-list']),
+                                            'dataType'=>'json',//รูปแบบการอ่านคือ json
+                                            'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                                         ],
+                                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                        'templateResult' => new JsExpression('function(position) { return position.text; }'),
+                                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
+                                    ],
+                                ]
+                             );
                         ?>
                     </div>
                     
@@ -393,40 +430,40 @@ $this->registerJs(implode("\n", $js), $this::POS_END);
 
 
 ///Surakit
-if($formAction !== null) {
-$js[] = <<< JS
-var index = 0;
-$(document).on('submit', '#{$form->id}', function(e){
-  e.preventDefault();
-  var form = $(this);
-  var formData = new FormData(form[0]);
-  // alert(form.serialize());
+// if($formAction !== null) {
+// $js[] = <<< JS
+// var index = 0;
+// $(document).on('submit', '#{$form->id}', function(e){
+//   e.preventDefault();
+//   var form = $(this);
+//   var formData = new FormData(form[0]);
+//   // alert(form.serialize());
   
-  ++index;
-  console.log('index='+index);
-  if(index==1){
-      $.ajax({
-        url: form.attr('action'),
-        type : 'POST',
-        data: formData,
-        contentType:false,
-        cache: false,
-        processData:false,
-        dataType: "json",
-        success: function(data) {
-          if(data.success){
-            callbackPosition(data.result);
-          }else{
-            alert('Fail');
-          }
-        }
-      });
-  }
-});
-JS;
+//   ++index;
+//   console.log('index='+index);
+//   if(index==1){
+//       $.ajax({
+//         url: form.attr('action'),
+//         type : 'POST',
+//         data: formData,
+//         contentType:false,
+//         cache: false,
+//         processData:false,
+//         dataType: "json",
+//         success: function(data) {
+//           if(data.success){
+//             callbackPosition(data.result);
+//           }else{
+//             alert('Fail');
+//           }
+//         }
+//       });
+//   }
+// });
+// JS;
 
-$this->registerJs(implode("\n", $js));
-}
+// $this->registerJs(implode("\n", $js));
+// }
 
 
 $positionInputId = Html::getInputId($model, 'position_id');
