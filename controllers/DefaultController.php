@@ -415,12 +415,22 @@ class DefaultController extends Controller
         // $dataProvider->query->where(['user_id'=>$id]);
         // $dataProvider->sort->defaultOrder = ['adjust_date'=> SORT_ASC];
         
-        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
-            ->orderBy(['adjust_date'=> SORT_ASC])
-            ->all();
+        // $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
+        //     ->orderBy(['adjust_date'=> SORT_ASC])
+        //     ->all();
+        // $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
+        //     ->orderBy(['adjust_date'=> SORT_ASC])
+        //     ->all();
         $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
-            ->orderBy(['adjust_date'=> SORT_ASC])
+           ->joinWith('edoc')
+            ->orderBy(['edoc.code'=> SORT_ASC,'edoc.date_code'=>SORT_ASC,'adjust_date'=> SORT_ASC])
+            ->all();  
+        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
+            ->joinWith('edoc')
+            ->orderBy(['edoc.code'=> SORT_ASC,'edoc.date_code'=>SORT_ASC,'adjust_date'=> SORT_ASC])
             ->all();
+          
+            
         
         // $modelPosition = ArrayHelper::index($modelPosition,'adjust_date');
         // ksort($modelPosition);
