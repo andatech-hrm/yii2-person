@@ -322,45 +322,49 @@ class DefaultController extends Controller
     public function actionUpdatePosition($id,$position_id,$edoc_id,$old=null,$formAction=null)
     {
         
-        $model = PersonPositionSalary::find()->where([
+        $modelsPosition = PersonPositionSalary::find()->where([
             'user_id'=>$id,
             'position_id'=>$position_id,
             'edoc_id'=>$edoc_id
         ])->one();
-        $model->scenario = 'update';
+        $modelsPosition->scenario = 'update';
         
-        $modelEdoc = $model->edoc;
+        $modelEdoc = $modelsPosition->edoc;
         $newModelEdoc = new Edoc();
         
         $post = Yii::$app->request->post();
-        if($model->load($post)){
+        
+        if($modelsPosition->load($post)){
+            
+        //     print_r($post);
+        // exit();
             
             if(Yii::$app->request->isAjax){
                 \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             }
             
-            $edoc_id = $model->edoc_id;
+            $edoc_id = $modelsPosition->edoc_id;
             $success = false;
             $result=null;
             $errorMassages = [];
             //Try to save the models. Validation is not needed as it's already been done.
-            if($modelEdoc->load($post) && !$modelEdoc->isNewRecord){
-                $modelEdoc->save();
-                $edoc_id = $modelEdoc->id;
-            }elseif($newModelEdoc->load($post) && $newModelEdoc->isNewRecord){
-                $newModelEdoc->save();
-                $edoc_id = $newModelEdoc->id;
-            }
+            // if($modelEdoc->load($post) && !$modelEdoc->isNewRecord){
+            //     $modelEdoc->save();
+            //     $edoc_id = $modelEdoc->id;
+            // }elseif($newModelEdoc->load($post) && $newModelEdoc->isNewRecord){
+            //     $newModelEdoc->save();
+            //     $edoc_id = $newModelEdoc->id;
+            // }
             
             //echo $modelPosition->edoc_id;
             if($edoc_id){
-                $model->edoc_id = $edoc_id;
-                if($model->save(false)){
+                $modelsPosition->edoc_id = $edoc_id;
+                if($modelsPosition->save(false)){
                      $success = true;
-                     $result = $model->attributes;
+                     $result = $modelsPosition->attributes;
                 }else{
-                     $result = $model->attributes;
-                     $errorMassages[] = $model->getErrors();
+                     $result = $modelsPosition->attributes;
+                     $errorMassages[] = $modelsPosition->getErrors();
                 }
             }
             // echo $edoc_id;
@@ -382,13 +386,14 @@ class DefaultController extends Controller
                 return $this->redirect(['view-position','id'=>$id]);
             }
         }elseif($post){
-            print_r($model->getErrors());
+            print_r($modelsPosition->getErrors());
             exit();
         }
         //echo 555;
         
         $options = [
-            'model'=>$model,
+            'model' => $this->findModel($id),
+            'models' => $modelsPosition,
             'modelEdoc'=>$modelEdoc,
             'newModelEdoc'=>$newModelEdoc,
             'old'=>$old,

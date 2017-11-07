@@ -80,7 +80,7 @@ Modal::end();
             'position_type_id',
             'position_level_id',
             'level',
-            'salary',
+            //'salary',
             'status',
             'edoc_id',
             'edoc[code]',
@@ -193,8 +193,15 @@ HTML;
                                     ],
                                 ]
                             )->hint(false); ?>
+                            
+                        <?php 
+                        echo $form->field($model,"[{$index}]level",['options'=>['class'=>'form-group col-sm-3']])->textInput();
+                        ?>
                         
-                        <?= $form->field($model,"[{$index}]status",['options'=>['class'=>'form-group col-sm-3']])->dropDownList(PersonPositionSalary::getItemStatus());?>
+                        <?php
+                        /*echo  $form->field($model,"[{$index}]status",['options'=>['class'=>'form-group col-sm-3']])->dropDownList(PersonPositionSalary::getItemStatus());
+                        */
+                        ?>
 
                             
                         <?php 
@@ -211,7 +218,7 @@ HTML;
           
 </div>
 <div class="row">
-    <?php echo $form->field($model,"[{$index}]level",['options'=>['class'=>'form-group col-sm-3']])->textInput();?>
+    
           <?php /*= $form->field($model, "[{$index}]position_level_id",[
               'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
               ])->dropDownList(
@@ -266,7 +273,7 @@ HTML;
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,
-                             'options' => ['class' => 'form-group  col-xs-6 col-sm-6'
+                             'options' => ['class' => 'form-group  col-xs-9 col-sm-9'
                              ]])
                          ->widget(Select2::className(),
                          [
