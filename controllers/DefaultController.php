@@ -423,11 +423,11 @@ class DefaultController extends Controller
         //     ->all();
         $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
            ->joinWith('edoc')
-            ->orderBy(['adjust_date'=> SORT_ASC,'edoc.code'=> SORT_ASC,'edoc.date_code'=>SORT_ASC])
+            ->orderBy(['adjust_date'=> SORT_ASC,'edoc.date_code'=>SORT_ASC,'edoc.code'=> SORT_ASC])
             ->all();  
         $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
             ->joinWith('edoc')
-            ->orderBy(['adjust_date'=> SORT_ASC,'edoc.code'=> SORT_ASC,'edoc.date_code'=>SORT_ASC])
+            ->orderBy(['adjust_date'=> SORT_ASC,'edoc.date_code'=>SORT_ASC,'edoc.code'=> SORT_ASC])
             ->all();
           
             
