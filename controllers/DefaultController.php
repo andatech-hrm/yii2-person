@@ -229,30 +229,30 @@ class DefaultController extends Controller
     public function actionUpdatePositionOld($id,$position_id,$edoc_id,$old=null,$formAction=null)
     {
         
-            $model = PersonPositionSalaryOld::find()->where([
+            $modelsPosition = PersonPositionSalaryOld::find()->where([
                 'user_id'=>$id,
                 'position_old_id'=>$position_id,
                 'edoc_id'=>$edoc_id
             ])->one();
        
-        $modelEdoc = $model->edoc;
+        $modelEdoc = $modelsPosition->edoc;
         $newModelEdoc = new Edoc();
         
         $post = Yii::$app->request->post();
-        if($model->load($post)){
+        if($modelsPosition->load($post)){
             
             if(Yii::$app->request->isAjax){
                 \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             }
             
             /*
-            list($code) = @explode(' ',$model->position_old_id);
+            list($code) = @explode(' ',$modelsPosition->position_old_id);
             //$modelPosition->position_old_id = $code;
-            $model->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
+            $modelsPosition->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
                 'code'=>$code
-            ],'id',['title'=>$model->title]);*/
+            ],'id',['title'=>$modelsPosition->title]);*/
 
-            $edoc_id = $model->edoc_id;
+            $edoc_id = $modelsPosition->edoc_id;
             $success = false;
             $result=null;
             $errorMassages = [];
@@ -267,13 +267,13 @@ class DefaultController extends Controller
             
             //echo $modelPosition->edoc_id;
             if($edoc_id){
-                $model->edoc_id = $edoc_id;
-                if($model->save(false)){
+                $modelsPosition->edoc_id = $edoc_id;
+                if($modelsPosition->save(false)){
                      $success = true;
-                     $result = $model->attributes;
+                     $result = $modelsPosition->attributes;
                 }else{
-                     $result = $model->attributes;
-                     $errorMassages[] = $model->getErrors();
+                     $result = $modelsPosition->attributes;
+                     $errorMassages[] = $modelsPosition->getErrors();
                 }
             }
             // echo $edoc_id;
@@ -295,17 +295,18 @@ class DefaultController extends Controller
                 return $this->redirect(['view-position','id'=>$id]);
             }
         }elseif($post){
-            print_r($model->getErrors());
+            print_r($modelsPosition->getErrors());
             exit();
         }
         
-        //echo $model->position_old_id;
+        //echo $modelsPosition->position_old_id;
         //exit();
-        // if($model->position_old_id)
-        // $model->position_old_id = $model->position->code;
+        // if($modelsPosition->position_old_id)
+        // $modelsPosition->position_old_id = $modelsPosition->position->code;
         
         $options = [
-            'model'=>$model,
+            'model' => $this->findModel($id),
+            'models'=>$modelsPosition,
             'modelEdoc'=>$modelEdoc,
             'newModelEdoc'=>$newModelEdoc,
             'old'=>$old,

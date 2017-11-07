@@ -77,7 +77,7 @@ Modal::end();
             'edoc[title]',
             'edoc[date_code]',
             'edoc[file]',
-            'status',
+            //'status',
         ],
     ]); ?>
     
@@ -197,13 +197,15 @@ HTML;
                             //     ])
                             // ); 
                             ?>
-                            <?= $form->field($model,"[{$index}]status",['options'=>['class'=>'form-group col-sm-3']])->dropDownList(PersonPositionSalaryOld::getItemStatus());?>
+                            <?php #echo $form->field($model,"[{$index}]status",['options'=>['class'=>'form-group col-sm-3']])->dropDownList(PersonPositionSalaryOld::getItemStatus());?>
+                            
+                             <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group col-sm-3']])
+                        ->textInput();?>
                              </div>
                     
                         <div class="row">
                             
-                        <?=$form->field($model,"[{$index}]level",['options' => ['class' => 'form-group col-sm-3']])
-                        ->textInput();?>
+                       
 
                         <?=$form->field($model,"[{$index}]salary",['options' => ['class' => 'form-group col-sm-3']])
                         ->textInput();?>
@@ -235,7 +237,7 @@ HTML;
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,
-                             'options' => ['class' => 'form-group col-sm-6','id'=>'edoc_id_old']])
+                             'options' => ['class' => 'form-group col-sm-9','id'=>'edoc_id_old']])
                              ->widget(Select2::className(), [
                                  
                                     'data' => Edoc::getList(),

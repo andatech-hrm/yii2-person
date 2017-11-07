@@ -19,6 +19,15 @@ use andahrm\structure\models\PositionOld;
 use andahrm\positionSalary\models\PersonPositionSalary;
 use yii\helpers\Json;
 
+if($formAction == null){
+$this->title = Yii::t('andahrm/person', 'Update Position Old');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->fullname, 'url' => ['view', 'id' => $model->user_id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Position'), 'url' => ['view-position', 'id' => $model->user_id]];
+$this->params['breadcrumbs'][] = $this->title;
+}
+
+
 $modals['position'] = Modal::begin([
     'header' => Yii::t('andahrm/structure', 'Create Position Old'),
     'size' => Modal::SIZE_LARGE
@@ -28,6 +37,19 @@ echo Yii::$app->runAction('/structure/position-old/create-ajax', ['formAction' =
 // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
             
 Modal::end();
+
+
+    
+    $modals['edoc'] = Modal::begin([
+    'header' => Yii::t('andahrm/edoc', 'Create Edoc'),
+    'size' => Modal::SIZE_LARGE
+]);
+// echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
+echo Yii::$app->runAction('/edoc/default/create-ajax1', ['formAction' => Url::to(['/edoc/default/create-ajax1'])]);
+// echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
+Modal::end();
+
+
 /* @var $this yii\web\View */
 /* @var $model andahrm\positionSalary\models\PersonPostionSalary */
 /* @var $form yii\widgets\ActiveForm */
@@ -37,15 +59,15 @@ Modal::end();
   if(isset($formAction) && $formAction !== null)  $formOptions['action'] = Url::to([$formAction],false);
 $form = ActiveForm::begin($formOptions);
 ?>
-    <?php echo $form->field($model,'user_id')->hiddenInput()->label(false)->hint(false)->error(false);?>
+    <?php echo $form->field($models,'user_id')->hiddenInput()->label(false)->hint(false)->error(false);?>
          
 
     <div class="row">
        
-          <?=$form->field($model,'adjust_date',['options'=>['class'=>'form-group col-sm-4']])
+          <?=$form->field($models,'adjust_date',['options'=>['class'=>'form-group col-sm-4']])
           ->widget(DatePicker::classname(), WidgetSettings::DatePicker());?>
 
-        <?php /*echo $form->field($model,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput();*/?>
+        <?php /*echo $form->field($models,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput();*/?>
     
        
 <?php                   
@@ -59,13 +81,13 @@ $positionInputTemplate = <<< HTML
 </div>
 HTML;
 ?>  
-        <?=$form->field($model, 'position_old_id',[
+        <?=$form->field($models, 'position_old_id',[
             'inputTemplate' => $positionInputTemplate,
              'options' => ['class' => 'form-group col-sm-6']
             ])->widget(Select2::classname(),
                                 [
                                     'data' => PositionOld::getListTitle(),
-                                    //'value'=>$model->position_old_id,
+                                    //'value'=>$models->position_old_id,
                                     'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
                                     'pluginOptions' => [
                                         //'tags' => true,
@@ -104,13 +126,15 @@ HTML;
             //  ); 
          ?>
          
-          <?= $form->field($model,'status',['options'=>['class'=>'form-group col-sm-2']])->dropDownList(PersonPositionSalary::getItemStatus());?>
+          <?php #echo  $form->field($models,'status',['options'=>['class'=>'form-group col-sm-2']])->dropDownList(PersonPositionSalary::getItemStatus());?>
+          
+           <?php echo $form->field($models,'level',['options'=>['class'=>'form-group col-sm-2']])->textInput();?>
         
  </div>
  
      <div class="row">
-         <?php echo $form->field($model,'level',['options'=>['class'=>'form-group col-sm-2']])->textInput();?>
-         <?php echo $form->field($model,'salary',['options'=>['class'=>'form-group col-sm-4']])->textInput();?>
+        
+         <?php echo $form->field($models,'salary',['options'=>['class'=>'form-group col-sm-3']])->textInput();?>
          
 <?php 
 
@@ -118,16 +142,13 @@ $formId = $form->id;
 $edocInputTemplate = <<< HTML
 <div class="input-group">
     {input}
-    <span class="input-group-addon btn btn-primary edit_edoc_old-{$formId}" >
-        <i class="fa fa-pencil"></i>
-    </span>
-    <span class="input-group-addon btn btn-success new_edoc_old-{$formId}" >
+   <span class="input-group-addon btn btn-success btn-create-edoc"  role="edoc" data-toggle="modal" data-target="#{$modals['edoc']->id}">
         <i class="fa fa-plus"></i>
     </span>
 </div>
 HTML;
-echo $form->field($model, "edoc_id", [
-        'options'=>['class'=>'form-group col-sm-6'],
+echo $form->field($models, "edoc_id", [
+        'options'=>['class'=>'form-group col-sm-9'],
         'inputTemplate' => $edocInputTemplate,
         // 'options' => [
         //     'class' => 'form-group col-sm-6'
@@ -221,56 +242,56 @@ ActiveForm::end();
 <?php
 
 $formId = $form->id;
-$jsHead[] = <<< JS
+// $jsHead[] = <<< JS
 
-        var form = $("form#{$formId}");
-        var areaNew = $(form).find(".new_edoc_old_area-{$formId}");
-        var areaEdic = $(form).find(".edic_edoc_old_area-{$formId}");
-        var edcoArea = $(form).find(".edoc_area");
-        $(form).find(".new_edoc_old-{$formId}").bind('click',function(){
-            //alert(555);
-            $(edcoArea).hide();
-            if(!$(this).is('.shown')){
-                $(this).find("i").removeClass('fa-plus');
-                $(this).find("i").addClass('fa-minus');
-                $(this).addClass('shown');
-                $(areaNew).find('input').attr('disabled',false);
-                $(areaNew).find("#edoc-file").attr('disabled',false);
-                $(areaNew).find("#edoc-file").fileinput('refresh');
-                $(areaNew).show();
-            }else{
-                 $(this).removeClass('shown');
-                 $(this).find("i").addClass('fa-plus');
-                 $(this).find("i").removeClass('fa-minus');
-                 $(areaNew).find('input').attr('disabled',true);
-                $(areaNew).find("#edoc-file").attr('disabled',true);
-                $(areaNew).find("#edoc-file").fileinput('refresh');
-                $(areaNew).hide();
-            }
-        });
+//         var form = $("form#{$formId}");
+//         var areaNew = $(form).find(".new_edoc_old_area-{$formId}");
+//         var areaEdic = $(form).find(".edic_edoc_old_area-{$formId}");
+//         var edcoArea = $(form).find(".edoc_area");
+//         $(form).find(".new_edoc_old-{$formId}").bind('click',function(){
+//             //alert(555);
+//             $(edcoArea).hide();
+//             if(!$(this).is('.shown')){
+//                 $(this).find("i").removeClass('fa-plus');
+//                 $(this).find("i").addClass('fa-minus');
+//                 $(this).addClass('shown');
+//                 $(areaNew).find('input').attr('disabled',false);
+//                 $(areaNew).find("#edoc-file").attr('disabled',false);
+//                 $(areaNew).find("#edoc-file").fileinput('refresh');
+//                 $(areaNew).show();
+//             }else{
+//                  $(this).removeClass('shown');
+//                  $(this).find("i").addClass('fa-plus');
+//                  $(this).find("i").removeClass('fa-minus');
+//                  $(areaNew).find('input').attr('disabled',true);
+//                 $(areaNew).find("#edoc-file").attr('disabled',true);
+//                 $(areaNew).find("#edoc-file").fileinput('refresh');
+//                 $(areaNew).hide();
+//             }
+//         });
         
-        $(form).find(".edit_edoc_old-{$formId}").bind('click',function(){
-            //alert(555);
-            $(edcoArea).hide();
-            if(!$(this).is('.shown')){
-                //$(this).find("i").removeClass('fa-plus');
-                //$(this).find("i").addClass('fa-minus');
-                $(this).addClass('shown');
-                $(areaEdic).find('input').attr('disabled',false);
-                $(areaEdic).find("#edoc-file").attr('disabled',false);
-                $(areaEdic).find("#edoc-file").fileinput('refresh');
-                $(areaEdic).show();
-            }else{
-                 $(this).removeClass('shown');
-                 //$(this).find("i").addClass('fa-plus');
-                 //$(this).find("i").removeClass('fa-minus');
-                 $(areaEdic).find('input').attr('disabled',true);
-                $(areaEdic).find("#edoc-file").attr('disabled',true);
-                $(areaEdic).find("#edoc-file").fileinput('refresh');
-                $(areaEdic).hide();
-            }
-        });
-JS;
+//         $(form).find(".edit_edoc_old-{$formId}").bind('click',function(){
+//             //alert(555);
+//             $(edcoArea).hide();
+//             if(!$(this).is('.shown')){
+//                 //$(this).find("i").removeClass('fa-plus');
+//                 //$(this).find("i").addClass('fa-minus');
+//                 $(this).addClass('shown');
+//                 $(areaEdic).find('input').attr('disabled',false);
+//                 $(areaEdic).find("#edoc-file").attr('disabled',false);
+//                 $(areaEdic).find("#edoc-file").fileinput('refresh');
+//                 $(areaEdic).show();
+//             }else{
+//                  $(this).removeClass('shown');
+//                  //$(this).find("i").addClass('fa-plus');
+//                  //$(this).find("i").removeClass('fa-minus');
+//                  $(areaEdic).find('input').attr('disabled',true);
+//                 $(areaEdic).find("#edoc-file").attr('disabled',true);
+//                 $(areaEdic).find("#edoc-file").fileinput('refresh');
+//                 $(areaEdic).hide();
+//             }
+//         });
+// JS;
 if($formAction !== null) {
     /*
 $jsHead[] = <<< JS
@@ -307,5 +328,38 @@ JS;
 */
 }
 
-$this->registerJs(implode("\n", $jsHead));
+//$this->registerJs(implode("\n", $jsHead));
+
+
+$positionInputId = Html::getInputId($models, 'position_id');
+$jsHead[] = <<< JS
+function callbackPosition(result,form)
+{   
+    $("#{$positionInputId}").append($('<option>', {
+        value: result.id,
+        text: result.code + ' - ' + result.title
+    }));
+    $("#{$positionInputId}").val(result.id).trigger('change.select2');
+    
+    $("#{$modals['position']->id}").modal('hide');
+    //alert(form);
+    $(form).trigger("reset");
+}
+JS;
+$edocInputId = Html::getInputId($models, 'edoc_id');
+$jsHead[] = <<< JS
+function callbackEdoc(result,form)
+{   
+    $("#{$edocInputId}").append($('<option>', {
+        value: result.id,
+        text: result.code + ' ' + result.date_code + ' ' + result.title
+    }));
+    $("#{$edocInputId}").val(result.id).trigger('change.select2');
+    
+    $("#{$modals['edoc']->id}").modal('hide');
+    $(form).trigger("reset");
+}
+JS;
+
+$this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);
 ?>
