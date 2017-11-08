@@ -49,7 +49,8 @@ class Religion extends \yii\db\ActiveRecord
      */
     public function getPersonDetails()
     {
-        return $this->hasMany(Detail::className(), ['religion_id' => 'id']);
+        return $this->hasMany(Detail::className(), ['religion_id' => 'id'])
+        ->joinWith('person')->where('person.deleted_at IS NULL');
     }
     
     public function getCount_person(){
