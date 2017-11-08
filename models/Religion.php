@@ -40,6 +40,7 @@ class Religion extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('andahrm/person', 'ID'),
             'title' => Yii::t('andahrm/person', 'Title'),
+            'count_person' => Yii::t('andahrm/person', 'Count Person'),
         ];
     }
 
@@ -48,6 +49,10 @@ class Religion extends \yii\db\ActiveRecord
      */
     public function getPersonDetails()
     {
-        return $this->hasMany(PersonDetail::className(), ['religion_id' => 'id']);
+        return $this->hasMany(Detail::className(), ['religion_id' => 'id']);
+    }
+    
+    public function getCount_person(){
+        return count($this->personDetails);
     }
 }
