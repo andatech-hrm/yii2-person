@@ -172,4 +172,6 @@ class Education extends ActiveRecord
         $yearDistance = $this->getBehavior('year_end')->yearDistance;
         return (intval($this->year_end) + $yearDistance);
     }
+    
+    public $count_person;
 }
