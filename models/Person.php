@@ -47,6 +47,7 @@ class Person extends ActiveRecord
     const GENDER_FEMAIL = 'f';
     
     public $full_address_contact;
+    public $age;
     /**
      * @inheritdoc
      */
