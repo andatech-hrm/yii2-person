@@ -56,4 +56,7 @@ class EducationLevel extends \yii\db\ActiveRecord
     {
         return self::find()->all();
     }
+    
+    
+    public $count_person;
 }
