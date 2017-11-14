@@ -348,7 +348,7 @@ class Person extends ActiveRecord
         ], $options);
         
         $inner = '<a class="pull-left border-dark profile_thumb" style="padding:0;">' . 
-            '<img src="' .$this->getPhotoLast() . '" class="img-circle" style="width:100%;">' .
+            '<img src="' .$this->getPhoto() . '" class="img-circle" style="width:100%;">' .
             '</a>' .
             '<div class="media-body">' .
             Html::a($this->fullname, $link, ['class' => 'title']) .
