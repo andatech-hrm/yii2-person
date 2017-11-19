@@ -2271,5 +2271,28 @@ class DefaultController extends Controller
         
     }
     
+    
+    public function actionAddPosition(){
+        $models = Person::find()->all();
+        $num_add = 0;
+        $err = [];
+        foreach($models as $model){
+            if($model->position){
+                $model->position_id = $model->position->id;
+                if($model->save()){
+                    ++$num_add;
+                }else{
+                    $err[] = $model->getErrors();
+                }
+            }
+        }
+        
+        echo "Number add = ".$num_add."<br/>";
+        echo "err = ";
+        print_r($err);
+        
+    }
+    
+    
 
 }
