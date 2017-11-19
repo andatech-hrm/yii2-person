@@ -36,7 +36,7 @@ $columns = [
             $res = $model->full_address_contact;
             if($model->addressContact){
                 $res .= '<br />'.$model->addressContact->postcode.' &nbsp<i class="fa fa-phone"></i>โทร. ';
-                $res .= $model->addressContact->phone?$model->addressContact->phone:null;
+                $res .= $model->addressContact->phone?$model->addressContact->phone:'-';
             }
             return $res;
         },
