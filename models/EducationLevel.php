@@ -39,8 +39,8 @@ class EducationLevel extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'title' => 'Title',
+            'id' => Yii::t('andahrm/education', 'ID'),
+            'title' => Yii::t('andahrm/education', 'Title Leave'),
         ];
     }
 
