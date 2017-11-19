@@ -76,6 +76,14 @@ $columns = [
         'attribute'=>'position_id',
         'filter' => Position::getList(),
         'value' => 'position.code',
+        'content' => function($model){
+            if($model->formName()=='PersonPositionSalaryOld'){
+                $action = '/structure/position-old/view';
+            }else{
+                $action = '/structure/position/view';
+            }
+            return Html::a($model->position->code,[$action,'id'=>$model->position->id],['target'=>'_blank','data-pjax'=>0]);
+        },
         'contentOptions' => ['class' => 'green'],
         'format' => 'html',
     ],
