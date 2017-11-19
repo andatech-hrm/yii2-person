@@ -39,7 +39,7 @@ class Religion extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('andahrm/person', 'ID'),
-            'title' => Yii::t('andahrm/person', 'Title'),
+            'title' => Yii::t('andahrm/person', 'Title Religion'),
             'count_person' => Yii::t('andahrm/person', 'Count Person'),
         ];
     }
