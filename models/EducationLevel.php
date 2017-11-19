@@ -40,7 +40,7 @@ class EducationLevel extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('andahrm/education', 'ID'),
-            'title' => Yii::t('andahrm/education', 'Title Leave'),
+            'title' => Yii::t('andahrm/education', 'Title Level'),
         ];
     }
 
