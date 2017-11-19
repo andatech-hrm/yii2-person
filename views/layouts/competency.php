@@ -21,22 +21,27 @@ $controller = Yii::$app->controller->id;
             <div class="x_content">
                 
                 <?php
-        
-        $menuItems[] =  [
-            "label" => Yii::t('andahrm/competency','Main Competency'),
+         $menuItems[] =  [
+            "label" => Yii::t('andahrm/competency','Set Competency'),
             "url" => ["/person/competency-information/index",'file'=>1],
             "icon" => "fa fa-users",
             //'active' => (strpos($this->context->route,'report/person') !== false)?true:false
         ];
         $menuItems[] =  [
-            "label" => Yii::t('andahrm/competency','Manager Competency'),
+            "label" => Yii::t('andahrm/competency','Main Competency'),
             "url" => ["/person/competency-information/index",'file'=>2],
             "icon" => "fa fa-users",
             //'active' => (strpos($this->context->route,'report/person') !== false)?true:false
         ];
         $menuItems[] =  [
-            "label" => Yii::t('andahrm/competency','Line Competency'),
+            "label" => Yii::t('andahrm/competency','Manager Competency'),
             "url" => ["/person/competency-information/index",'file'=>3],
+            "icon" => "fa fa-users",
+            //'active' => (strpos($this->context->route,'report/person') !== false)?true:false
+        ];
+        $menuItems[] =  [
+            "label" => Yii::t('andahrm/competency','Line Competency'),
+            "url" => ["/person/competency-information/index",'file'=>4],
             "icon" => "fa fa-users",
             //'active' => (strpos($this->context->route,'report/person') !== false)?true:false
         ];
