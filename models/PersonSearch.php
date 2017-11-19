@@ -43,7 +43,7 @@ class PersonSearch extends Person
     public function search($params)
     {
         $query = Person::find();
-        $query->joinWith(['addressContact.tambol', 'addressContact.amphur', 'addressContact.province']);
+        //$query->joinWith(['addressContact.tambol', 'addressContact.amphur', 'addressContact.province']);
 
         // add conditions that should always apply here
 
