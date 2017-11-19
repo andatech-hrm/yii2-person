@@ -14,6 +14,7 @@ use andahrm\datepicker\behaviors\DateBuddhistBehavior;
 use andahrm\setting\models\Helper;
 
 use andahrm\leave\models\LeavePermission; #mad
+use andahrm\structure\models\Position; #mad
 use andahrm\positionSalary\models\PersonContract; #mad
 use andahrm\positionSalary\models\PersonContractOld; #mad
 use andahrm\positionSalary\models\PersonPositionSalary; #mad
@@ -454,11 +455,19 @@ class Person extends ActiveRecord
         return $this->hasOne(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_DESC]);
     }
     
+    /**
+    * @return \yii\db\ActiveQuery
+    * Create when 2017-11-19
+    */
+    public function getPositionLast()
+    {
+        return $this->positionSalary?$this->positionSalary->position:null;
+    }
+    
     public function getPositionSalaries()
     {
         return $this->hasMany(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_ASC]);
     }
-    
     
     public function getPositionSalaryOlds()
     {
@@ -469,9 +478,18 @@ class Person extends ActiveRecord
     *  Create by mad
     * ตำแหน่ง
     */
+    // public function getPosition()
+    // {
+    //     return $this->positionSalary?$this->positionSalary->position:null;
+    // }
+    
+    /**
+    * @return \yii\db\ActiveQuery
+    * Create when 2017-11-19
+    */
     public function getPosition()
     {
-        return $this->positionSalary?$this->positionSalary->position:null;
+      return $this->hasOne(Position::className(), ['id' => 'position_id']);
     }
     
     public function getLevel()
@@ -506,5 +524,7 @@ class Person extends ActiveRecord
     public function getDefects(){
         return $this->hasMany(Defect::className(),['user_id'=>'user_id'])->orderBy(['date_defect'=>SORT_DESC]);
     }
+    
+    
   
 }
