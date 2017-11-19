@@ -23,18 +23,24 @@ class CompetencyInformationController extends \yii\web\Controller
         }
         
         $menuItems[1] =  [
-            "label" => Yii::t('andahrm/competency','Main Competency'),
+            "label" => Yii::t('andahrm/competency','Set Competency'),
             "url" => ["/person/competency-information/index",'file'=>1],
             "icon" => "fa fa-users",
             //'active' => (strpos($this->context->route,'report/person') !== false)?true:false
         ];
         $menuItems[2] =  [
+            "label" => Yii::t('andahrm/competency','Main Competency'),
+            "url" => ["/person/competency-information/index",'file'=>1],
+            "icon" => "fa fa-users",
+            //'active' => (strpos($this->context->route,'report/person') !== false)?true:false
+        ];
+        $menuItems[3] =  [
             "label" => Yii::t('andahrm/competency','Manager Competency'),
             "url" => ["/person/competency-information/index",'file'=>2],
             "icon" => "fa fa-users",
             //'active' => (strpos($this->context->route,'report/person') !== false)?true:false
         ];
-        $menuItems[3] =  [
+        $menuItems[4] =  [
             "label" => Yii::t('andahrm/competency','Line Competency'),
             "url" => ["/person/competency-information/index",'file'=>3],
             "icon" => "fa fa-users",
