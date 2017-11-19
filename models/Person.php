@@ -478,19 +478,19 @@ class Person extends ActiveRecord
     *  Create by mad
     * ตำแหน่ง
     */
-    public function getPosition()
-    {
-        return $this->positionSalary?$this->positionSalary->position:null;
-    }
+    // public function getPosition()
+    // {
+    //     return $this->positionSalary?$this->positionSalary->position:null;
+    // }
     
     /**
     * @return \yii\db\ActiveQuery
     * Create when 2017-11-19
     */
-    // public function getPosition()
-    // {
-    //   return $this->hasOne(Position::className(), ['id' => 'position_id']);
-    // }
+    public function getPosition()
+    {
+      return $this->hasOne(Position::className(), ['id' => 'position_id']);
+    }
     
     public function getLevel()
     {
