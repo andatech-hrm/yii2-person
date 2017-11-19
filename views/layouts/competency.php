@@ -2,6 +2,7 @@
 use yii\bootstrap\Html;
 use dmstr\widgets\Menu;
 use yii\bootstrap\Nav;
+use yii\bootstrap\NavBar;
 
  $this->beginContent('@app/views/layouts/main.php'); 
  $module = $this->context->module->id;
@@ -47,9 +48,10 @@ $controller = Yii::$app->controller->id;
         ];
         
         
-        
+        //NavBar::begin();
         echo Nav::widget(
                 [
+                //'options' => ['class' => 'navbar-nav'],
                  'options' => ['class' => 'nav nav-pills'],
                  //'submenuTemplate' => "\n<ul class='nav child_menu' {show}>\n{items}\n</ul>\n",
                  //'activeCssClass' => 'current-page',
@@ -57,7 +59,8 @@ $controller = Yii::$app->controller->id;
                     //"activeCssClass" => "current-page",
                     "items" => $menuItems,
                 ]
-            )
+            );
+        //NavBar::end();
             ?>
                 
                 
