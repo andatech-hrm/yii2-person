@@ -53,7 +53,9 @@ class Religion extends \yii\db\ActiveRecord
         ->joinWith('person')->where('person.deleted_at IS NULL');
     }
     
-    public function getCount_person(){
-        return count($this->personDetails);
-    }
+    public $count_person = 0;
+    
+    // public function getCount_person(){
+    //     return count($this->personDetails);
+    // }
 }

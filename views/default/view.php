@@ -156,8 +156,8 @@ $modalOptions = [
             ?>
             <?php
             $fields = [
-                'nationality_id' => $models[$mkey]->nationality->title,
-                'race_id' => $models[$mkey]->race->title,
+                'nationality_id' => $models[$mkey]->nationality?$models[$mkey]->nationality->title:null,
+                'race_id' => $models[$mkey]->race?$models[$mkey]->race->title:null,
                 'religion_id' => $models[$mkey]->religion?$models[$mkey]->religion->title:null,
                 'blood_group' => $models[$mkey]->blood_group,
                 'married_status' => $models[$mkey]->getStatusText(),
