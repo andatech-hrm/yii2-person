@@ -123,6 +123,6 @@ class Photo extends ActiveRecord
     public function getYearBuddhist()
     {
         $yearDistance = $this->getBehavior('year')->yearDistance;
-        return (intval($this->year) + $yearDistance);
+        return $this->year!=0?(intval($this->year) + $yearDistance):Yii::$app->formatter->nullDisplay;
     }
 }
