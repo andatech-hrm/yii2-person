@@ -223,9 +223,9 @@ class Person extends ActiveRecord
     public function getAgeLabel(){
         if($this->birthday){
             $age = $this->calAge($this->birthday);
-            $str[] = $age->y.' '.Yii::t('hrm','Year');
-            $str[] = $age->m.' '.Yii::t('hrm','Month');
-            $str[] = $age->d.' '.Yii::t('hrm','Day');
+            $str[] = $age->y.' '.Yii::t('andahrm','Year');
+            $str[] = $age->m.' '.Yii::t('andahrm','Month');
+            $str[] = $age->d.' '.Yii::t('andahrm','Day');
             return implode(' ',$str);
         }
     }
