@@ -96,6 +96,7 @@ $modalOptions = [
                 'tel' => $models[$mkey]->tel,
                 'phone' => $models[$mkey]->phone,
                 'birthday' => Yii::$app->formatter->asDate($models[$mkey]->birthday),
+                'age' => $models[$mkey]->ageLabel,
             ];
             ?>
             <table class="table detail-view">
