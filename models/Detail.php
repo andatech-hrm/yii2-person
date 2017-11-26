@@ -72,6 +72,7 @@ class Detail extends \yii\db\ActiveRecord
         return [
             [['user_id', 'nationality_id', 'race_id', 'religion_id'], 'required'],
             [['user_id', 'nationality_id', 'race_id', 'religion_id', 'married_status'], 'integer'],
+            [[ 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['blood_group'], 'string', 'max' => 2],
             [['nationality_id'], 'exist', 'skipOnError' => true, 'targetClass' => Nationality::className(), 'targetAttribute' => ['nationality_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['user_id' => 'user_id']],
@@ -92,6 +93,10 @@ class Detail extends \yii\db\ActiveRecord
             'religion_id' => Yii::t('andahrm/person', 'Religion'),
             'blood_group' => Yii::t('andahrm/person', 'Blood Group'),
             'married_status' => Yii::t('andahrm/person', 'Married Status'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
         ];
     }
 
