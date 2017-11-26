@@ -174,4 +174,26 @@ class Education extends ActiveRecord
     }
     
     public $count_person;
+    
+    
+    public function afterSave($insert, $changedAttributes) {
+        parent::afterSave($insert, $changedAttributes);
+        $model = Person::findOne($this->user_id);
+        
+        if(!$model = $model->detail){
+            $model = new Detail();
+        }
+        
+        $education = $model->person->educationLast;
+        $model->person_education_id = $education?$education->id:null;
+        if($model->save(false)){
+            return true;
+        }else{
+            echo "Error:afterSave<br/>";
+            print_r($model->getErrors());
+            exit();
+        }
+        
+        
+    }
 }

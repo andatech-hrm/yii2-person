@@ -2293,6 +2293,32 @@ class DefaultController extends Controller
         
     }
     
+    public function actionAddEducation(){
+        $models = Person::find()->all();
+        
+        $num_add = 0;
+        $err = [];
+        foreach($models as $model){
+            if(isset($model->educationLast)){
+                
+                if(!$modelDetail = $model->detail){
+                    $modelDetail = new Detail(['user_id'=>$model->user_id]);
+                }
+                $modelDetail->person_education_id = $model->education->id;
+                if($modelDetail->save(false)){
+                    ++$num_add;
+                }else{
+                    $err[] = $modelDetail->getErrors();
+                }
+            }
+        }
+        
+        echo "Number add = ".$num_add."<br/>";
+        echo "err = ";
+        print_r($err);
+        
+    }
+    
     
 
 }

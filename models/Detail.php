@@ -189,4 +189,9 @@ class Detail extends \yii\db\ActiveRecord
         }
         return null;
     }
+    
+    public function getEducation()
+    {
+        return $this->hasOne(Education::className(), ['id' => 'person_education_id']);
+    }
 }

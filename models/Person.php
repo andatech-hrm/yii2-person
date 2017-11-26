@@ -283,6 +283,8 @@ class Person extends ActiveRecord
         return $this->hasMany(PeopleChild::className(), ['user_id' => 'user_id'])->andOnCondition(['type' => People::TYPE_CHILD]);
     }
     
+    # Education
+    
     public function getEducations()
     {
         return $this->hasMany(Education::className(), ['user_id' => 'user_id']);
@@ -290,8 +292,15 @@ class Person extends ActiveRecord
     
     public function getEducation()
     {
+        return $this->detail?(isset($this->detail->education)?$this->detail->education:null):null;
+    }
+    
+    public function getEducationLast()
+    {
         return $this->hasOne(Education::className(), ['user_id' => 'user_id'])->orderBy(['year_end'=>SORT_DESC]);
     }
+    
+    ##
     
     public function getDevelopments()
     {
