@@ -48,7 +48,7 @@ class Person extends ActiveRecord
     const GENDER_FEMAIL = 'f';
     
     public $full_address_contact;
-    public $age;
+    //public $age;
     /**
      * @inheritdoc
      */
@@ -146,6 +146,7 @@ class Person extends ActiveRecord
             'tel' => Yii::t('andahrm/person', 'Tel'),
             'phone' => Yii::t('andahrm/person', 'Phone'),
             'birthday' => Yii::t('andahrm/person', 'Birthday'),
+            'age' => Yii::t('andahrm/person', 'Age'),
             'created_at' => Yii::t('andahrm', 'Created At'),
             'created_by' => Yii::t('andahrm', 'Created By'),
             'updated_at' => Yii::t('andahrm', 'Updated At'),
@@ -206,6 +207,27 @@ class Person extends ActiveRecord
     public function getAddressContact()
     {
         return $this->hasOne(AddressContact::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_CONTACT]);
+    }
+    
+    public function calAge($birthday){
+        $bday = new \DateTime($birthday);
+        $today = new \DateTime('00:00:00'); //- use this for the current date
+        //$today = new DateTime(date('Y-m-d')); // for testing purposes
+        return  $today->diff($bday);
+    }
+    
+    public function getAge(){
+        return $this->birthday?$this->calAge($this->birthday)->y:null;
+    }
+    
+    public function getAgeLabel(){
+        if($this->birthday){
+            $age = $this->calAge($this->birthday);
+            $str[] = $age->y.' '.Yii::t('hrm','Year');
+            $str[] = $age->m.' '.Yii::t('hrm','Month');
+            $str[] = $age->d.' '.Yii::t('hrm','Day');
+            return implode(' ',$str);
+        }
     }
     
     public function getAddressText($type = Address::TYPE_CONTACT, $fields = [])
