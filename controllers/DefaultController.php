@@ -2304,7 +2304,7 @@ class DefaultController extends Controller
                 if(!$modelDetail = $model->detail){
                     $modelDetail = new Detail(['user_id'=>$model->user_id]);
                 }
-                $modelDetail->person_education_id = $model->education->id;
+                $modelDetail->person_education_id = $model->educationLast->id;
                 if($modelDetail->save(false)){
                     ++$num_add;
                 }else{
