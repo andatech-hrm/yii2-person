@@ -103,6 +103,15 @@ class DefaultController extends Controller
         ];
     }
     
+    public function actions(){
+        return [
+                'create-development' => [
+                    'class' => 'andahrm\person\controllers\defaultActions\CreateDevelopmentAction',
+                    //'findModel'=>$this->findModel()
+                ]
+            ];
+    }
+    
     public function beforeAction($action)
     {
         $this->formSteps = [
@@ -522,7 +531,7 @@ class DefaultController extends Controller
         ]);
     }
     
-    public function actionCreateDevelopment($formAction=null,$id,$modal_edoc_id=null)
+    public function actionCreateDevelopment1($formAction=null,$id,$modal_edoc_id=null)
     {
         // if(!$formAction){
         //     $this->layout = 'view';
@@ -1809,7 +1818,7 @@ class DefaultController extends Controller
      * @return Person the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    public function findModel($id)
     {
         if (($model = Person::findOne($id)) !== null) {
             return $model;
