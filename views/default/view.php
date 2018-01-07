@@ -588,6 +588,10 @@ $('#{$modals[$mkey]->id}').on('show.bs.modal', function (e) {
                     
             $educationDataProvider = new \yii\data\ActiveDataProvider([
                 'query' => $models['person']->getEducations(),
+                'sort'=> ['defaultOrder' => [
+                    'year_start'=>SORT_ASC,
+                    'year_end'=>SORT_ASC,
+                    ]]
             ]);
             ?>
             <div class="table-responsive">
