@@ -64,8 +64,8 @@ Modal::end();
             'dev_project_id',
             'dev_activity_char_id',
             'qualification',
-            'start',
-            'end'
+            //'start',
+            //'end'
         ],
     ]); ?>
     
@@ -133,6 +133,8 @@ HTML;
                                     ]  
                                 ])->textInput();
                                 ?>
+                                
+                                <?php /*
             <div class="row">
                                 <?= $form->field($model, "[{$index}]start", [
                                     'options' => [
@@ -147,6 +149,7 @@ HTML;
                                 ])->widget(DatePicker::className());
                                 ?>
                             </div>
+                            */?>
             
             
             <?php /*= $form->field($model, "[{$index}]dev_activity_char_id",[
