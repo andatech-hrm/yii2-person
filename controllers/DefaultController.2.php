@@ -107,9 +107,7 @@ class DefaultController extends Controller
         return [
                 'create-development' => [
                     'class' => 'andahrm\person\controllers\defaultActions\CreateDevelopmentAction',
-                ],
-                'create-insignia' => [
-                    'class' => 'andahrm\person\controllers\defaultActions\CreateInsigniaAction',
+                    //'findModel'=>$this->findModel()
                 ]
             ];
     }
@@ -533,6 +531,358 @@ class DefaultController extends Controller
         ]);
     }
     
+    public function actionCreateDevelopment1($formAction=null,$id,$modal_edoc_id=null)
+    {
+        // if(!$formAction){
+        //     $this->layout = 'view';
+        // }
+        $modelsDevelopmentPersons = [new DevelopmentPerson()];
+        $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
+        $post = Yii::$app->request->post();
+        if($post){
+            if(Yii::$app->request->isAjax){
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            }
+           
+            $success = false;
+            $result=null;
+            $errorMassages = [];
+            
+            // print_r($post);
+            // exit();
+            if(Model::loadMultiple($modelsDevelopmentPersons,$post)){
+               
+                //$edoc = $post("Edoc");
+                 foreach ($modelsDevelopmentPersons as $key => $modelDevelopment ) {
+                     if(count($modelDevelopment->dev_activity_char_id)>0){
+                         foreach ($modelDevelopment->dev_activity_char_id as $activity_char_id ) {
+                        //Try to save the models. Validation is not needed as it's already been done.
+                        //echo $modelSinsignia->year;
+                        $find=[
+                            'user_id' => $id,
+                            'dev_project_id' => $modelDevelopment->dev_project_id,
+                            'dev_activity_char_id' => $activity_char_id,
+                            ];
+                            // echo "<pre>";
+                            //  print_r($find);
+                            //  print_r($modelDevelopment);
+                            // exit();
+                
+                        
+                                
+                            if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
+                                 $modelDevelopmentPerson->attributes = $find;
+                                  $modelDevelopmentPerson->start = $modelDevelopment->start;
+                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
+                                 
+                                 if(!$modelDevelopmentPerson->save()){
+                                    $result = $modelDevelopmentPerson->attributes;
+                                    $errorMassages[] = $modelDevelopmentPerson->getErrors();
+                                }
+                            }else{
+                                $modelDevelopmentPerson = new DevelopmentPerson();
+                                $modelDevelopmentPerson->attributes = $find;
+                                 $modelDevelopmentPerson->start = $modelDevelopment->start;
+                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
+                                if(!$modelDevelopmentPerson->save()){
+                                    $result = $modelDevelopmentPerson->attributes;
+                                    $errorMassages[] = $modelDevelopmentPerson->getErrors();
+                                }
+                            }
+                         }
+                           
+                    }else{
+                        $find=[
+                            'user_id' => $id,
+                            'dev_project_id' => $modelDevelopment->dev_project_id,
+                        ];
+                        
+                        if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
+                             $modelDevelopmentPerson->attributes = $find;
+                              $modelDevelopmentPerson->start = $modelDevelopment->start;
+                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
+                             if(!$modelDevelopmentPerson->save()){
+                                $result = $modelDevelopmentPerson->attributes;
+                                $errorMassages[] = $modelDevelopmentPerson->getErrors();
+                            }
+                        }else{
+                            $modelDevelopmentPerson = new DevelopmentPerson();
+                            $modelDevelopmentPerson->attributes = $find;
+                             $modelDevelopmentPerson->start = $modelDevelopment->start;
+                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
+                            if(!$modelDevelopmentPerson->save()){
+                                $result = $modelDevelopmentPerson->attributes;
+                                $errorMassages[] = $modelDevelopmentPerson->getErrors();
+                            }
+                        }
+                    }
+                }
+                    
+                
+                if($errorMassages){
+                    print_r($errorMassages);
+                    exit();
+                }
+            }
+            
+            if(Yii::$app->request->isAjax){
+                return [
+                    'success' => $success,
+                    'result' => $result,
+                    'errorMassages' => $errorMassages,
+                    ];
+            }else{
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-development','id'=>$id]);
+            }
+            }
+        
+        
+        $options = [
+                'model' => $this->findModel($id),
+                'models' => $modelsDevelopmentPersons,
+                'modelsEdoc' => $modelsEdoc,
+                'formAction' => $formAction,
+                'modal_edoc_id' => $modal_edoc_id
+            ];
+       
+        if($formAction){
+            return $this->renderPartial('_form/_development', $options);
+        }else{
+            return $this->render('_form/_development', $options);
+        }
+    }
+    
+    
+    public function actionCreateInsignia($formAction=null,$id,$modal_edoc_id=null)
+    {
+        // if(!$formAction){
+        //     $this->layout = 'view';
+        // }
+        $modelsInsigniaPerson = [new InsigniaPerson(['user_id'=>$id])];
+        $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
+        $post = Yii::$app->request->post();
+        if($post){
+            if(Yii::$app->request->isAjax){
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            }
+           
+            $success = false;
+            $result=null;
+            $errorMassages = [];
+            
+            // print_r($post);
+            // exit();
+            if(Model::loadMultiple($modelsInsigniaPerson,$post)){
+                Model::loadMultiple($modelsEdoc,$post);
+                //$edoc = $post("Edoc");
+                 foreach ($modelsInsigniaPerson as $key => $modelSinsignia ) {
+                    //Try to save the models. Validation is not needed as it's already been done.
+                    //echo $modelSinsignia->year;
+                    @list($d,$m,$year) = @explode('/',$modelSinsignia->year);
+                    $find=[
+                        'person_type_id' => $modelSinsignia->person_type_id,
+                        'insignia_type_id' => $modelSinsignia->insignia_type_id,
+                        'gender' => $modelSinsignia->gender,
+                        'year' => ($year-543),
+                        ];
+            //             echo "<pre>";
+            //              print_r($find);
+            //              print_r($modelsInsigniaPerson);
+            // exit();
+            
+                    $modelSinsignia->last_adjust_date = $modelSinsignia->year;
+                    if($modelSinsignia->edoc_id == null){
+                            $modelsEdoc[$key]->save();
+                            $modelSinsignia->edoc_id = $modelsEdoc[$key]->id;
+                            //exit();
+                    }
+                    //echo $modelSinsignia->edoc_id;
+                    if($modelSinsignia->edoc_id){
+                        if($modelRequest = InsigniaRequest::find()->where($find)->one()){
+                             $modelRequest->attributes = $find;
+                             $modelRequest->save(false);
+                            $modelSinsignia->insignia_request_id = $modelRequest->id;
+                        }else{
+                            $modelRequest = new InsigniaRequest();
+                            $modelRequest->attributes = $find;
+                            $modelRequest->save(false);
+                            $modelSinsignia->insignia_request_id = $modelRequest->id;
+                        }
+                            $modelSinsignia->attributes = $find;
+                        
+                        
+                            if(!$modelSinsignia->getExists()){
+                                if($modelSinsignia->save()){
+                                     $success = true;
+                                    //  print_r($find);
+                                    //  exit();
+                                }else{
+                                     $result = $modelSinsignia->attributes;
+                                     $errorMassages[] = $modelSinsignia->getErrors();
+                                     
+                                }
+                            }
+                    }
+                    
+                    
+                }
+                if($errorMassages){
+                     print_r($errorMassages);
+                    exit();
+                }
+            }
+            
+            if(Yii::$app->request->isAjax){
+                return [
+                    'success' => $success,
+                    'result' => $result,
+                    'errorMassages' => $errorMassages
+                    ];
+            }else{
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-prestige','id'=>$id]);
+            }
+        }
+        
+        $options = [
+                'model' => $this->findModel($id),
+                'models' => $modelsInsigniaPerson,
+                'modelsEdoc' => $modelsEdoc,
+                'formAction' => $formAction,
+                'modal_edoc_id' => $modal_edoc_id
+            ];
+       
+        if($formAction){
+            return $this->renderPartial('_form/_insignia', $options);
+        }else{
+            return $this->render('_form/_insignia', $options);
+        }
+    }
+    
+    
+    /*
+    public function actionCreatePosition($formAction=null,$id)
+    {
+        $model = new PersonPositionSalary(['scenario'=>'new-person']);
+        $model->user_id = $id;
+        $model->status  = 1;
+        
+        if($model->load(Yii::$app->request->post())){
+            $post = Yii::$app->request->post();
+            // print_r($post);
+            // exit();
+
+            if(!$model->getExists() && $model->save()){
+                 Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$model->user_id]);
+            }elseif($model->getExists()){
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'warning',
+                        'msg' => Yii::t('andahrm/person', 'Cannot save! but have data.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$model->user_id]);
+            }else{
+                 print_r($model->getErrors());
+                 exit();
+            }
+            
+        }
+
+
+        return $this->render('position/create-position', [
+            'model' => $model,
+            'formAction' => $formAction
+        ]);
+    }
+    
+    public function actionCreatePositionOld($formAction=null,$id)
+    {
+        $model = new PersonPositionSalaryOld();
+        $model->user_id = $id;
+        $model->status  = 1;
+        if($model->load(Yii::$app->request->post())){
+            $post = Yii::$app->request->post();
+           // print_r($post);
+            //exit();
+            $model->position_old_id = $this->chkDb('\andahrm\structure\models\PositionOld',[
+                'code'=>$model->position_old_id
+                ]);
+            
+            
+            if(!$model->getExists() && $model->save()){
+                 Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$model->user_id]);
+            }elseif($model->getExists()){
+                Yii::$app->getSession()->setFlash('saved',[
+                        'type' => 'warning',
+                        'msg' => Yii::t('andahrm/person', 'Cannot save! but have data.')
+                    ]);
+                return $this->redirect(['view-position','id'=>$model->user_id]);
+            }else{
+                 print_r($model->getErrors());
+                 exit();
+            }
+            
+        }
+    
+        //return $this->renderPartial('position/create-position-old', [
+        return $this->render('position/create-position-old', [
+            'model' => $model,
+            'formAction' => $formAction
+        ]);
+    }
+    */
+    
+    
+    // public function actionCreatePosition($formAction=null,$id)
+    // {
+    //     $model = new PersonPositionSalary(['scenario'=>'new-person']);
+    //     $model->user_id = $id;
+    //     $model->status  = 1;
+        
+    //     if($model->load(Yii::$app->request->post())){
+    //         $post = Yii::$app->request->post();
+    //         // print_r($post);
+    //         // exit();
+
+    //         if(!$model->getExists() && $model->save()){
+    //              Yii::$app->getSession()->setFlash('saved',[
+    //                     'type' => 'success',
+    //                     'msg' => Yii::t('andahrm', 'Save operation completed.')
+    //                 ]);
+    //             return $this->redirect(['view-position','id'=>$model->user_id]);
+    //         }elseif($model->getExists()){
+    //             Yii::$app->getSession()->setFlash('saved',[
+    //                     'type' => 'warning',
+    //                     'msg' => Yii::t('andahrm/person', 'Cannot save! but have data.')
+    //                 ]);
+    //             return $this->redirect(['view-position','id'=>$model->user_id]);
+    //         }else{
+    //              print_r($model->getErrors());
+    //              exit();
+    //         }
+            
+    //     }
+
+
+    //     return $this->render('_form/position', [
+    //         'model' => $model,
+    //         'formAction' => $formAction
+    //     ]);
+    // }
     
     public function actionDeletePosition($user_id,$position_id,$edoc_id,$step=null){
         $model = PersonPositionSalary::find()
@@ -950,6 +1300,8 @@ class DefaultController extends Controller
         }
     }
     
+  
+    
     public function actionViewKp($id)
     {
         $this->layout = 'view';
@@ -965,6 +1317,7 @@ class DefaultController extends Controller
         
         return $this->render('view-kp', ['models' => $models, 'dataProvider' => $dataProvider]);
     }
+    
     
     public function actionTest(){
         $person = new Person();
@@ -1300,6 +1653,10 @@ class DefaultController extends Controller
         return [$success, $errorMassages];
     }
 
+    
+
+
+
     /**
      * Updates an existing Person model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -1450,6 +1807,7 @@ class DefaultController extends Controller
     {
         // $this->findModel($id)->delete();
         $this->findModel($id)->softDelete();
+
         // return $this->redirect(['index']);
     }
 
@@ -1492,6 +1850,24 @@ class DefaultController extends Controller
         $this->defaultCountryId = Country::DEFAULT_COUNTRY;
     }
     
+    // public function getStep($point='current')
+    // {
+    //     $currentStep = Yii::$app->request->get('step');
+    //     if($currentStep === null){
+    //         return null;
+    //     }
+    //     $formSteps = $this->formSteps;
+    //     unset($formSteps[0]);
+    //     $keys = array_keys($formSteps);
+    //     while (current($keys) != $currentStep) next($keys);
+
+    //     if ($point === 'prev') {
+    //         return prev($keys);
+    //     } elseif ($point === 'next') {
+    //         return next($keys);
+    //     }
+    //     return current($keys);
+    // }
     
     protected function setRoles($id, $checkedRoles=[])
     {
@@ -1735,7 +2111,120 @@ class DefaultController extends Controller
          }
          return $username;
     }
- 
+    
+//     public function actionPrint($id)
+//     {
+        
+//         //$ss = \andahrm\person\assets\PrintAsset::register($this);
+        
+//         $this->layout = 'view';
+        
+//         $modelPerson =$this->findModel($id);
+        
+//         $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
+//             ->orderBy(['adjust_date'=> SORT_ASC])
+//             ->all();
+//         $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
+//             ->orderBy(['adjust_date'=> SORT_ASC])
+//             ->all();
+        
+//         $data = ArrayHelper::merge($modelPositionOld,$modelPosition);
+
+//         $dataProvider = new ArrayDataProvider([
+//             'allModels' => $data,
+//             'pagination' => false,
+//             'sort' => [
+//                 'attributes' => ['adjust_date' => SORT_ASC],
+//             ],
+//         ]);
+
+        
+//         $rowNum[0] = 10;
+//         $rowNum[1] = 9;
+//         $rowNum[2] = 9;
+//         $dataDefect = [];
+//         $modelDefect = Defect::find()->where(['user_id'=>$id])->all();
+//         for($i = 0;$i<=$rowNum[0];$i++ ){
+//              //$dataDefect[$i] = null;
+//             if(isset($modelDefect[$i])){
+//                 $dataDefect[$i] = $modelDefect[$i];
+//             }
+//         }
+//         // echo "<pre>";
+//         // print_r($dataDefect);
+//         // exit();
+        
+//         $f = new \NumberFormatter("th", \NumberFormatter::SPELLOUT);
+//         $dates['birthday'] = $f->format(Yii::$app->formatter->asDate($modelPerson->birthday,"php:d"))
+//                         ." ".Yii::$app->formatter->asDate($modelPerson->birthday,'php:F')
+//                         ." ".$f->format(Yii::$app->formatter->asDate($modelPerson->birthday,'php:Y'));
+                        
+//         $dates['birthday'] = str_replace("\xE2\x80\x8B", "",$dates['birthday']);
+//         $content = $this->renderPartial('print', [
+//         //return $this->renderPartial('print', [
+//         //$content = $this->renderAjax('print', [
+//             'dates' => $dates,
+//             'rowNum' => $rowNum,
+//             'dataDefect' => $dataDefect,
+//             'dataProvider' => $dataProvider,
+//             'modelPerson' => $modelPerson,
+//             'user_id' => $id
+//         ]);
+        
+// $css = <<< Css
+//     @page *{
+//         margin-top: 2.54cm;
+//         margin-bottom: 2.54cm;
+//         margin-left: 0cm;
+//         margin-right: 0cm;
+//     }
+//     body{padding:0px;margin:0px;}
+//     .table-print{ width: 100%; border-spacing: 0px; }
+//     .table-print th, .table-print td {border-right: #000 1px solid; padding: 8px;line-height: 0.5;vertical-align: top;}
+//     .table-print th.cell-right,.table-print td.cell-right{ border-right: none; }
+//     .table-print tr td{ border-bottom: #000 1px dotted; }
+//     .header-labels th{border-top:#000 1px solid; border-bottom:#000 1px solid;}
+//     .header-labels-edu th{border-top:#000 1px solid; border-bottom:#000 1px solid;line-height: 0.8;}
+//     .body-labels-first th{border-top:#000 1px solid;border-bottom:#000 1px solid; line-height: 1;}
+//     .body-labels th{ border-bottom:#000 1px solid;line-height: 1;}
+//     .text-underdot{ display:inline-block; padding:5px 5px; margin-bottom:5px; border-bottom: #000 1px dotted;width:auto;}
+// Css;
+        
+//         $pdf = new Pdf([
+//             'mode' => Pdf::MODE_UTF8,
+//             // A4 paper format
+//             'format' => Pdf::FORMAT_A4,
+//             // portrait orientation
+//             'orientation' => Pdf::ORIENT_PORTRAIT,
+//             // stream to browser inline
+//             'destination' => Pdf::DEST_BROWSER,
+//             // your html content input
+//             'content' => $content,
+//             // format content from your own css file if needed or use the
+//             // enhanced bootstrap css built by Krajee for mPDF formatting
+//             // 'cssFile' => '@frontend/web/css/pdf.css',
+//             //'cssFile' => '@andahrm/person/views/print/print.css',
+//             // any css to be embedded if required
+//             /*'cssInline' => '.table-print {width: 100%; border-spacing: 0px;}
+//                 .table-print th, .table-print td{border-right: #000 1px solid; padding: 8px;line-height: 1.42857143;vertical-align: top;}
+//                 .table-print thead th,{border-top:#000 1px solid;border-bottom:#000 1px solid;}
+//                 .table-print th:nth-child(1), .table-print td:nth-child(1){border-left:#000 1px solid;}',*/
+//             'cssInline' => $css,
+//             // set mPDF properties on the fly
+//             'options' => ['title' => $this->getView()->title.': '.$modelPerson->fullname],
+//             // call mPDF methods on the fly
+//             'methods' => [
+//                 'SetHeader'=>false,
+//                 'SetFooter'=>false,
+//             ]
+            
+//         ]);
+//         //echo $content;
+//         return $pdf->render();
+        
+//     }
+    
+    
     public function actionPrintPosition($id)
     {
         $this->layout = 'view';
@@ -1802,6 +2291,7 @@ class DefaultController extends Controller
         
     }
     
+    
     public function actionAddPosition(){
         $models = Person::find()->all();
         $num_add = 0;
@@ -1850,238 +2340,5 @@ class DefaultController extends Controller
     }
     
     
-    public function actionCreateDevelopment1($formAction=null,$id,$modal_edoc_id=null)
-    {
-        // if(!$formAction){
-        //     $this->layout = 'view';
-        // }
-        $modelsDevelopmentPersons = [new DevelopmentPerson()];
-        $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
-        $post = Yii::$app->request->post();
-        if($post){
-            if(Yii::$app->request->isAjax){
-                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            }
-           
-            $success = false;
-            $result=null;
-            $errorMassages = [];
-            
-            // print_r($post);
-            // exit();
-            if(Model::loadMultiple($modelsDevelopmentPersons,$post)){
-               
-                //$edoc = $post("Edoc");
-                 foreach ($modelsDevelopmentPersons as $key => $modelDevelopment ) {
-                     if(count($modelDevelopment->dev_activity_char_id)>0){
-                         foreach ($modelDevelopment->dev_activity_char_id as $activity_char_id ) {
-                        //Try to save the models. Validation is not needed as it's already been done.
-                        //echo $modelSinsignia->year;
-                        $find=[
-                            'user_id' => $id,
-                            'dev_project_id' => $modelDevelopment->dev_project_id,
-                            'dev_activity_char_id' => $activity_char_id,
-                            ];
-                            // echo "<pre>";
-                            //  print_r($find);
-                            //  print_r($modelDevelopment);
-                            // exit();
-                
-                        
-                                
-                            if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
-                                 $modelDevelopmentPerson->attributes = $find;
-                                  $modelDevelopmentPerson->start = $modelDevelopment->start;
-                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
-                                 
-                                 if(!$modelDevelopmentPerson->save()){
-                                    $result = $modelDevelopmentPerson->attributes;
-                                    $errorMassages[] = $modelDevelopmentPerson->getErrors();
-                                }
-                            }else{
-                                $modelDevelopmentPerson = new DevelopmentPerson();
-                                $modelDevelopmentPerson->attributes = $find;
-                                 $modelDevelopmentPerson->start = $modelDevelopment->start;
-                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
-                                if(!$modelDevelopmentPerson->save()){
-                                    $result = $modelDevelopmentPerson->attributes;
-                                    $errorMassages[] = $modelDevelopmentPerson->getErrors();
-                                }
-                            }
-                         }
-                           
-                    }else{
-                        $find=[
-                            'user_id' => $id,
-                            'dev_project_id' => $modelDevelopment->dev_project_id,
-                        ];
-                        
-                        if($modelDevelopmentPerson = DevelopmentPerson::find()->where($find)->one()){
-                             $modelDevelopmentPerson->attributes = $find;
-                              $modelDevelopmentPerson->start = $modelDevelopment->start;
-                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
-                             if(!$modelDevelopmentPerson->save()){
-                                $result = $modelDevelopmentPerson->attributes;
-                                $errorMassages[] = $modelDevelopmentPerson->getErrors();
-                            }
-                        }else{
-                            $modelDevelopmentPerson = new DevelopmentPerson();
-                            $modelDevelopmentPerson->attributes = $find;
-                             $modelDevelopmentPerson->start = $modelDevelopment->start;
-                                 $modelDevelopmentPerson->end = $modelDevelopment->end;
-                            if(!$modelDevelopmentPerson->save()){
-                                $result = $modelDevelopmentPerson->attributes;
-                                $errorMassages[] = $modelDevelopmentPerson->getErrors();
-                            }
-                        }
-                    }
-                }
-                    
-                
-                if($errorMassages){
-                    print_r($errorMassages);
-                    exit();
-                }
-            }
-            
-            if(Yii::$app->request->isAjax){
-                return [
-                    'success' => $success,
-                    'result' => $result,
-                    'errorMassages' => $errorMassages,
-                    ];
-            }else{
-                Yii::$app->getSession()->setFlash('saved',[
-                        'type' => 'success',
-                        'msg' => Yii::t('andahrm', 'Save operation completed.')
-                    ]);
-                return $this->redirect(['view-development','id'=>$id]);
-            }
-            }
-        
-        
-        $options = [
-                'model' => $this->findModel($id),
-                'models' => $modelsDevelopmentPersons,
-                'modelsEdoc' => $modelsEdoc,
-                'formAction' => $formAction,
-                'modal_edoc_id' => $modal_edoc_id
-            ];
-       
-        if($formAction){
-            return $this->renderPartial('_form/_development', $options);
-        }else{
-            return $this->render('_form/_development', $options);
-        }
-    }
-    
-    public function actionCreateInsignia1($formAction=null,$id,$modal_edoc_id=null)
-    {
-        // if(!$formAction){
-        //     $this->layout = 'view';
-        // }
-        $modelsInsigniaPerson = [new InsigniaPerson(['user_id'=>$id])];
-        $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
-        $post = Yii::$app->request->post();
-        if($post){
-            if(Yii::$app->request->isAjax){
-                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            }
-           
-            $success = false;
-            $result=null;
-            $errorMassages = [];
-            
-            // print_r($post);
-            // exit();
-            if(Model::loadMultiple($modelsInsigniaPerson,$post)){
-                Model::loadMultiple($modelsEdoc,$post);
-                //$edoc = $post("Edoc");
-                 foreach ($modelsInsigniaPerson as $key => $modelSinsignia ) {
-                    //Try to save the models. Validation is not needed as it's already been done.
-                    //echo $modelSinsignia->year;
-                    @list($d,$m,$year) = @explode('/',$modelSinsignia->year);
-                    $find=[
-                        'person_type_id' => $modelSinsignia->person_type_id,
-                        'insignia_type_id' => $modelSinsignia->insignia_type_id,
-                        'gender' => $modelSinsignia->gender,
-                        'year' => ($year-543),
-                        ];
-            //             echo "<pre>";
-            //              print_r($find);
-            //              print_r($modelsInsigniaPerson);
-            // exit();
-            
-                    $modelSinsignia->last_adjust_date = $modelSinsignia->year;
-                    if($modelSinsignia->edoc_id == null){
-                            $modelsEdoc[$key]->save();
-                            $modelSinsignia->edoc_id = $modelsEdoc[$key]->id;
-                            //exit();
-                    }
-                    //echo $modelSinsignia->edoc_id;
-                    if($modelSinsignia->edoc_id){
-                        if($modelRequest = InsigniaRequest::find()->where($find)->one()){
-                             $modelRequest->attributes = $find;
-                             $modelRequest->save(false);
-                            $modelSinsignia->insignia_request_id = $modelRequest->id;
-                        }else{
-                            $modelRequest = new InsigniaRequest();
-                            $modelRequest->attributes = $find;
-                            $modelRequest->save(false);
-                            $modelSinsignia->insignia_request_id = $modelRequest->id;
-                        }
-                            $modelSinsignia->attributes = $find;
-                        
-                        
-                            if(!$modelSinsignia->getExists()){
-                                if($modelSinsignia->save()){
-                                     $success = true;
-                                    //  print_r($find);
-                                    //  exit();
-                                }else{
-                                     $result = $modelSinsignia->attributes;
-                                     $errorMassages[] = $modelSinsignia->getErrors();
-                                     
-                                }
-                            }
-                    }
-                    
-                    
-                }
-                if($errorMassages){
-                     print_r($errorMassages);
-                    exit();
-                }
-            }
-            
-            if(Yii::$app->request->isAjax){
-                return [
-                    'success' => $success,
-                    'result' => $result,
-                    'errorMassages' => $errorMassages
-                    ];
-            }else{
-                Yii::$app->getSession()->setFlash('saved',[
-                        'type' => 'success',
-                        'msg' => Yii::t('andahrm', 'Save operation completed.')
-                    ]);
-                return $this->redirect(['view-prestige','id'=>$id]);
-            }
-        }
-        
-        $options = [
-                'model' => $this->findModel($id),
-                'models' => $modelsInsigniaPerson,
-                'modelsEdoc' => $modelsEdoc,
-                'formAction' => $formAction,
-                'modal_edoc_id' => $modal_edoc_id
-            ];
-       
-        if($formAction){
-            return $this->renderPartial('_form/_insignia', $options);
-        }else{
-            return $this->render('_form/_insignia', $options);
-        }
-    }
 
 }

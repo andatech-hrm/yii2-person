@@ -4,10 +4,10 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use kartik\export\ExportMenu;
 use yii\widgets\Pjax;
-
+use yii\bootstrap\Modal;
+####
 use andahrm\insignia\models\InsigniaRequest;
 use andahrm\insignia\models\InsigniaType;
-
 use andahrm\structure\models\PersonType;
 use andahrm\structure\models\FiscalYear;
 /* @var $this yii\web\View */
@@ -19,6 +19,18 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'),
 $this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
 //$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
 $this->params['breadcrumbs'][] = $this->title;
+
+
+/*
+$modals['position'] = Modal::begin([
+    'header' => Yii::t('andahrm/structure', 'Create Position'),
+    'size' => Modal::SIZE_LARGE
+]);
+// echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
+echo Yii::$app->runAction('/structure/position/create-ajax', ['formAction' => Url::to(['/structure/position/create-ajax'])]);
+// echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
+            
+Modal::end();*/
 ?>
 <div class="insignia-request-index">
     
