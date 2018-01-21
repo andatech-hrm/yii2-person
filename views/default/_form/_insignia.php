@@ -227,21 +227,16 @@ function initSelect2DropStyle(id, kvClose, ev){ initS2Open(id, kvClose, ev); }",
 
 $listLabel = Yii::t('andahrm', 'List');
 $js[] = <<< JS
-       bindBtnAddEdoc();
-jQuery(".positions_dynamicform_wrapper").on('afterInsert', function(e, item) {
-    
-         
-    $(".positions_dynamicform_wrapper .panel-title-positions").each(function(index) {
+bindBtnAddEdoc();
+jQuery(".insignias_dynamicform_wrapper").on('afterInsert', function(e, item) {  
+    $(".insignias_dynamicform_wrapper .panel-title-positions").each(function(index) {
         jQuery(this).html("{$listLabel}: " + (index + 1));
-    });
-    
-    
-    bindBtnAddEdoc();
-    
+    });    
+    bindBtnAddEdoc();    
 });
 
-jQuery(".positions_dynamicform_wrapper").on("afterDelete", function(e) {
-    jQuery(".positions_dynamicform_wrapper .panel-title-positions").each(function(index) {
+jQuery(".insignias_dynamicform_wrapper").on("afterDelete", function(e) {
+    jQuery(".insignias_dynamicform_wrapper .panel-title-positions").each(function(index) {
         jQuery(this).html("{$listLabel}: " + (index + 1));
     });
     bindBtnAddEdoc();
@@ -250,12 +245,12 @@ jQuery(".positions_dynamicform_wrapper").on("afterDelete", function(e) {
 
 var input_edoc = '';
 function bindBtnAddEdoc(){
-    $(".positions_dynamicform_wrapper .btn-create-edoc").each(function(index) {
+    $(".insignias_dynamicform_wrapper .btn-create-edoc").each(function(index) {
         $(this).unbind("click");
         $(this).bind("click",function(){
             $(this).attr('data-key',index);
             input_edoc = $(this).attr('data-key');
-            alert(input_edoc);
+            //alert(input_edoc);
         });
     });        
 }
