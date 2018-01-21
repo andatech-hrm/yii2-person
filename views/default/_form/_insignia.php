@@ -33,7 +33,7 @@ $modals['edoc'] = Modal::begin([
             'size' => Modal::SIZE_LARGE
         ]);
 // echo $this->render('@andahrm/edoc/views/default/_form', ['model' => new \andahrm\edoc\models\Edoc(), ]);
-//echo Yii::$app->runAction('/edoc/insignia/create-ajax', ['formAction' => Url::to(['/edoc/default/create-ajax'])]);
+echo Yii::$app->runAction('/edoc/insignia/create-ajax', ['formAction' => Url::to(['/edoc/insignia/create-ajax'])]);
 // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
 Modal::end();
 ?>
@@ -66,7 +66,7 @@ $form = ActiveForm::begin($formOptions);
             //'certificate_offer_name',
             'insignia_type_id',
             'last_position_id',
-            'last_salary',
+            //'last_salary',
             'edoc_id',
         ],
     ]);
@@ -108,10 +108,13 @@ $form = ActiveForm::begin($formOptions);
                         )->hint(false);
                         ?>
 
-    <?=
-    $form->field($model, "[{$index}]last_salary", [
+    <?php
+    /*
+    echo  $form->field($model, "[{$index}]last_salary", [
         'options' => ['class' => 'form-group  col-xs-3 col-sm-3'],
     ])->textInput(['type' => 'number', 'min' => 0])
+     * 
+     */
     ?>
 
 
@@ -124,13 +127,16 @@ $form = ActiveForm::begin($formOptions);
                           //'id'=>'ddl-person_type'
                           ]) */ ?>
 
-                        <?=
+                        <?php
+                        /*
                                 $form->field($model, "[{$index}]year", ['options' => ['class' => 'form-group col-xs-3 col-sm-3 adjust_date']])
                                 ->widget(DatePicker::classname(), [
                                     'options' => [
                                         'daysOfWeekDisabled' => [0, 6],
                                     ],
                         ]);
+                         * 
+                         */
                         ?>
 
                         <?php /* =$form->field($model,"[{$index}]gender",[
@@ -144,11 +150,7 @@ $form = ActiveForm::begin($formOptions);
     ])->dropDownList(InsigniaType::getList())
     ?>
 
-                    </div>
-
-
-                    <div class="row">
-
+                   
 
                         
 
@@ -179,7 +181,7 @@ HTML;
 ?>
                          <?=$form->field($model, "[{$index}]edoc_id",[
                              'inputTemplate' => $edocInputTemplate,
-                             'options' => ['class' => 'form-group  col-xs-9 col-sm-9'
+                             'options' => ['class' => 'form-group  col-xs-4 col-sm-4'
                              ]])
                          ->widget(Select2::className(),
                          [
@@ -191,7 +193,7 @@ HTML;
                                         'allowClear'=>true,
                                         'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
                                         'ajax'=>[
-                                            'url'=>Url::to(['/edoc/default/get-list']),
+                                            'url'=>Url::to(['/edoc/insignia/get-list']),
                                             'dataType'=>'json',//รูปแบบการอ่านคือ json
                                             'data'=>new JsExpression('function(params) { return {q:params.term};}')
                                          ],
@@ -225,28 +227,11 @@ function initSelect2DropStyle(id, kvClose, ev){ initS2Open(id, kvClose, ev); }",
 
 $listLabel = Yii::t('andahrm', 'List');
 $js[] = <<< JS
-//bindBtnAddEdoc();
-        /*
-jQuery(".insignias_dynamicform_wrapper").on('afterInsert', function(e, item) {
+       bindBtnAddEdoc();
+jQuery(".positions_dynamicform_wrapper").on('afterInsert', function(e, item) {
     
-    
-    $( ".adjust_date" ).each(function() {
-           $(this).find('input').datepicker({
-               "language":"th-th",
-               "autoclose":true,
-               "daysOfWeekDisabled":[0,6],
-            });
-      });   
-      
-      $( ".date_code" ).each(function() {
-           $(this).find('input').datepicker({
-               "language":"th-th",
-               "autoclose":true,
-               "daysOfWeekDisabled":[0,6],
-            });
-      }); 
-      
-    $(".insignias_dynamicform_wrapper .panel-title-insignias").each(function(index) {
+         
+    $(".positions_dynamicform_wrapper .panel-title-positions").each(function(index) {
         jQuery(this).html("{$listLabel}: " + (index + 1));
     });
     
@@ -255,77 +240,74 @@ jQuery(".insignias_dynamicform_wrapper").on('afterInsert', function(e, item) {
     
 });
 
-jQuery(".insignias_dynamicform_wrapper").on("afterDelete", function(e) {
-    jQuery(".insignias_dynamicform_wrapper .panel-title-insignias").each(function(index) {
+jQuery(".positions_dynamicform_wrapper").on("afterDelete", function(e) {
+    jQuery(".positions_dynamicform_wrapper .panel-title-positions").each(function(index) {
         jQuery(this).html("{$listLabel}: " + (index + 1));
     });
+    bindBtnAddEdoc();
 });
-        */
 
 
-//function bindBtnAddEdoc(){
-//    $(".insignias_dynamicform_wrapper .new_edoc").each(function(index) {
-//        $(this).attr('data-key',index);
-//        //var key = index;
-//        var area = $(".insignias_dynamicform_wrapper .new_edoc_area:eq("+index+")").attr('data-key',index);
-//        
-//        
-//        $(this).unbind('click');
-//        $(this).bind('click',function(){
-//            if(!$(this).is('.shown')){
-//                $(this).find("i").removeClass('fa-plus');
-//                $(this).find("i").addClass('fa-minus');
-//                $(this).addClass('shown');
-//                $(area).find('input').attr('disabled',false);
-//                $(area).find("#edoc-"+index+"-file").attr('disabled',false);
-//                $(area).find("#edoc-"+index+"-file").fileinput('refresh');
-//                $(area).show();
-//            }else{
-//                 $(this).removeClass('shown');
-//                 $(this).find("i").addClass('fa-plus');
-//                 $(this).find("i").removeClass('fa-minus');
-//                 $(area).find('input').attr('disabled',true);
-//                $(area).find("#edoc-"+index+"-file").attr('disabled',true);
-//                $(area).find("#edoc-"+index+"-file").fileinput('refresh');
-//                $(area).hide();
-//            }
-//        });
-//    });
-//}
+var input_edoc = '';
+function bindBtnAddEdoc(){
+    $(".positions_dynamicform_wrapper .btn-create-edoc").each(function(index) {
+        $(this).unbind("click");
+        $(this).bind("click",function(){
+            $(this).attr('data-key',index);
+            input_edoc = $(this).attr('data-key');
+            alert(input_edoc);
+        });
+    });        
+}
 JS;
-
 $this->registerJs(implode("\n", $js), $this::POS_END);
 
 
 
+$jsHead[] = <<< JS
+function callbackEdoc(result,form)
+{   
+    $("#insigniaperson-"+input_edoc+"-edoc_id").append($('<option>', {
+        value: result.id,
+        text: result.code + ' ' + result.date_code + ' ' + result.title
+    }));
+    $("#insigniaperson-"+input_edoc+"-edoc_id").val(result.id).trigger('change.select2');
+    
+    $("#{$modals['edoc']->id}").modal('hide');
+    $(form).trigger("reset");
+}
+JS;
+
+$this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);
+
 ///Surakit
 if ($formAction !== null) {
-//    $js[] = <<< JS
-//$(document).on('submit', '#{$form->id}', function(e){
-//  e.preventDefault();
-//  var form = $(this);
-//  var formData = new FormData(form[0]);
-//  // alert(form.serialize());
-//  
-//  $.ajax({
-//    url: form.attr('action'),
-//    type : 'POST',
-//    data: formData,
-//    contentType:false,
-//    cache: false,
-//    processData:false,
-//    dataType: "json",
-//    success: function(data) {
-//      if(data.success){
-//        callbackPosition(data.result);
-//      }else{
-//        alert('Fail');
-//      }
-//    }
-//  });
-//});
-//JS;
-//
-//    $this->registerJs(implode("\n", $js));
+    $js[] = <<< JS
+$(document).on('submit', '#{$form->id}', function(e){
+  e.preventDefault();
+  var form = $(this);
+  var formData = new FormData(form[0]);
+  // alert(form.serialize());
+  
+  $.ajax({
+    url: form.attr('action'),
+    type : 'POST',
+    data: formData,
+    contentType:false,
+    cache: false,
+    processData:false,
+    dataType: "json",
+    success: function(data) {
+      if(data.success){
+        callbackPosition(data.result);
+      }else{
+        alert('Fail');
+      }
+    }
+  });
+});
+JS;
+
+    $this->registerJs(implode("\n", $js));
 }
 ?>
