@@ -60,7 +60,7 @@ $form = ActiveForm::begin($formOptions);
         'formId' => $form->id,
         'formFields' => [
             //'user_id',
-            //'person_type_id',
+            'person_type_id',
             'year',
             //'gender',
             //'certificate_offer_name',
@@ -150,7 +150,42 @@ $form = ActiveForm::begin($formOptions);
                     <div class="row">
 
 
-                        
+                        <?php /*
+                          $toPositionCreate = Url::to(['/structure/position/create']);
+                          $positionInputTemplate = <<< HTML
+                          <div class="input-group">
+                          {input}
+                          <span class="input-group-addon btn btn-success" data-key="{$index}">
+                          <a href="{$toPositionCreate}" target="_blank"><i class="fa fa-plus"></i></a>
+                          </span>
+                          </div>
+                          HTML;
+                          ?>
+
+                          <?=$form->field($model, "[{$index}]position_id",[
+                          'inputTemplate' => $positionInputTemplate,
+                          'options' => ['class' => 'form-group  col-xs-3 col-sm-3']
+                          ])
+                          ->widget(Select2::classname(),
+                          [
+                          'data' => Position::getList(),
+                          'options' => ['placeholder' => 'Search for a position ...'],
+                          'pluginOptions' => [
+                          //'tags' => true,
+                          //'tokenSeparators' => [',', ' '],
+                          'allowClear'=>true,
+                          'minimumInputLength'=>2,//ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                          'ajax'=>[
+                          'url'=>Url::to(['/structure/position/position-list']),
+                          'dataType'=>'json',//รูปแบบการอ่านคือ json
+                          'data'=>new JsExpression('function(params) { return {q:params.term};}')
+                          ],
+                          'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                          'templateResult' => new JsExpression('function(position) { return position.text; }'),
+                          'templateSelection' => new JsExpression('function (position) { return position.text; }'),
+                          ],
+                          ]
+                          )->hint(false); */ ?>
 
 
                         <?php
@@ -300,32 +335,32 @@ $this->registerJs(implode("\n", $js), $this::POS_END);
 
 ///Surakit
 if ($formAction !== null) {
-//    $js[] = <<< JS
-//$(document).on('submit', '#{$form->id}', function(e){
-//  e.preventDefault();
-//  var form = $(this);
-//  var formData = new FormData(form[0]);
-//  // alert(form.serialize());
-//  
-//  $.ajax({
-//    url: form.attr('action'),
-//    type : 'POST',
-//    data: formData,
-//    contentType:false,
-//    cache: false,
-//    processData:false,
-//    dataType: "json",
-//    success: function(data) {
-//      if(data.success){
-//        callbackPosition(data.result);
-//      }else{
-//        alert('Fail');
-//      }
-//    }
-//  });
-//});
-//JS;
-//
-//    $this->registerJs(implode("\n", $js));
+    $js[] = <<< JS
+$(document).on('submit', '#{$form->id}', function(e){
+  e.preventDefault();
+  var form = $(this);
+  var formData = new FormData(form[0]);
+  // alert(form.serialize());
+  
+  $.ajax({
+    url: form.attr('action'),
+    type : 'POST',
+    data: formData,
+    contentType:false,
+    cache: false,
+    processData:false,
+    dataType: "json",
+    success: function(data) {
+      if(data.success){
+        callbackPosition(data.result);
+      }else{
+        alert('Fail');
+      }
+    }
+  });
+});
+JS;
+
+    $this->registerJs(implode("\n", $js));
 }
 ?>

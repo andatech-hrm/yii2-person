@@ -21,6 +21,7 @@ class CreateInsigniaAction extends Action{
         // if(!$formAction){
         //     $this->layout = 'view';
         // }
+      
         $model = $this->controller->findModel($id);
         $modelsInsigniaPerson = [new InsigniaPerson(['user_id'=>$id])];
         $modelsEdoc = [new Edoc(['scenario'=>'insert'])];
