@@ -41,7 +41,7 @@ $modals['position'] = Modal::begin([
 echo Yii::$app->runAction('/structure/position/create-ajax', ['formAction' => Url::to(['/structure/position/create-ajax'])]);
 // echo '<iframe src="" frameborder="0" style="width:100%; height: 100%;" id="iframe_edoc_create"></iframe>';
             
-Modal::end
+Modal::end();
 
 $modals['edoc'] = Modal::begin([
     'header' => Yii::t('andahrm/structure', 'Create Position'),

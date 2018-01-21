@@ -74,6 +74,7 @@ Modal::end();
             'daysOfWeekDisabled' => [0, 6],
           ]
         ]);
+          ?>
 
          <?php echo $form->field($model,'title',[
             'horizontalCssClasses' => [
