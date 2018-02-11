@@ -110,6 +110,9 @@ class DefaultController extends Controller
                 ],
                 'create-insignia' => [
                     'class' => 'andahrm\person\controllers\defaultActions\CreateInsigniaAction',
+                ],
+                'delete-insignia' => [
+                    'class' => 'andahrm\person\controllers\defaultActions\DeleteInsigniaAction',
                 ]
             ];
     }

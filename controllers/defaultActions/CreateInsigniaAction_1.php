@@ -24,7 +24,7 @@ class CreateInsigniaAction extends Action {
 
         $model = $this->controller->findModel($id);
         $modelsInsigniaPerson = [new InsigniaPerson(['user_id' => $id])];
-        //$modelsEdoc = [new Edoc(['scenario' => 'insert'])];
+        $modelsEdoc = [new Edoc(['scenario' => 'insert'])];
         $post = Yii::$app->request->post();
         if ($post) {
             if (Yii::$app->request->isAjax) {
@@ -38,24 +38,24 @@ class CreateInsigniaAction extends Action {
 //             print_r($post);
 //             exit();
             if (Model::loadMultiple($modelsInsigniaPerson, $post)) {
-                //Model::loadMultiple($modelsEdoc, $post);
+                Model::loadMultiple($modelsEdoc, $post);
                 //$edoc = $post("Edoc");
                 foreach ($modelsInsigniaPerson as $key => $modelSinsignia) {
                     //Try to save the models. Validation is not needed as it's already been done.
                     //echo $modelSinsignia->year;
-                    //$modelSinsignia->person_type_id = Position::find()->where(['id' => $modelSinsignia->last_position_id])->select('person_type_id')->scalar();
-                    //$modelSinsignia->gender = $model->gender;
+                    $modelSinsignia->person_type_id = Position::find()->where(['id' => $modelSinsignia->last_position_id])->select('person_type_id')->scalar();
+                    $modelSinsignia->gender = $model->gender;
 
 
-                    //$modelEdoc = Edoc::findOne(['id' => $modelSinsignia->edoc_id]);
-                    //$modelSinsignia->year = Yii::$app->formatter->asDate($modelEdoc->date_code, 'php:d/m/Y');
-                    //@list($d, $m, $year) = @explode('/', $modelSinsignia->year);
+                    $modelEdoc = Edoc::findOne(['id' => $modelSinsignia->edoc_id]);
+                    $modelSinsignia->year = Yii::$app->formatter->asDate($modelEdoc->date_code, 'php:d/m/Y');
+                    @list($d, $m, $year) = @explode('/', $modelSinsignia->year);
                     $find = [
 //                        'person_type_id' => $modelSinsignia->person_type_id,
 //                        'insignia_type_id' => $modelSinsignia->insignia_type_id,
 //                        'gender' => $modelSinsignia->gender,
 //                        'year' => ($year-543),
-                        'edoc_insignia_id' => $modelSinsignia->edoc_insignia_id
+                        'edoc_id' => $modelSinsignia->edoc_id
                     ];
 //                                 echo "<pre>";
 //                                  print_r($find);
@@ -64,7 +64,7 @@ class CreateInsigniaAction extends Action {
 
 
 
-                    //$modelSinsignia->last_adjust_date = $modelSinsignia->year;
+                    $modelSinsignia->last_adjust_date = $modelSinsignia->year;
 //                    if($modelSinsignia->edoc_id == null){
 //                            $modelsEdoc[$key]->save();
 //                            $modelSinsignia->edoc_id = $modelsEdoc[$key]->id;
@@ -73,27 +73,27 @@ class CreateInsigniaAction extends Action {
                     //echo $modelSinsignia->edoc_id;
 //                    print_r($find);
 //                    exit();
-                    //if ($modelSinsignia->edoc_id) {
+                    if ($modelSinsignia->edoc_id) {
 
-//                        if ($modelRequest = InsigniaRequest::find()->where($find)->one()) {
-////                             $modelRequest->attributes = $attributes;
-////                             $modelRequest->save(false);
-//                            $modelSinsignia->insignia_request_id = $modelRequest->id;
-//                        } else {
-//                            $modelRequest = new InsigniaRequest();
-//                            $attributes = [
-//                                'person_type_id' => $modelSinsignia->person_type_id,
-//                                'insignia_type_id' => $modelSinsignia->insignia_type_id,
-//                                'gender' => $modelSinsignia->gender,
-//                                'year' => ($year - 543),
-//                                'edoc_id' => $modelSinsignia->edoc_id
-//                            ];
-//                            $modelRequest->attributes = $attributes;
-//                            print_r($attributes);
-//                            exit();
-//                            $modelRequest->save(false);
-//                            $modelSinsignia->insignia_request_id = $modelRequest->id;
-//                        }
+                        if ($modelRequest = InsigniaRequest::find()->where($find)->one()) {
+//                             $modelRequest->attributes = $attributes;
+//                             $modelRequest->save(false);
+                            $modelSinsignia->insignia_request_id = $modelRequest->id;
+                        } else {
+                            $modelRequest = new InsigniaRequest();
+                            $attributes = [
+                                'person_type_id' => $modelSinsignia->person_type_id,
+                                'insignia_type_id' => $modelSinsignia->insignia_type_id,
+                                'gender' => $modelSinsignia->gender,
+                                'year' => ($year - 543),
+                                'edoc_id' => $modelSinsignia->edoc_id
+                            ];
+                            $modelRequest->attributes = $attributes;
+                            print_r($attributes);
+                            exit();
+                            $modelRequest->save(false);
+                            $modelSinsignia->insignia_request_id = $modelRequest->id;
+                        }
                         $modelSinsignia->attributes = $find;
 
 
@@ -107,7 +107,7 @@ class CreateInsigniaAction extends Action {
                                 $errorMassages[] = $modelSinsignia->getErrors();
                             }
                         }
-                    //}
+                    }
                 }
                 if ($errorMassages) {
                     print_r($errorMassages);

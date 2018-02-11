@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\grid\GridView;
 use kartik\export\ExportMenu;
 use yii\widgets\Pjax;
@@ -38,10 +39,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
     $columns = [
         'year' => [
-            'attribute' => 'insigniaRequest.year',
+            'attribute' => 'yearly',
             'filter' => FiscalYear::getList(),
             'value' => function($model) {
-                return $model->insigniaRequest->yearTh;
+                return $model->yearTh;
             }
         ],
         'insignia_type_id' => [
@@ -58,12 +59,12 @@ $this->params['breadcrumbs'][] = $this->title;
 //            }
 //        ],
         'edoc_id' => [
-            'attribute' => 'insigniaRequest.edoc_id',
-            'format'=>'html',
+            'attribute' => 'edoc_insignia_id',
+            'format' => 'html',
             'value' => function($model) {
-            $edoc = $model->insigniaRequest->edoc_id?$model->insigniaRequest->edoc:null;
-            $insignia = $edoc->insignia?$edoc->insignia:null;
-                return $insignia ?  $edoc->codeDateTitleFileLink : null;
+                $edoc = $model->edoc_insignia_id ? $model->edocInsignia : null;
+                //$insignia = $edoc->insignia?$edoc->insignia:null;
+                return $edoc ? $edoc->title : null;
                 //return $edoc->insignia;
             }
         ]
@@ -75,7 +76,32 @@ $this->params['breadcrumbs'][] = $this->title;
         //$columns['user_id'], 
         $columns['insignia_type_id'],
         $columns['edoc_id'],
-            ['class' => '\kartik\grid\ActionColumn']
+            [
+            'class' => '\kartik\grid\ActionColumn',
+            'template' => "{delete}",
+            'buttons' => [
+                'delete' => function ($url, $model, $key) {
+                    $options = [
+                        'title' => Yii::t('andahrm', 'Delete'),
+                        'aria-label' => Yii::t('andahrm', 'Delete'),
+                        'class' => 'btnDelete',
+                        'data' => [
+                            'confirm' => Yii::t('andahrm', 'Are you sure you want to delete this item?'),
+                            'method' => 'post',
+                        ],
+                        'data-pjax' => 0,
+                    ];
+
+
+                    $url = Url::toRoute(['delete-insignia',
+                                'user_id' => $model->user_id,
+                                'insignia_type_id' => $model->insignia_type_id,
+                    ]);
+
+                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options);
+                }
+            ]
+        ]
     ];
 
     $fullExportMenu = ExportMenu::widget([
