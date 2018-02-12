@@ -49,7 +49,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'insignia_type_id',
             'filter' => InsigniaType::getList(),
             'format' => 'html',
-            'value' => 'insigniaType.titleIcon'
+            'value' => 'insigniaType.titleIcon',
+            'noWrap' => true,
         ],
 //        'status' => [
 //            'attribute' => 'insigniaRequest.status',
@@ -64,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function($model) {
                 $edoc = $model->edoc_insignia_id ? $model->edocInsignia : null;
                 //$insignia = $edoc->insignia?$edoc->insignia:null;
-                return $edoc ? $edoc->title : null;
+                return $edoc ? Html::a($edoc->title, ['/edoc/insignia/view', 'id' => $model->edoc_insignia_id], ['data-pjax' => 0]) : null;
                 //return $edoc->insignia;
             }
         ]

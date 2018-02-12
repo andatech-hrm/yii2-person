@@ -22,6 +22,7 @@ use andahrm\positionSalary\models\PersonPositionSalaryOld; #mad
 use andahrm\leave\models\LeaveRelatedPerson; #mad
 use andahrm\development\models\DevelopmentPerson; #mad
 use andahrm\person\PersonApi;
+use andahrm\insignia\models\InsigniaPerson;
 
 /**
  * This is the model class for table "person".
@@ -556,6 +557,10 @@ class Person extends ActiveRecord
         return $this->hasMany(Defect::className(),['user_id'=>'user_id'])->orderBy(['date_defect'=>SORT_DESC]);
     }
     
+    
+    public  function getInsignia(){
+        return $this->hasMany(InsigniaPerson::className(), ['user_id'=>'user_id'])->orderBy(['yearly'=>SORT_ASC]);
+    }
     
   
 }

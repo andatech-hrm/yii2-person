@@ -149,7 +149,7 @@ $form = ActiveForm::begin($formOptions);
 
 
                         <?php
-                        $toEdocCreate = Url::to(['/edoc/default/create']);
+                        $toEdocCreate = Url::to(['/edoc/insignia/create']);
                         if ($formAction) {
                             $edocInputTemplate = <<< HTML
 <div class="input-group">
@@ -242,6 +242,7 @@ function bindBtnAddEdoc(){
         $(this).bind("click",function(){
             $(this).attr('data-key',index);
             input_edoc = $(this).attr('data-key');
+            console.log('input_edoc:'+input_edoc);
             //alert(input_edoc);
         });
     });        
@@ -255,6 +256,8 @@ $jsHead[] = <<< JS
 function callbackEdocInsignia(result,form)
 {   
     console.log(result);
+    console.log('input_edoc:'+input_edoc);
+        //insigniaperson-0-edoc_insignia_id
     $("#insigniaperson-"+input_edoc+"-edoc_insignia_id").append($('<option>', {
         value: result.id,
         text: result.title
