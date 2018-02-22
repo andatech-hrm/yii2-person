@@ -562,5 +562,9 @@ class Person extends ActiveRecord
         return $this->hasMany(InsigniaPerson::className(), ['user_id'=>'user_id'])->orderBy(['yearly'=>SORT_ASC]);
     }
     
+    
+//    public static function getList($limit = 20){
+//        return ArrayHelper::map(self::find()->limit($limit)->all(),'user_id','fullname');
+//    }
   
 }
