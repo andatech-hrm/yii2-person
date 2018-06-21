@@ -50,6 +50,7 @@ class CreateInsigniaAction extends Action {
                     //$modelEdoc = Edoc::findOne(['id' => $modelSinsignia->edoc_id]);
                     //$modelSinsignia->year = Yii::$app->formatter->asDate($modelEdoc->date_code, 'php:d/m/Y');
                     //@list($d, $m, $year) = @explode('/', $modelSinsignia->year);
+                    $modelSinsignia->year = $modelSinsignia->year-543; 
                     $find = [
 //                        'person_type_id' => $modelSinsignia->person_type_id,
 //                        'insignia_type_id' => $modelSinsignia->insignia_type_id,
