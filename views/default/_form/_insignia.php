@@ -130,7 +130,7 @@ $form = ActiveForm::begin($formOptions);
 
                         <?php
                         //echo $form->field($model, "[{$index}]yearly", ['options' => ['class' => 'form-group col-xs-3 col-sm-3 adjust_date']])->dropDownList(FiscalYear::getYearly(2000));
-                        echo $form->field($model, "[{$index}]yearly", ['options' => ['class' => 'form-group col-xs-3 col-sm-3 adjust_date']])->textInput(['type' => 'number', 'max' => (date('Y') + 544), 'min' => 2500, 'placeholder' => Yii::t('andahrm/person', 'The year BE. Ex {year}', ['year' => date('Y') + 543])])->hint(Yii::t('andahrm/person', 'The year BE. Ex {year}', ['year' => date('Y') + 543]));
+                        echo $form->field($model, "[{$index}]yearly", ['options' => ['class' => 'form-group col-xs-3 col-sm-3 adjust_date']])->textInput(['type' => 'number', 'max' => (date('Y') + 544), 'min' => 2500, 'placeholder' => Yii::t('andahrm/person', 'Buddhist Year ex.{year}', ['year' => date('Y') + 543])])->hint(Yii::t('andahrm/person', 'Buddhist Year ex.{year}', ['year' => date('Y') + 543]));
                         ?>
 
                         <?php /* =$form->field($model,"[{$index}]gender",[
