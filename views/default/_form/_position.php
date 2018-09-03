@@ -175,7 +175,8 @@ HTML;
                              ])
                             ->widget(Select2::classname(),
                                 [
-                                    'data' => Position::getListTitle(),
+                                    //'data' => Position::getListTitle(),
+                                    'data' => [],
                                     'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
                                     'pluginOptions' => [
                                         //'tags' => true,
