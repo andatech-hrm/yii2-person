@@ -146,7 +146,8 @@ HTML;
                              ])
                              ->widget(Select2::classname(),
                                 [
-                                    'data' => PositionOld::getListTitle(),
+                                    //'data' => PositionOld::getListTitle(),
+                                    'data' => [],
                                     'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
                                     'pluginOptions' => [
                                         //'tags' => true,
@@ -240,7 +241,8 @@ HTML;
                              'options' => ['class' => 'form-group col-sm-9','id'=>'edoc_id_old']])
                              ->widget(Select2::className(), [
                                  
-                                    'data' => Edoc::getList(),
+                                    //'data' => Edoc::getList(),
+                                    'data' => [],
                                     'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a edoc')],
                                     'pluginOptions' => [
                                         //'tags' => true,
