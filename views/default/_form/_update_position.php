@@ -137,7 +137,8 @@ echo $form->field($models, "edoc_id", [
         // ]
     ])->widget(Select2::className(), 
     [
-                                    'data' => Edoc::getList(),
+                                    //'data' => Edoc::getList(),
+     'data' => [],
                                     'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a edoc')],
                                     'pluginOptions' => [
                                         //'tags' => true,
