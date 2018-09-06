@@ -68,7 +68,7 @@ $columns = [
     ],
     'position_id' => [
         'attribute' => 'position_id',
-        'filter' => Position::getList(),
+        //'filter' => Position::getList(),
         'value' => 'position.code',
         'content' => function($model) {
             if ($model->formName() == 'PersonPositionSalaryOld') {
@@ -83,7 +83,7 @@ $columns = [
     ],
     'status' => [
         'attribute' => 'status',
-        'filter' => PersonPositionSalary::getItemStatus(),
+        //'filter' => PersonPositionSalary::getItemStatus(),
         'value' => 'statusLabel',
         'contentOptions' => ['class' => 'green'],
     //'group'=>true,
@@ -95,7 +95,7 @@ $columns = [
     ],
     'edoc_id' => [
         'attribute' => 'edoc_id',
-        'filter' => Edoc::getList(),
+        //'filter' => Edoc::getList(),
         'format' => 'html',
         'content' => function($model) {
             return $model->edoc->codeDateTitleFileLink;
@@ -105,7 +105,7 @@ $columns = [
     ],
     'user_id' => [
         'attribute' => 'user_id',
-        'filter' => Person::getList(),
+        //'filter' => Person::getList(),
         'format' => 'html',
         'value' => function($model) {
             return $model->user->getInfoMedia(['view', 'edoc_id' => $model->edoc_id]);
@@ -114,7 +114,7 @@ $columns = [
     ],
     'fullname' => [
         'attribute' => 'user_id',
-        'filter' => Person::getList(),
+        //'filter' => Person::getList(),
         'value' => 'user.fullname',
         'contentOptions' => ['class' => 'green'],
     ],
