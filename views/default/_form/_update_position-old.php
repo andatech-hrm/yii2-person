@@ -86,7 +86,8 @@ HTML;
              'options' => ['class' => 'form-group col-sm-6']
             ])->widget(Select2::classname(),
                                 [
-                                    'data' => PositionOld::getListTitle(),
+                                    //'data' => PositionOld::getListTitle(),
+                                    'data' => [],
                                     //'value'=>$models->position_old_id,
                                     'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
                                     'pluginOptions' => [
