@@ -152,7 +152,10 @@ class DefaultController extends Controller {
     public function actionView($id) {
         $this->layout = 'view';
 
-        $models['person'] = $this->findModel($id);
+        //$models['person'] = $this->findModel($id);
+        $models['person'] = Person::find()->where(['person.user_id' => $id])
+                ->joinWith('detail', true, "LEFT JOIN")
+                ->one();
 //         $models['user'] = $models['person']->user;
         $models['photos'] = $models['person']->photos;
         $models['detail'] = ($models['person']->detail !== null ) ? $models['person']->detail : new Detail(['user_id' => $id]);

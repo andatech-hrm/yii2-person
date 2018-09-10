@@ -10,14 +10,14 @@ use andahrm\person\models\Person;
 /**
  * PersonSearch represents the model behind the search form about `andahrm\person\models\Person`.
  */
-class PersonSearch extends Person
-{
+class PersonSearch extends Person {
+
     public $fullname;
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'tel', 'phone', 'birthday', 'fullname', 'full_address_contact'], 'safe'],
@@ -27,8 +27,7 @@ class PersonSearch extends Person
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -40,17 +39,19 @@ class PersonSearch extends Person
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Person::find();
-        //$query->joinWith(['addressContact.tambol', 'addressContact.amphur', 'addressContact.province']);
+
+        $query->joinWith('personPhoto', false, "LEFT JOIN");
+        $query->joinWith('addressContact', false, "LEFT JOIN");
+        $query->joinWith('position', false, "LEFT JOIN");
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-        
+
         $dataProvider->sort->attributes['full_address_contact'] = [
             'asc' => ['local_province.name' => SORT_ASC],
             'desc' => ['local_province.name' => SORT_DESC],
@@ -76,29 +77,35 @@ class PersonSearch extends Person
         ]);
 
         $query->andFilterWhere(['like', 'citizen_id', $this->citizen_id])
-            ->andFilterWhere(['like', 'firstname_th', $this->firstname_th])
-            ->andFilterWhere(['like', 'lastname_th', $this->lastname_th])
-            ->andFilterWhere(['like', 'firstname_en', $this->firstname_en])
-            ->andFilterWhere(['like', 'lastname_en', $this->lastname_en])
-            ->andFilterWhere(['like', 'gender', $this->gender])
-            ->andFilterWhere(['like', 'tel', $this->tel])
-            ->andFilterWhere(['like', 'phone', $this->phone]);
-        
+                ->andFilterWhere(['like', 'firstname_th', $this->firstname_th])
+                ->andFilterWhere(['like', 'lastname_th', $this->lastname_th])
+                ->andFilterWhere(['like', 'firstname_en', $this->firstname_en])
+                ->andFilterWhere(['like', 'lastname_en', $this->lastname_en])
+                ->andFilterWhere(['like', 'gender', $this->gender])
+                ->andFilterWhere(['like', 'tel', $this->tel])
+                ->andFilterWhere(['like', 'phone', $this->phone]);
+
         $query->andFilterWhere(['like', 'firstname_th', $this->fullname])
-            ->orFilterWhere(['like', 'lastname_th', $this->fullname])
-            ->orFilterWhere(['like', 'firstname_en', $this->fullname])
-            ->orFilterWhere(['like', 'lastname_en', $this->fullname]);
-            
+                ->orFilterWhere(['like', 'lastname_th', $this->fullname])
+                ->orFilterWhere(['like', 'firstname_en', $this->fullname])
+                ->orFilterWhere(['like', 'lastname_en', $this->fullname]);
+
+        if ($this->full_address_contact) {
+            $query->joinWith(['addressContact.tambol', 'addressContact.amphur', 'addressContact.province']);
+        }
         $query->andFilterWhere(['like', 'person_address.number', $this->full_address_contact])
-            ->orFilterWhere(['like', 'person_address.sub_road', $this->full_address_contact])
-            ->orFilterWhere(['like', 'person_address.road', $this->full_address_contact])
-            ->orFilterWhere(['like', 'person_address.postcode', $this->full_address_contact])
-            ->orFilterWhere(['like', 'person_address.phone', $this->full_address_contact])
-            ->orFilterWhere(['like', 'person_address.fax', $this->full_address_contact])
-            ->orFilterWhere(['like', 'local_tambol.name', $this->full_address_contact])
-            ->orFilterWhere(['like', 'local_amphur.name', $this->full_address_contact])
-            ->orFilterWhere(['like', 'local_province.name', $this->full_address_contact]);
+                ->orFilterWhere(['like', 'person_address.sub_road', $this->full_address_contact])
+                ->orFilterWhere(['like', 'person_address.road', $this->full_address_contact])
+                ->orFilterWhere(['like', 'person_address.postcode', $this->full_address_contact])
+                ->orFilterWhere(['like', 'person_address.phone', $this->full_address_contact])
+                ->orFilterWhere(['like', 'person_address.fax', $this->full_address_contact])
+                ->orFilterWhere(['like', 'local_tambol.name', $this->full_address_contact])
+                ->orFilterWhere(['like', 'local_amphur.name', $this->full_address_contact])
+                ->orFilterWhere(['like', 'local_province.name', $this->full_address_contact]);
+
+        $query->orderBy('user_id');
 
         return $dataProvider;
     }
+
 }

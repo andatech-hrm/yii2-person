@@ -355,10 +355,16 @@ class Person extends ActiveRecord
     
     public $noImg='no-pic.jpg';
     
+     public function getPersonPhoto()
+    {        
+        return $this->hasOne(Photo::className(), ['user_id'=>'user_id'])->orderBy(['person_photo.year' => SORT_DESC]);
+    }
+    
     public function getPhoto()
-    {
-        if($this->getPhotoLast()){
-            return $this->getPhotoLast();
+    {        
+        $model = $this->personPhoto;       
+        if(isset($model->image)){           
+            return $model->getUploadUrl('image_cropped');
         }else{
             return '/uploads/'.$this->noImg;
         }

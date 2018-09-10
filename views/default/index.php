@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
 use kartik\export\ExportMenu;
+
 /* @var $this yii\web\View */
 /* @var $searchModel andahrm\person\models\PersonSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -21,7 +22,9 @@ $columns = [
         'attribute' => 'contact',
         'format' => 'html',
         'value' => function($model) {
-            if ($model->addressContact === null) { return null; }
+            if ($model->addressContact === null) {
+                return null;
+            }
             $res = $model->getAddressText('contact', ['number' => true]);
             $res .= '<br />โทร. ';
             $res .= $model->addressContact->phone;
@@ -34,9 +37,9 @@ $columns = [
         'value' => function($model) {
             // if ($model->addressContact === null) { return null; }
             $res = $model->full_address_contact;
-            if($model->addressContact){
-                $res .= '<br />'.$model->addressContact->postcode.' &nbsp<i class="fa fa-phone"></i>โทร. ';
-                $res .= $model->addressContact->phone?$model->addressContact->phone:'-';
+            if ($model->addressContact) {
+                $res .= ' ' . $model->addressContact->postcode;
+                $res .= $model->addressContact->phone ? '<br/><i class="fa fa-phone"></i>โทร. ' . $model->addressContact->phone : '';
             }
             return $res;
         },
@@ -66,21 +69,20 @@ $gridColumns = [
         'attribute' => 'fullname',
         'format' => 'raw',
         'value' => function($model) {
-            $res = '<div class="media"> <div class="media-left"> ' . 
-                '<img class="media-object img-circle" src="'.$model->photo.'" style="width: 32px; height: 32px;"> </div> ' . 
-                '<div class="media-body"> ' . 
-                '<h4 class="media-heading" style="margin:0;">' . 
-                Html::a($model->fullname, ['view', 'id' => $model->user_id], ['class' => 'green', 'data-pjax' => 0]) . '</h4> ' . 
-                '<small>'.$model->positionTitle.'<small></div> </div>';
+            $res = '<div class="media"> <div class="media-left"> ' .
+                    '<img class="media-object img-circle" src="' . $model->photo . '" style="width: 32px; height: 32px;"> </div> ' .
+                    '<div class="media-body"> ' .
+                    '<h4 class="media-heading" style="margin:0;">' .
+                    Html::a($model->fullname, ['view', 'id' => $model->user_id], ['class' => 'green', 'data-pjax' => 0]) . '</h4> ' .
+                    '<small>' . $model->positionTitle . '<small></div> </div>';
             return $res;
         }
     ],
-    
     $columns['full_address_contact'],
     $columns['created_by'],
     [
         'class' => '\kartik\grid\ActionColumn',
-         'template' => '{view} {delete}',
+        'template' => '{view} {delete}',
 //         'urlCreator' => function ($action, $model, $key, $index) {
 //             $params = Yii::$app->request->getQueryParams();
 //             unset($params['id'], $params['_pjax']);
@@ -90,30 +92,31 @@ $gridColumns = [
 ];
 
 $fullExportMenu = ExportMenu::widget([
-    'dataProvider' => $dataProvider,
-    'columns' => $columns,
-    'filename' => $this->title,
-    'showConfirmAlert' => false,
-    'target' => ExportMenu::TARGET_BLANK,
-    'fontAwesome' => true,
-    'pjaxContainerId' => 'kv-pjax-container',
-    'dropdownOptions' => [
-        'label' => 'Full',
-        'class' => 'btn btn-default',
-        'itemsBefore' => [
-            '<li class="dropdown-header">Export All Data</li>',
-        ],
-    ],
-]);
+            'dataProvider' => $dataProvider,
+            'columns' => $columns,
+            'filename' => $this->title,
+            'showConfirmAlert' => false,
+            'target' => ExportMenu::TARGET_BLANK,
+            'fontAwesome' => true,
+            'pjaxContainerId' => 'kv-pjax-container',
+            'dropdownOptions' => [
+                'label' => 'Full',
+                'class' => 'btn btn-default',
+                'itemsBefore' => [
+                    '<li class="dropdown-header">Export All Data</li>',
+                ],
+            ],
+        ]);
 ?>
 <div class="person-index">
 
-    <?= GridView::widget([
+    <?=
+    GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'id' => 'data-grid',
         'tableOptions' => ['class' => 'jambo_table'],
-        'pjax'=>true,
+        'pjax' => true,
 //        'resizableColumns'=>true,
 //        'resizeStorageKey'=>Yii::$app->user->id . '-' . date("m"),
 //        'floatHeader'=>true,
@@ -133,24 +136,24 @@ $fullExportMenu = ExportMenu::widget([
 //             GridView::JSON=>['filename' => $exportFilename],
 //         ],
         'panel' => [
-            'heading'=>'<h3 class="panel-title"><i class="fa fa-th"></i> '.Html::encode($this->title).'</h3>',
+            'heading' => '<h3 class="panel-title"><i class="fa fa-th"></i> ' . Html::encode($this->title) . '</h3>',
 //             'heading' => false,
 //             'type'=>'primary',
-            'before'=> '<div class="btn-group">'.
-                Html::a('<i class="glyphicon glyphicon-plus"></i> '.Yii::t('andahrm', 'Create'), ['create'], [
-                    'class' => 'btn btn-success btn-flat',
-                    'data-pjax' => 0
-                ]) . ' '.
-                Html::a('<i class="glyphicon glyphicon-repeat"></i> '.Yii::t('andahrm', 'Reload'), '', [
-                    'class' => 'btn btn-info btn-flat btn-reload',
-                    'title' => 'Reload',
-                    'id' => 'btn-reload-grid'
-                ]) . ' '.
-                Html::a('<i class="glyphicon glyphicon-trash"></i> '.Yii::t('andahrm', 'Trash'), ['trash/index'], [
-                    'class' => 'btn btn-warning btn-flat',
-                    'data-pjax' => 0
-                ]) . ' '.
-                '</div>',
+            'before' => '<div class="btn-group">' .
+            Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('andahrm', 'Create'), ['create'], [
+                'class' => 'btn btn-success btn-flat',
+                'data-pjax' => 0
+            ]) . ' ' .
+            Html::a('<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('andahrm', 'Reload'), '', [
+                'class' => 'btn btn-info btn-flat btn-reload',
+                'title' => 'Reload',
+                'id' => 'btn-reload-grid'
+            ]) . ' ' .
+            Html::a('<i class="glyphicon glyphicon-trash"></i> ' . Yii::t('andahrm', 'Trash'), ['trash/index'], [
+                'class' => 'btn btn-warning btn-flat',
+                'data-pjax' => 0
+            ]) . ' ' .
+            '</div>',
             'after' => false,
         ],
         'toolbar' => [
@@ -158,8 +161,9 @@ $fullExportMenu = ExportMenu::widget([
             '{toggleData}',
             $fullExportMenu,
         ],
-       'columns' => $gridColumns,
-    ]); ?>
+        'columns' => $gridColumns,
+    ]);
+    ?>
 </div>
 <?php
 $js[] = "

@@ -30,23 +30,22 @@ use andahrm\datepicker\behaviors\DateBuddhistBehavior;
  * @property PersonDetail[] $personDetails0
  * @property PersonDetail[] $personDetails1
  */
-class Address extends ActiveRecord
-{
+class Address extends ActiveRecord {
+
     const TYPE_CONTACT = 1;
     const TYPE_REGISTER = 2;
     const TYPE_BIRTH_PLACE = 3;
-    
+
     public $localRegion;
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'person_address';
     }
-    
-    public function behaviors()
-    {
+
+    public function behaviors() {
         return [
             [
                 'class' => BlameableBehavior::className(),
@@ -68,8 +67,7 @@ class Address extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['tambol_id', 'amphur_id', 'province_id', 'postcode'], 'integer'],
             // [['move_in_date'], 'required'],
@@ -84,8 +82,7 @@ class Address extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('andahrm/person', 'ID'),
             'localRegion' => Yii::t('andahrm/person', 'Local Region'),
@@ -108,61 +105,55 @@ class Address extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPersonDetails()
-    {
+    public function getPersonDetails() {
         return $this->hasMany(PersonDetail::className(), ['address_register_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPersonDetails0()
-    {
+    public function getPersonDetails0() {
         return $this->hasMany(PersonDetail::className(), ['address_birth_place_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPersonDetails1()
-    {
+    public function getPersonDetails1() {
         return $this->hasMany(PersonDetail::className(), ['address_contact_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTambol()
-    {
+    public function getTambol() {
         return $this->hasOne(\andahrm\setting\models\LocalTambol::className(), ['id' => 'tambol_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAmphur()
-    {
+    public function getAmphur() {
         return $this->hasOne(\andahrm\setting\models\LocalAmphur::className(), ['id' => 'amphur_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProvince()
-    {
+    public function getProvince() {
         return $this->hasOne(\andahrm\setting\models\LocalProvince::className(), ['id' => 'province_id']);
     }
-    
-    public function getAddressText()
-    {
-        $notSet = '<span class="not-set">'.Yii::t('yii', '(not set)').'</span>';
+
+    public function getAddressText() {
+        $notSet = '<span class="not-set">' . Yii::t('yii', '(not set)') . '</span>';
         $arr[] = $this->number;
-        $arr[] = 'ซ.'.$this->sub_road;
-        $arr[] = 'ถ.'.$this->road;
-        $arr[] = ($this->tambol) ? 'ต.'.$this->tambol->name : 'ต.'.$notSet;
-        $arr[] = ($this->amphur) ? 'อ.'.$this->amphur->name : 'อ.'.$notSet;
-        $arr[] = ($this->province) ? 'จ.'.$this->province->name : 'จ.'.$notSet;
-        
+        $arr[] = $this->sub_road && $this->sub_road != '-' ? 'ซ.' . $this->sub_road : null;
+        $arr[] = $this->road && $this->road != '-' ? 'ถ.' . $this->road : null;
+        $arr[] = ($this->tambol) ? 'ต.' . $this->tambol->name : 'ต.' . $notSet;
+        $arr[] = ($this->amphur) ? 'อ.' . $this->amphur->name : 'อ.' . $notSet;
+        $arr[] = ($this->province) ? 'จ.' . $this->province->name : 'จ.' . $notSet;
+        $arr = array_filter($arr);
         return implode(" ", $arr);
     }
+
 }
