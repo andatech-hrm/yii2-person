@@ -68,7 +68,7 @@ $form = ActiveForm::begin($formOptions);
             ->widget(DatePicker::classname(), WidgetSettings::DatePicker());
     ?>
 
-<?php /* echo $form->field($models,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput(); */ ?>
+    <?php /* echo $form->field($models,'title',['options'=>['class'=>'form-group col-sm-4']])->textInput(); */ ?>
 
 
     <?php
@@ -87,8 +87,8 @@ HTML;
         'inputTemplate' => $positionInputTemplate,
         'options' => ['class' => 'form-group col-sm-6']
     ])->widget(Select2::classname(), [
-        //'data' => PositionOld::getListTitle(),
-        'data' => [],
+        'data' => PositionOld::getListTitle($models->position_old_id),
+        //'data' => [],
         //'value'=>$models->position_old_id,
         'options' => ['placeholder' => Yii::t('andahrm/person', 'Search for a position')],
         'pluginOptions' => [
@@ -130,7 +130,7 @@ HTML;
 
     <?php #echo  $form->field($models,'status',['options'=>['class'=>'form-group col-sm-2']])->dropDownList(PersonPositionSalary::getItemStatus()); ?>
 
-<?php echo $form->field($models, 'level', ['options' => ['class' => 'form-group col-sm-2']])->textInput(); ?>
+    <?php echo $form->field($models, 'level', ['options' => ['class' => 'form-group col-sm-2']])->textInput(); ?>
 
 </div>
 
@@ -155,8 +155,8 @@ HTML;
             //     'class' => 'form-group col-sm-6'
             // ]
     ])->widget(Select2::className(), WidgetSettings::Select2([
-                //'data' => Edoc::getList(),
-                'data' => [],
+                'data' => Edoc::getList($models->edoc_id),
+                    //'data' => [],
             ])
     );
     ?>
