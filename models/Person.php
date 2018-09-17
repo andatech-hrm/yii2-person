@@ -12,7 +12,6 @@ use yii\behaviors\AttributeBehavior;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use andahrm\datepicker\behaviors\DateBuddhistBehavior;
 use andahrm\setting\models\Helper;
-
 use andahrm\leave\models\LeavePermission; #mad
 use andahrm\structure\models\Position; #mad
 use andahrm\positionSalary\models\PersonContract; #mad
@@ -43,23 +42,22 @@ use andahrm\insignia\models\InsigniaPerson;
  * @property integer $updated_at
  * @property integer $updated_by
  */
-class Person extends ActiveRecord
-{
+class Person extends ActiveRecord {
+
     const GENDER_MALE = 'm';
     const GENDER_FEMAIL = 'f';
-    
+
     public $full_address_contact;
+
     //public $age;
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'person';
     }
-    
-    public function behaviors()
-    {
+
+    public function behaviors() {
         return [
             [
                 'class' => BlameableBehavior::className(),
@@ -73,21 +71,21 @@ class Person extends ActiveRecord
                     ActiveRecord::EVENT_BEFORE_VALIDATE => 'citizen_id',
                 ],
                 'value' => function ($event) {
-                    return str_replace('-','',$this->citizen_id);
+                    return str_replace('-', '', $this->citizen_id);
                 },
             ],
             'birthday' => [
                 'class' => DateBuddhistBehavior::className(),
                 'dateAttribute' => 'birthday',
             ],
-            'full_address_contact' =>[
+            'full_address_contact' => [
                 'class' => AttributeBehavior::className(),
                 'attributes' => [
                     ActiveRecord::EVENT_AFTER_FIND => 'full_address_contact',
                 ],
                 'value' => function($event) {
                     $model = $this->addressContact;
-                    return $model?$model->addressText:$model;
+                    return $model ? $model->addressText : $model;
                 },
             ],
             'softDeleteBehavior' => [
@@ -103,18 +101,16 @@ class Person extends ActiveRecord
         ];
     }
 
-    public static function find()
-    {
+    public static function find() {
         return parent::find()
-            // ->joinWith(['category cat', 'createdBy.profile prof'])
-            ->where(['deleted_at' => null]);
+                        // ->joinWith(['category cat', 'createdBy.profile prof'])
+                        ->where(['deleted_at' => null]);
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['user_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'birthday', 'citizen_id'], 'required'],
             [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
@@ -126,15 +122,13 @@ class Person extends ActiveRecord
             [['citizen_id'], 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Yii::$app->user->identityClass, 'targetAttribute' => ['user_id' => 'id']],
             [['full_address_contact', 'phone'], 'safe'],
-            
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'user_id' => Yii::t('andahrm/person', 'User ID'),
             'citizen_id' => Yii::t('andahrm/person', 'Citizen ID'),
@@ -158,7 +152,7 @@ class Person extends ActiveRecord
             'full_address_contact' => Yii::t('andahrm/person', 'full_address_contact'),
         ];
     }
-    
+
     // public function beforeSave($insert)
     // {
     //     if (parent::beforeSave($insert)) {
@@ -170,7 +164,6 @@ class Person extends ActiveRecord
     //         return false;
     //     }
     // }
-    
     // public function afterFind()
     // {
     //     if($birthday = \DateTime::createFromFormat(Helper::DB_DATE_FORMAT, $this->birthday)){
@@ -178,61 +171,54 @@ class Person extends ActiveRecord
     //         //$this->birthday = $birthday->format(Helper::UI_DATE_FORMAT);
     //     }
     // }
-    
-    public function getUser()
-    {
+
+    public function getUser() {
         return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'user_id']);
     }
-    
-    public function getCreatedBy()
-    {
+
+    public function getCreatedBy() {
         //return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'created_by']);
         return PersonApi::instance($this->created_by);
     }
-    
-    public function getUpdatedBy()
-    {
+
+    public function getUpdatedBy() {
         return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'updated_by']);
     }
-    
-    public function getTitle()
-    {
+
+    public function getTitle() {
         return $this->hasOne(Title::className(), ['id' => 'title_id']);
     }
-    
-    public function getDetail()
-    {
+
+    public function getDetail() {
         return $this->hasOne(Detail::className(), ['user_id' => 'user_id']);
     }
-    
-    public function getAddressContact()
-    {
+
+    public function getAddressContact() {
         return $this->hasOne(AddressContact::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_CONTACT]);
     }
-    
-    public function calAge($birthday){
+
+    public function calAge($birthday) {
         $bday = new \DateTime($birthday);
         $today = new \DateTime('00:00:00'); //- use this for the current date
         //$today = new DateTime(date('Y-m-d')); // for testing purposes
-        return  $today->diff($bday);
+        return $today->diff($bday);
     }
-    
-    public function getAge(){
-        return $this->birthday?$this->calAge($this->birthday)->y:null;
+
+    public function getAge() {
+        return $this->birthday ? $this->calAge($this->birthday)->y : null;
     }
-    
-    public function getAgeLabel(){
-        if($this->birthday){
+
+    public function getAgeLabel() {
+        if ($this->birthday) {
             $age = $this->calAge($this->birthday);
-            $str[] = $age->y.' '.Yii::t('andahrm','Year');
-            $str[] = $age->m.' '.Yii::t('andahrm','Month');
-            $str[] = $age->d.' '.Yii::t('andahrm','Day');
-            return implode(' ',$str);
+            $str[] = $age->y . ' ' . Yii::t('andahrm', 'Year');
+            $str[] = $age->m . ' ' . Yii::t('andahrm', 'Month');
+            $str[] = $age->d . ' ' . Yii::t('andahrm', 'Day');
+            return implode(' ', $str);
         }
     }
-    
-    public function getAddressText($type = Address::TYPE_CONTACT, $fields = [])
-    {
+
+    public function getAddressText($type = Address::TYPE_CONTACT, $fields = []) {
         switch ($type) {
             case Address::TYPE_BIRTH_PLACE : $address = $this->addressBirthPlace;
                 break;
@@ -241,9 +227,11 @@ class Person extends ActiveRecord
             default : $address = $this->addressContact;
                 break;
         }
-        if($address === null) { return null; }
-        
-        
+        if ($address === null) {
+            return null;
+        }
+
+
         $defaultFields = [
             'number_registration' => false,
             'number' => true,
@@ -258,319 +246,306 @@ class Person extends ActiveRecord
             'move_in_date' => false,
             'move_out_date' => false
         ];
-        
+
         $showFields = array_merge($defaultFields, $fields);
         $arr[] = ($showFields['number_registration']) ? $address->number_registration : '';
         $arr[] .= ($showFields['number']) ? $address->number : '';
-        $arr[] .= ($showFields['sub_road']) ? 'ซ.'.$address->sub_road : '';
-        $arr[] .= ($showFields['road']) ? 'ถ.'.$address->road : '';
-        $arr[] .= ($showFields['tambol']) ? 'ต.'.$address->tambol->name : '';
-        $arr[] .= ($showFields['amphur']) ? 'อ.'.$address->amphur->name : '';
-        $arr[] .= ($showFields['province']) ? 'จ.'.$address->province->name : '';
+        $arr[] .= ($showFields['sub_road']) ? 'ซ.' . $address->sub_road : '';
+        $arr[] .= ($showFields['road']) ? 'ถ.' . $address->road : '';
+        $arr[] .= ($showFields['tambol']) ? 'ต.' . $address->tambol->name : '';
+        $arr[] .= ($showFields['amphur']) ? 'อ.' . $address->amphur->name : '';
+        $arr[] .= ($showFields['province']) ? 'จ.' . $address->province->name : '';
         $arr[] .= ($showFields['postcode']) ? $address->postcode : '';
-        $arr[] .= ($showFields['phone']) ? 'โทร.'.$address->phone : '';
-        $arr[] .= ($showFields['fax']) ? 'แฟกซ์.'.$address->fax : '';
-        $arr[] .= ($showFields['move_in_date']) ? 'วันที่ย้ายเข้า '.$address->move_in_date : '';
-        $arr[] .= ($showFields['move_out_date']) ? 'วันที่ย้ายออก '.$address->move_out_date : '';
-        
+        $arr[] .= ($showFields['phone']) ? 'โทร.' . $address->phone : '';
+        $arr[] .= ($showFields['fax']) ? 'แฟกซ์.' . $address->fax : '';
+        $arr[] .= ($showFields['move_in_date']) ? 'วันที่ย้ายเข้า ' . $address->move_in_date : '';
+        $arr[] .= ($showFields['move_out_date']) ? 'วันที่ย้ายออก ' . $address->move_out_date : '';
+
         return implode(" ", $arr);
     }
-    
-    public function getAddressRegister()
-    {
+
+    public function getAddressRegister() {
         return $this->hasOne(AddressRegister::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_REGISTER]);
     }
-    
-    public function getAddressBirthPlace()
-    {
+
+    public function getAddressBirthPlace() {
         return $this->hasOne(AddressBirthPlace::className(), ['user_id' => 'user_id'])->where(['type' => Address::TYPE_BIRTH_PLACE]);
     }
-    
-    public function getPeopleFather()
-    {
+
+    public function getPeopleFather() {
         return $this->hasOne(PeopleFather::className(), ['user_id' => 'user_id'])->where(['type' => People::TYPE_FATHER]);
     }
-    
-    public function getPeopleMother()
-    {
+
+    public function getPeopleMother() {
         return $this->hasOne(PeopleMother::className(), ['user_id' => 'user_id'])->where(['type' => People::TYPE_MOTHER]);
     }
-    
-    public function getPeopleSpouse()
-    {
+
+    public function getPeopleSpouse() {
         return $this->hasOne(PeopleSpouse::className(), ['user_id' => 'user_id'])->where(['type' => People::TYPE_SPOUSE]);
     }
-    
-    public function getPeopleChilds()
-    {
+
+    public function getPeopleChilds() {
         return $this->hasMany(PeopleChild::className(), ['user_id' => 'user_id'])->andOnCondition(['type' => People::TYPE_CHILD]);
     }
-    
+
     # Education
-    
-    public function getEducations()
-    {
+
+    public function getEducations() {
         return $this->hasMany(Education::className(), ['user_id' => 'user_id']);
     }
-    
-    public function getEducation()
-    {
-        return $this->detail?(isset($this->detail->education)?$this->detail->education:null):null;
+
+    public function getEducation() {
+        return $this->detail ? (isset($this->detail->education) ? $this->detail->education : null) : null;
     }
-    
-    public function getEducationLast()
-    {
-        return $this->hasOne(Education::className(), ['user_id' => 'user_id'])->orderBy(['year_end'=>SORT_DESC]);
+
+    public function getEducationLast() {
+        return $this->hasOne(Education::className(), ['user_id' => 'user_id'])->orderBy(['year_end' => SORT_DESC]);
     }
-    
+
     ##
-    
-    public function getDevelopments()
-    {
+
+    public function getDevelopments() {
         return $this->hasMany(DevelopmentPerson::className(), ['user_id' => 'user_id']);
     }
-    
-    public function getPhotos()
-    {
+
+    public function getPhotos() {
         return $this->hasMany(Photo::className(), ['user_id' => 'user_id']);
     }
-    
-    public function getPhotoLast($original=false)
-    {
+
+    public function getPhotoLast($original = false) {
         $photoLast = Photo::find()
-            ->where(['user_id' => $this->user_id])
-            ->orderBy(['year' => SORT_DESC])
-            ->one();
-        
+                ->where(['user_id' => $this->user_id])
+                ->orderBy(['year' => SORT_DESC])
+                ->one();
+
         if ($photoLast === null) {
             return null;
         }
-        
-        if($original){
+
+        if ($original) {
             return $photoLast->getUploadUrl('image');
         }
-        
+
         return $photoLast->getUploadUrl('image_cropped');
     }
-    
-    public $noImg='no-pic.jpg';
-    
-     public function getPersonPhoto()
-    {        
-        return $this->hasOne(Photo::className(), ['user_id'=>'user_id'])->orderBy(['person_photo.year' => SORT_DESC]);
+
+    public $noImg = 'no-pic.jpg';
+
+    public function getPersonPhoto() {
+        return $this->hasOne(Photo::className(), ['user_id' => 'user_id'])->orderBy(['person_photo.year' => SORT_DESC]);
     }
-    
-    public function getPhoto()
-    {        
-        $model = $this->personPhoto;       
-        if(isset($model->image)){           
+
+    public function getPhoto() {
+        $model = $this->personPhoto;
+        if (isset($model->image)) {
             return $model->getUploadUrl('image_cropped');
-        }else{
-            return '/uploads/'.$this->noImg;
+        } else {
+            return '/uploads/' . $this->noImg;
         }
     }
-    
-    
-    public function getFullname($lang = 'th')
-    {
-        if($lang === 'th'){
-            return $this->firstname_th.' '.$this->lastname_th;
+
+    public function getFullname($lang = 'th') {
+        if ($lang === 'th') {
+            return $this->firstname_th . ' ' . $this->lastname_th;
         }
-        return $this->firstname_en.' '.$this->lastname_en;
+        return $this->firstname_en . ' ' . $this->lastname_en;
     }
-    
-    public function getInfoMedia($link = '#', $options = [])
-    {
+
+    public function getInfoMedia($link = '#', $options = []) {
         $options = array_replace_recursive([
             'wrapper' => true,
             'wrapperTag' => 'div'
-        ], $options);
-        
-        $inner = '<a class="pull-left border-dark profile_thumb" style="padding:0;">' . 
-            '<img src="' .$this->getPhoto() . '" class="img-circle" style="width:100%;">' .
-            '</a>' .
-            '<div class="media-body">' .
-            Html::a($this->fullname, $link, ['class' => 'title']) .
-            //'<p><strong>$2300. </strong> ' . current($this->getRoles()) . ' </p>' .
-            '<p class="position">' . $this->positionTitle . '</p>' .
-            //'<p> <small>12 Sales Today</small></p>' .
-            '</div>' . 
-            '<div class="clearfix"></div>';
-        
-        if($options['wrapper']) {
+                ], $options);
+
+        $inner = '<a class="pull-left border-dark profile_thumb" style="padding:0;">' .
+                '<img src="' . $this->getPhoto() . '" class="img-circle" style="width:100%;">' .
+                '</a>' .
+                '<div class="media-body">' .
+                Html::a($this->fullname, $link, ['class' => 'title']) .
+                //'<p><strong>$2300. </strong> ' . current($this->getRoles()) . ' </p>' .
+                '<p class="position">' . $this->positionTitle . '</p>' .
+                //'<p> <small>12 Sales Today</small></p>' .
+                '</div>' .
+                '<div class="clearfix"></div>';
+
+        if ($options['wrapper']) {
             return Html::tag($options['wrapperTag'], $inner, ['class' => 'media event']);
         }
-        
+
         return $inner;
     }
-    
-    public static function getRoleList()
-    {
+
+    public function getInfoCard($link = '#', $options = []) {
+        $options = array_replace_recursive([
+            'wrapper' => true,
+            'wrapperTag' => 'div'
+                ], $options);
+
+        $inner = '<a class="pull-left border-dark profile_thumb" style="padding:0;">' .
+                '<img src="' . $this->getPhoto() . '" class="img-circle" style="width:100%;">' .
+                '</a>' .
+                '<div class="media-body">' .
+                Html::a($this->fullname, $link, ['class' => 'title']) .
+                //'<p><strong>$2300. </strong> ' . current($this->getRoles()) . ' </p>' .
+                '<p class="position">' . $this->positionTitle . '</p>' .
+                //'<p> <small>12 Sales Today</small></p>' .
+                '</div>' .
+                '<div class="clearfix"></div>';
+
+        $inner = '<div class="media"> <div class="media-left"> ' .
+                '<img class="media-object img-circle" src="' . $this->getPhoto() . '" style="width: 32px; height: 32px;"> </div> ' .
+                '<div class="media-body"> ' .
+                '<h4 class="media-heading" style="margin:0;">' .
+                Html::a($this->fullname, $link, ['class' => 'green', 'data-pjax' => 0]) . '</h4> ' .
+                '<small>' . $this->positionTitle . '<small></div> </div>';       
+
+        if ($options['wrapper']) {
+            return Html::tag($options['wrapperTag'], $inner, ['class' => 'media event']);
+        }
+
+        return $inner;
+    }
+
+    public static function getRoleList() {
         $list = [];
-        foreach(Yii::$app->authManager->getRoles() as $role) {
+        foreach (Yii::$app->authManager->getRoles() as $role) {
             $list[$role->name] = (!empty($role->description)) ? $role->description : ucfirst($role->name);
         }
-        
+
         return $list;
     }
-    
-    
-    public function getRoles()
-    {
+
+    public function getRoles() {
         $roles = [];
         foreach (Yii::$app->authManager->getRolesByUser($this->user_id) as $key => $role) {
             $roles[$key] = ucfirst($role->description);
         }
-        
+
         return $roles;
     }
-    
-    
-    public static function getGenders()
-    {
+
+    public static function getGenders() {
         return [
             self::GENDER_MALE => Yii::t('andahrm/person', 'Male'),
             self::GENDER_FEMAIL => Yii::t('andahrm/person', 'Female'),
         ];
     }
-    
-    public function getGenderText()
-    {
+
+    public function getGenderText() {
         $genders = self::getGenders();
-        if(array_key_exists($this->gender, $genders)){
+        if (array_key_exists($this->gender, $genders)) {
             return $genders[$this->gender];
         }
         return null;
     }
-    
-  
-  # Create by mad
-    public static function getList(){
-      return ArrayHelper::map(self::find()->all(),'user_id','fullname','positionTitle');
+
+    # Create by mad
+
+    public static function getList() {
+        return ArrayHelper::map(self::find()->all(), 'user_id', 'fullname', 'positionTitle');
     }
-  
-  # Create by mad
-  //public $year;
-  
-  
-  
-  /**
-  *  Create by mad
-  * ผู้ที่เกี่ยวข้องกับการลาของฉัน
-  */
-  public function getLeaveRelatedPerson()
-    {
+
+    # Create by mad
+    //public $year;
+
+    /**
+     *  Create by mad
+     * ผู้ที่เกี่ยวข้องกับการลาของฉัน
+     */
+    public function getLeaveRelatedPerson() {
         return $this->hasOne(LeaveRelatedPerson::className(), ['user_id' => 'user_id']);
     }
-    
+
     /**
      * สัญญาจ้าง
      * 
-     */ 
-    public function getPersonContract()
-    {
-        return $this->hasOne(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
+     */
+    public function getPersonContract() {
+        return $this->hasOne(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date' => SORT_DESC]);
     }
-  
- 
-    public function getPersonContracts()
-    {
-        return $this->hasMany(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
+
+    public function getPersonContracts() {
+        return $this->hasMany(PersonContract::className(), ['user_id' => 'user_id'])->orderBy(['start_date' => SORT_DESC]);
     }
-    
-    public function getPersonContractOlds()
-    {
-        return $this->hasMany(PersonContractOld::className(), ['user_id' => 'user_id'])->orderBy(['start_date'=>SORT_DESC]);
+
+    public function getPersonContractOlds() {
+        return $this->hasMany(PersonContractOld::className(), ['user_id' => 'user_id'])->orderBy(['start_date' => SORT_DESC]);
     }
-    
-     /**
-  *  Create by mad
-  * เงินเดือนและตำแหน่ง
-  */
-    
-    public function getPositionSalary()
-    {
-        return $this->hasOne(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_DESC]);
-    }
-    
+
     /**
-    * @return \yii\db\ActiveQuery
-    * Create when 2017-11-19
-    */
-    public function getPositionLast()
-    {
-        return $this->positionSalary?$this->positionSalary->position:null;
+     *  Create by mad
+     * เงินเดือนและตำแหน่ง
+     */
+    public function getPositionSalary() {
+        return $this->hasOne(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date' => SORT_DESC]);
     }
-    
-    public function getPositionSalaries()
-    {
-        return $this->hasMany(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_ASC]);
-    }
-    
-    public function getPositionSalaryOlds()
-    {
-        return $this->hasMany(PersonPositionSalaryOld::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date'=>SORT_ASC]);
-    }
-  
+
     /**
-    *  Create by mad
-    * ตำแหน่ง
-    */
+     * @return \yii\db\ActiveQuery
+     * Create when 2017-11-19
+     */
+    public function getPositionLast() {
+        return $this->positionSalary ? $this->positionSalary->position : null;
+    }
+
+    public function getPositionSalaries() {
+        return $this->hasMany(PersonPositionSalary::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date' => SORT_ASC]);
+    }
+
+    public function getPositionSalaryOlds() {
+        return $this->hasMany(PersonPositionSalaryOld::className(), ['user_id' => 'user_id'])->orderBy(['adjust_date' => SORT_ASC]);
+    }
+
+    /**
+     *  Create by mad
+     * ตำแหน่ง
+     */
     // public function getPosition()
     // {
     //     return $this->positionSalary?$this->positionSalary->position:null;
     // }
-    
+
     /**
-    * @return \yii\db\ActiveQuery
-    * Create when 2017-11-19
-    */
-    public function getPosition()
-    {
-      return $this->hasOne(Position::className(), ['id' => 'position_id']);
+     * @return \yii\db\ActiveQuery
+     * Create when 2017-11-19
+     */
+    public function getPosition() {
+        return $this->hasOne(Position::className(), ['id' => 'position_id']);
     }
-    
-    public function getLevel()
-    {
-        return $this->positionSalary?$this->positionSalary->level:null;
+
+    public function getLevel() {
+        return $this->positionSalary ? $this->positionSalary->level : null;
     }
-    
-    public function getPositionOld()
-    {
-        return $this->positionSalaryOl?$this->positionSalary->position:null;
+
+    public function getPositionOld() {
+        return $this->positionSalaryOl ? $this->positionSalary->position : null;
     }
-  
-    public function getPositionTitle()
-    {
-        return $this->position?$this->position->title:null;
+
+    public function getPositionTitle() {
+        return $this->position ? $this->position->title : null;
     }
-  
-    public function getSectionTitle()
-    {
-        return $this->positionSalary?$this->positionSalary->position->section->title:null;
+
+    public function getSectionTitle() {
+        return $this->positionSalary ? $this->positionSalary->position->section->title : null;
     }
-    
-    public function getNumberCitizenId(){
-        return str_replace('-','',$this->citizen_id);
+
+    public function getNumberCitizenId() {
+        return str_replace('-', '', $this->citizen_id);
     }
-    
+
     /**
      * Relation Defect
      * 
      */
-  
-    public function getDefects(){
-        return $this->hasMany(Defect::className(),['user_id'=>'user_id'])->orderBy(['date_defect'=>SORT_DESC]);
+    public function getDefects() {
+        return $this->hasMany(Defect::className(), ['user_id' => 'user_id'])->orderBy(['date_defect' => SORT_DESC]);
     }
-    
-    
-    public  function getInsignia(){
-        return $this->hasMany(InsigniaPerson::className(), ['user_id'=>'user_id'])->orderBy(['yearly'=>SORT_ASC]);
+
+    public function getInsignia() {
+        return $this->hasMany(InsigniaPerson::className(), ['user_id' => 'user_id'])->orderBy(['yearly' => SORT_ASC]);
     }
-    
-    
+
 //    public static function getList($limit = 20){
 //        return ArrayHelper::map(self::find()->limit($limit)->all(),'user_id','fullname');
 //    }
-  
 }
