@@ -10,6 +10,7 @@ use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\AttributeBehavior;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
+###
 use andahrm\datepicker\behaviors\DateBuddhistBehavior;
 use andahrm\setting\models\Helper;
 use andahrm\leave\models\LeavePermission; #mad
@@ -113,7 +114,7 @@ class Person extends ActiveRecord {
     public function rules() {
         return [
             [['user_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'birthday', 'citizen_id'], 'required'],
-            [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
+            [['user_id', 'title_id', 'position_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['gender'], 'string'],
             //[['citizen_id'], 'match', 'pattern' => '/^\d{17}$/'],
             [['citizen_id'], 'match', 'pattern' => '/\b\d{1}[-]?\d{4}[-]?\d{5}[-]?\d{2}[-]?\d{1}$/'],
@@ -142,6 +143,7 @@ class Person extends ActiveRecord {
             'phone' => Yii::t('andahrm/person', 'Phone'),
             'birthday' => Yii::t('andahrm/person', 'Birthday'),
             'age' => Yii::t('andahrm/person', 'Age'),
+            'position_id' => Yii::t('andahrm/person', 'Position'),
             'created_at' => Yii::t('andahrm', 'Created At'),
             'created_by' => Yii::t('andahrm', 'Created By'),
             'updated_at' => Yii::t('andahrm', 'Updated At'),
@@ -397,7 +399,7 @@ class Person extends ActiveRecord {
                 '<div class="media-body"> ' .
                 '<h4 class="media-heading" style="margin:0;">' .
                 Html::a($this->fullname, $link, ['class' => 'green', 'data-pjax' => 0]) . '</h4> ' .
-                '<small>' . $this->positionTitle . '<small></div> </div>';       
+                '<small>' . $this->positionTitle . '<small></div> </div>';
 
         if ($options['wrapper']) {
             return Html::tag($options['wrapperTag'], $inner, ['class' => 'media event']);

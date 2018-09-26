@@ -61,7 +61,7 @@ use common\models\DynamicFormModel;
 /**
  * DefaultController implements the CRUD actions for Person model.
  */
-class DefaultController extends Controller
+class DefaultController1 extends Controller
 {
 //     public $defaultAction = 'frontpage';
     /**
