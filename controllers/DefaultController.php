@@ -514,6 +514,7 @@ class DefaultController extends Controller {
         $model = PersonPositionSalary::find()
                 ->where(['user_id' => $user_id, 'position_id' => $position_id, 'edoc_id' => $edoc_id]);
         if ($model->delete()) {
+            PersonPositionSalary::updatePostion($user_id);
             if (Yii::$app->request->isAjax && $step) {
                 return $this->redirect(['create', 'id' => $user_id, 'step' => $step]);
             } elseif (Yii::$app->request->isAjax) {

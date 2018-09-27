@@ -155,6 +155,13 @@ class Person extends ActiveRecord {
         ];
     }
 
+    const SCENARIO_UPDATE_POSITION = 'update_position';
+
+    public function scenarios() {
+        $scenarios[self::SCENARIO_UPDATE_POSITION] = ['position_id'];
+        return array_merge(parent::scenarios(), $scenarios);
+    }
+
     // public function beforeSave($insert)
     // {
     //     if (parent::beforeSave($insert)) {
