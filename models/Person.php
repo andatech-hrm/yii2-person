@@ -450,8 +450,10 @@ class Person extends ActiveRecord {
 
     # Create by mad
 
-    public static function getList() {
-        return ArrayHelper::map(self::find()->all(), 'user_id', 'fullname', 'positionTitle');
+    public static function getList($user_id = null) {
+        return ArrayHelper::map(
+                        self::find()->filterWhere(['user_id' => $user_id])->all()
+                        , 'user_id', 'fullname', 'positionTitle');
     }
 
     # Create by mad

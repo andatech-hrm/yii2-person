@@ -2017,4 +2017,22 @@ class DefaultController extends Controller {
         }
     }
 
+    public function actionPersonList($q = null, $id = null) {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON; //กำหนดการแสดงผลข้อมูลแบบ json
+        $out = ['results' => ['user_id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            //$this->code = $q;
+            $model = Person::find();
+            $model->FilterWhere(['OR',
+                ['like', 'citizen_id', $q],
+                ['like', 'firstname_th', $q],
+                ['like', 'lastname_th', $q],
+            ]);
+            $out['results'] = ArrayHelper::getColumn($model->all(), function($model) {
+                        return ['id' => $model->user_id, 'text' => $model->fullname];
+                    });
+        }
+        return $out;
+    }
+
 }
