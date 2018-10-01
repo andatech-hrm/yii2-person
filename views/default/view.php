@@ -677,7 +677,7 @@ $('#{$modals[$mkey]->id}').on('show.bs.modal', function (e) {
             unset($roleList['president']);
             $roles = Yii::$app->authManager->getRolesByUser($models['person']->user_id);
             $form = ActiveForm::begin();
-            echo Html::checkBoxList('Roles', array_keys($roles), $roleList, ['separator' => '']);
+            echo Html::checkBoxList('Roles', array_keys($roles), $roleList, ['separator' => '  ']);
             echo Html::submitButton('<i class="fa fa-save"></i> '.Yii::t('andahrm/person', 'Save Roles'), ['class' => 'btn btn-primary btn-xs']);
             ActiveForm::end();
             ?>
