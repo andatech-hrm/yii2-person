@@ -674,6 +674,7 @@ $('#{$modals[$mkey]->id}').on('show.bs.modal', function (e) {
             <?php
             $mkey = 'roles';
             $roleList = $models['person']->roleList;
+            unset($roleList['president']);
             $roles = Yii::$app->authManager->getRolesByUser($models['person']->user_id);
             $form = ActiveForm::begin();
             echo Html::checkBoxList('Roles', array_keys($roles), $roleList, ['separator' => '']);
