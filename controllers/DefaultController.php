@@ -225,6 +225,88 @@ class DefaultController extends Controller {
         return $this->render('view', ['models' => $models]);
     }
 
+    /**
+     * Displays a single Person model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionPrint($id) {
+        $this->layout = 'print';
+
+        //$models['person'] = $this->findModel($id);
+        $models['person'] = Person::find()->where(['person.user_id' => $id])
+                ->joinWith('detail', true, "LEFT JOIN")
+                ->one();
+//         $models['user'] = $models['person']->user;
+        $models['photos'] = $models['person']->photos;
+        $models['detail'] = ($models['person']->detail !== null ) ? $models['person']->detail : new Detail(['user_id' => $id]);
+        $models['address-contact'] = ($models['person']->addressContact !== null ) ? $models['person']->addressContact : new AddressContact(['user_id' => $id]);
+        $models['address-birth-place'] = ($models['person']->addressBirthPlace !== null ) ? $models['person']->addressBirthPlace : new AddressBirthPlace(['user_id' => $id]);
+        $models['address-register'] = ($models['person']->addressRegister !== null ) ? $models['person']->addressRegister : new AddressRegister(['user_id' => $id]);
+        $models['people-father'] = ($models['person']->peopleFather !== null ) ? $models['person']->peopleFather : new PeopleFather(['user_id' => $id]);
+        $models['people-mother'] = ($models['person']->peopleMother !== null ) ? $models['person']->peopleMother : new PeopleMother(['user_id' => $id]);
+        $models['people-spouse'] = ($models['person']->peopleSpouse !== null ) ? $models['person']->peopleSpouse : new PeopleSpouse(['user_id' => $id]);
+        $models['people-childs'] = $models['person']->peopleChilds;
+        $models['educations'] = $models['person']->educations;
+
+        $request = Yii::$app->request;
+        $post = $request->post();
+        if ($post) {
+            $errorMassages = [];
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+
+                foreach ($models as $key => $model) {
+                    if (!in_array($key, $this->modelMany) && array_key_exists($model->formName(), $post)) {
+                        if ($model->load($post) && $model->save()) {
+                            
+                        } else {
+                            $errorMassages[] = $model->getErrors();
+                        }
+                    }
+                }
+
+                if (count($errorMassages) > 0) {
+                    $msg = '<ul>';
+                    foreach ($errorMassages as $key => $fields) {
+                        $msg .= '<li>' . implode("<br />", $fields) . '</li>';
+                    }
+                    $msg .= '</ul>';
+                    throw new ErrorException($msg);
+                } else {
+                    if ($request->post('Roles')) {
+                        $this->setRoles($models['person']->user_id, $request->post('Roles', []));
+                    }
+
+                    Yii::$app->getSession()->setFlash('saved', [
+                        'type' => 'success',
+                        'msg' => Yii::t('andahrm', 'Save operation completed.')
+                    ]);
+
+                    $transaction->commit();
+
+                    return $this->redirect(['view', 'id' => $id]);
+                }
+            } catch (ErrorException $e) {
+                Yii::$app->getSession()->setFlash('saved', [
+                    'type' => 'error',
+                    'title' => Yii::t('andahrm', 'Unable to save record.'),
+                    'msg' => $e->getMessage()
+                ]);
+                $transaction->rollback();
+            }
+        }
+
+
+        $models['photos'] = (empty($models['photos'])) ? [new Photo(['user_id' => $models['person']->user_id])] : $models['photos'];
+        $models['people-childs'] = (empty($models['people-childs'])) ? [new PeopleChild] : $models['people-childs'];
+        $models['educations'] = (empty($models['educations'])) ? [new Education] : $models['educations'];
+
+        $this->prepareData();
+
+        return $this->render('print', ['models' => $models]);
+    }
+
     public function actionUpdatePositionOld($id, $position_id, $edoc_id, $old = null, $formAction = null) {
 
         $modelsPosition = PersonPositionSalaryOld::find()->where([
