@@ -415,9 +415,21 @@ $modalOptions = [
             <?= $this->render('print/_view-position', ['dataProvider' => $models['positions'],]) ?>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <?php
+            XPanel::begin([
+                'header' => Yii::t('andahrm/person', 'Development'),
+                'icon' => 'cogs',
+            ])
+            ?>
+            <?= $this->render('print/_view-development', ['dataProvider' => $models['developments']['dataProvider'], 'searchModel' => $models['developments']['searchModel']]) ?>
+        </div>
+    </div>
+
 </div>
-data-toggle="table"
-                           data-show-print="true"
+
 <?php
 $js[] = <<< JS
 

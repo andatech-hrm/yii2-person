@@ -334,6 +334,13 @@ class DefaultController extends Controller {
             ],
         ]);
 
+        ## Position
+        $searchModel = new \andahrm\profile\models\SelfDevelopmentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->where(['user_id' => $id]);
+        $dataProvider->query->groupBy(['dev_project_id']);
+        $models['developments'] = ['searchModel' => $searchModel,
+            'dataProvider' => $dataProvider];
 
 
         return $this->render('print', ['models' => $models]);
