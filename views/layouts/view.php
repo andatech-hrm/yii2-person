@@ -181,7 +181,43 @@ JS;
     </div>
 </div>
 
-<?php $this->registerJs(implode("\n", $js)); ?>
+<?php
+$url_print = Url::to(['/person/default/print', 'id' => $person->getModel()->user_id]);
+$js[] = <<< JS
+             
+    var beforePrint = function() {
+        //console.log('Functionality to run before printing.');
+        //document.location.href = 'somewhere.html';
+        window.open('{$url_print}', '_blank');
+        //return false;
+    };
+    var afterPrint = function() {
+        console.log('Functionality to run after printing');
+        //window.open('{$url_print}', '_blank');
+        return false;
+    };
+
+//    if (window.matchMedia) {
+//        var mediaQueryList = window.matchMedia('print');
+//        mediaQueryList.addListener(function(mql) {
+//            if (mql.matches) {
+//                beforePrint();
+//            } else {
+//                afterPrint();
+//            }
+//        window.open('{$url_print}', '_blank');
+//            return false;
+//        });
+//    }
+
+    window.onbeforeprint = beforePrint;
+    window.onafterprint = afterPrint;
+JS;
+
+
+
+$this->registerJs(implode("\n", $js));
+?>
 
 <?php $this->endContent(); ?>
 

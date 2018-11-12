@@ -690,7 +690,7 @@ $('#{$modals[$mkey]->id}').on('show.bs.modal', function (e) {
 
 <?php $this->render('detail-view/_address-js'); ?>
 <?php
-$url_print = Url::to(['print', 'id' => $models['person']->user_id]);
+
 $js[] = <<< JS
 $(document).on('click', '.btn-modal-save', function(e){
     var form = $(this).closest('.modal').find('.modal-body form');
@@ -703,34 +703,7 @@ $.each($('.set-height-as-left'), function(){
         height: left_height+'px'
     });
 });
-        
-    var beforePrint = function() {
-        //console.log('Functionality to run before printing.');
-        //document.location.href = 'somewhere.html';
-        window.open('{$url_print}', '_blank');
-        //return false;
-    };
-    var afterPrint = function() {
-        console.log('Functionality to run after printing');
-        //window.open('{$url_print}', '_blank');
-        return false;
-    };
-
-//    if (window.matchMedia) {
-//        var mediaQueryList = window.matchMedia('print');
-//        mediaQueryList.addListener(function(mql) {
-//            if (mql.matches) {
-//                beforePrint();
-//            } else {
-//                afterPrint();
-//            }
-//        window.open('{$url_print}', '_blank');
-//            return false;
-//        });
-//    }
-
-    window.onbeforeprint = beforePrint;
-    window.onafterprint = afterPrint;
+   
         
 JS;
 

@@ -304,6 +304,38 @@ class DefaultController extends Controller {
 
         $this->prepareData();
 
+        ## Position
+
+        $modelPositionOld = PersonPositionSalaryOld::find()->where(['user_id' => $id])
+                ->joinWith('edoc')
+                //->orderBy(['adjust_date'=> SORT_ASC,'edoc.date_code'=>SORT_ASC,'edoc.code'=> SORT_ASC])
+                ->orderBy([
+                    //'adjust_date'=> SORT_ASC,
+                    'edoc.date_code' => SORT_ASC,
+                    'edoc.code' => SORT_ASC
+                ])
+                ->all();
+        $modelPosition = PersonPositionSalary::find()->where(['user_id' => $id])
+                ->joinWith('edoc')
+                //->orderBy(['adjust_date'=> SORT_ASC,'edoc.date_code'=>SORT_ASC,'edoc.code'=> SORT_ASC])
+                ->orderBy([
+                    //'adjust_date'=> SORT_ASC,
+                    'edoc.date_code' => SORT_ASC,
+                    'edoc.code' => SORT_ASC
+                ])
+                ->all();
+        $data = ArrayHelper::merge($modelPositionOld, $modelPosition);
+
+        $models['positions'] = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => false,
+            'sort' => [
+                'attributes' => ['adjust_date' => SORT_ASC],
+            ],
+        ]);
+
+
+
         return $this->render('print', ['models' => $models]);
     }
 

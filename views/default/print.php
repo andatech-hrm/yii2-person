@@ -51,10 +51,8 @@ $modalOptions = [
 
 <div class="profile-default-index">
     <div class="row">
-        <div class="col-sm-6 animated flipInY">
-            <?php
-            $mkey = 'person';
-            ?>
+        <div class="col-xs-12">
+
 
             <?php
             XPanel::begin(
@@ -64,118 +62,109 @@ $modalOptions = [
                     ]
             )
             ?>
-            <?php
-            $fields = [
-                'citizen_id' => $models[$mkey]->citizen_id,
-                'title_id' => $models[$mkey]->title->name,
-                'fullname_th' => $models[$mkey]->fullname,
-                'fullname_en' => $models[$mkey]->getFullname('en'),
-                'gender' => $models[$mkey]->getGenderText(),
-                'tel' => $models[$mkey]->tel,
-                'phone' => $models[$mkey]->phone,
-                'birthday' => Yii::$app->formatter->asDate($models[$mkey]->birthday),
-                'age' => $models[$mkey]->ageLabel,
-            ];
-            ?>
-            <table class="table detail-view">
-                <tbody>
-                    <?php foreach ($fields as $key => $value) : ?>
-                        <tr>
-                            <th><?= $models[$mkey]->getAttributeLabel($key); ?></th>
-                            <td class="green"><?= $value; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    <tr>
-                        <th class="aero"><?= Yii::t('andahrm', 'Last update'); ?></th>
-                        <td class="green aero"><?= Yii::$app->formatter->asDateTime($models[$mkey]->updated_at); ?></td>
-                    </tr>
-                </tbody>
-            </table>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <?php
+                    $mkey = 'person';
+                    $fields = [
+                        'citizen_id' => $models[$mkey]->citizen_id,
+                        'title_id' => $models[$mkey]->title->name,
+                        'fullname_th' => $models[$mkey]->fullname,
+                        'fullname_en' => $models[$mkey]->getFullname('en'),
+                        'gender' => $models[$mkey]->getGenderText(),
+                        'tel' => $models[$mkey]->tel,
+                        'phone' => $models[$mkey]->phone,
+                        'birthday' => Yii::$app->formatter->asDate($models[$mkey]->birthday),
+                        'age' => $models[$mkey]->ageLabel,
+                    ];
+                    ?>
+                    <table class="table detail-view"
+                           data-toggle="table"
+                           data-show-print="true"
+                           >
+                        <tbody>
+                            <?php foreach ($fields as $key => $value) : ?>
+                                <tr>
+                                    <th nowrap><?= $models[$mkey]->getAttributeLabel($key); ?></th>
+                                    <td class="green" nowrap><?= $value; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xs-6">
+                    <?php
+                    $mkey = 'detail';
+                    $fields = [
+                        'nationality_id' => $models[$mkey]->nationality ? $models[$mkey]->nationality->title : null,
+                        'race_id' => $models[$mkey]->race ? $models[$mkey]->race->title : null,
+                        'religion_id' => $models[$mkey]->religion ? $models[$mkey]->religion->title : null,
+                        'blood_group' => $models[$mkey]->blood_group,
+                        'married_status' => $models[$mkey]->getStatusText(),
+                    ];
+                    ?>
+                    <table class="table detail-view" data-toggle="table"
+                           data-show-print="true">
+                        <tbody>
+                            <?php foreach ($fields as $key => $value) : ?>
+                                <tr>
+                                    <th nowrap><?= $models[$mkey]->getAttributeLabel($key); ?></th>
+                                    <td class="green" nowrap><?= $value; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php if (intval($models['detail']->married_status) !== \andahrm\person\models\Detail::STATUS_SINGLE) : ?>
+                                <tr>
+                                    <td colspan="2" ><h4 style="margin:0"><i class="fa fa-heart"></i> <?= Yii::t('andahrm/person', 'Spouse'); ?></h4></td>
+                                </tr>
+                                <?php
+                                $mkey = 'people-spouse';
+                                $fields = [
+                                    //'citizen_id' => $models[$mkey]->citizen_id,
+                                    'fullname' => $models[$mkey]->fullname,
+                                    //'birthday' => Yii::$app->formatter->asDate($models[$mkey]->birthday),
+                                    //'nationality_id' => $models[$mkey]->nationality->title,
+                                    //'race_id' => $models[$mkey]->race->title,
+                                    //'occupation' => $models[$mkey]->occupation,
+                                    'live_status' => $models[$mkey]->liveStatusText,
+                                ];
+                                ?>
+                                <?php foreach ($fields as $key => $value) : ?>
+                                    <tr>
+                                        <th nowrap><?= $models[$mkey]->getAttributeLabel($key); ?></th>
+                                        <td class="green" nowrap><?= $value; ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
 
             <?php XPanel::end() ?>
 
         </div>
 
-        <div class="col-sm-6 animated flipInY">
-            <?php
-            $mkey = 'detail';
-            ?>
 
-            <?php
-            XPanel::begin(
-                    [
-                        'header' => Yii::t('andahrm/person', 'Information'),
-                        'icon' => 'info-circle',
-                    ]
-            )
-            ?>
-            <?php
-            $fields = [
-                'nationality_id' => $models[$mkey]->nationality ? $models[$mkey]->nationality->title : null,
-                'race_id' => $models[$mkey]->race ? $models[$mkey]->race->title : null,
-                'religion_id' => $models[$mkey]->religion ? $models[$mkey]->religion->title : null,
-                'blood_group' => $models[$mkey]->blood_group,
-                'married_status' => $models[$mkey]->getStatusText(),
-            ];
-            ?>
-            <table class="table detail-view">
-                <tbody>
-            <?php foreach ($fields as $key => $value) : ?>
-                        <tr>
-                            <th><?= $models[$mkey]->getAttributeLabel($key); ?></th>
-                            <td class="green"><?= $value; ?></td>
-                        </tr>
-<?php endforeach; ?>
-<?php if (intval($models['detail']->married_status) !== \andahrm\person\models\Detail::STATUS_SINGLE) : ?>
-                        <tr>
-                            <td colspan="2"><h4 style="margin:0"><i class="fa fa-heart"></i> <?= Yii::t('andahrm/person', 'Spouse'); ?></h4></td>
-                        </tr>
-    <?php
-    $mkey = 'people-spouse';
-    $fields = [
-        //'citizen_id' => $models[$mkey]->citizen_id,
-        'fullname' => $models[$mkey]->fullname,
-        //'birthday' => Yii::$app->formatter->asDate($models[$mkey]->birthday),
-        //'nationality_id' => $models[$mkey]->nationality->title,
-        //'race_id' => $models[$mkey]->race->title,
-        //'occupation' => $models[$mkey]->occupation,
-        'live_status' => $models[$mkey]->liveStatusText,
-    ];
-    ?>
-                        <?php foreach ($fields as $key => $value) : ?>
-                            <tr>
-                                <th><?= $models[$mkey]->getAttributeLabel($key); ?></th>
-                                <td class="green"><?= $value; ?></td>
-                            </tr>
-    <?php endforeach; ?>
-<?php endif; ?>
-                    <tr>
-                        <th class="aero"><?= Yii::t('andahrm', 'Last update'); ?></th>
-                        <td class="green aero"><?= Yii::$app->formatter->asDateTime($models[$mkey]->updated_at); ?></td>
-                    </tr>
-                </tbody>
-            </table>
-
-
-<?php XPanel::end() ?>
-
-        </div>
     </div>   
 
 
     <div class="row">
         <div class="col-sm-12">
-<?php
-$addresses = [
-    ['key' => 'address-contact', 'label' => Yii::t('andahrm/person', 'Contact')],
-    ['key' => 'address-register', 'label' => Yii::t('andahrm/person', 'Register')],
-    ['key' => 'address-birth-place', 'label' => Yii::t('andahrm/person', 'Birth Place')],
-];
-$items = [];
-foreach ($addresses as $key => $address) {
-    $items[] = $models[$address['key']];
-}
-?>
+            <?php
+            $addresses = [
+                ['key' => 'address-contact', 'label' => Yii::t('andahrm/person', 'Contact')],
+                ['key' => 'address-register', 'label' => Yii::t('andahrm/person', 'Register')],
+                ['key' => 'address-birth-place', 'label' => Yii::t('andahrm/person', 'Birth Place')],
+            ];
+            $items = [];
+            foreach ($addresses as $key => $address) {
+                $items[] = $models[$address['key']];
+            }
+            ?>
 
             <?php
             XPanel::begin([
@@ -223,16 +212,16 @@ foreach ($addresses as $key => $address) {
 
     <div class="row">
         <div class="col-sm-12">
-<?php
-$parents = [
-    ['key' => 'people-father', 'label' => Yii::t('andahrm/person', 'Father')],
-    ['key' => 'people-mother', 'label' => Yii::t('andahrm/person', 'Mother')],
-];
-$items = [];
-foreach ($parents as $key => $parent) {
-    $items[] = $models[$parent['key']];
-}
-?>
+            <?php
+            $parents = [
+                ['key' => 'people-father', 'label' => Yii::t('andahrm/person', 'Father')],
+                ['key' => 'people-mother', 'label' => Yii::t('andahrm/person', 'Mother')],
+            ];
+            $items = [];
+            foreach ($parents as $key => $parent) {
+                $items[] = $models[$parent['key']];
+            }
+            ?>
 
             <?php
             XPanel::begin([
@@ -283,7 +272,7 @@ foreach ($parents as $key => $parent) {
                         'attribute' => 'liveStatusText',
                         'label' => Yii::t('andahrm/person', 'Live Status Text'),
                         'contentOptions' => ['class' => 'green'],
-                    ],                    
+                    ],
                 ],
             ]);
             ?>
@@ -293,15 +282,15 @@ foreach ($parents as $key => $parent) {
 
     <div class="row">
         <div class="col-sm-12">
-<?php
-XPanel::begin([
-    'header' => Yii::t('andahrm/person', 'Childs'),
-    'icon' => 'child',
-])
-?>
+            <?php
+            XPanel::begin([
+                'header' => Yii::t('andahrm/person', 'Childs'),
+                'icon' => 'child',
+            ])
+            ?>
 
             <?php
-            $mkey = 'people-childs';            
+            $mkey = 'people-childs';
 
             $childDataProvider = new \yii\data\ActiveDataProvider([
                 'query' => $models['person']->getPeopleChilds(),
@@ -341,7 +330,7 @@ XPanel::begin([
                         'attribute' => 'liveStatusText',
                         'label' => Yii::t('andahrm/person', 'Live Status Text'),
                         'contentOptions' => ['class' => 'green'],
-                    ],                    
+                    ],
                 ],
             ]);
             ?>
@@ -350,16 +339,16 @@ XPanel::begin([
     </div><!-- end row -->
 
     <div class="row">
-        <div class="col-sm-12">
-<?php
-XPanel::begin([
-    'header' => Yii::t('andahrm/person', 'Educations'),
-    'icon' => 'graduation-cap',
-])
-?>
+        <div class="col-xs-12">
+            <?php
+            XPanel::begin([
+                'header' => Yii::t('andahrm/person', 'Educations'),
+                'icon' => 'graduation-cap',
+            ])
+            ?>
 
             <?php
-            $mkey = 'educations';            
+            $mkey = 'educations';
 
             $educationDataProvider = new \yii\data\ActiveDataProvider([
                 'query' => $models['person']->getEducations(),
@@ -370,53 +359,65 @@ XPanel::begin([
             ]);
             ?>
             <div class="table-responsive">
-            <?php
-            echo \yii\grid\GridView::widget([
-                'dataProvider' => $educationDataProvider,
-                'summary' => false,
-                'columns' => [
-                    [
-                        'attribute' => 'year_start',
-                        'value' => 'yearStartBuddhist',
-                        'contentOptions' => ['class' => 'green'],
+                <?php
+                echo \yii\grid\GridView::widget([
+                    'dataProvider' => $educationDataProvider,
+                    'summary' => false,
+                    'columns' => [
+                        [
+                            'attribute' => 'year_start',
+                            'value' => 'yearStartBuddhist',
+                            'contentOptions' => ['class' => 'green'],
+                        ],
+                        [
+                            'attribute' => 'year_end',
+                            'value' => 'yearEndBuddhist',
+                            'contentOptions' => ['class' => 'green'],
+                        ],
+                        [
+                            'attribute' => 'level.title',
+                            'header' => Yii::t('andahrm/person', 'Level'),
+                            'contentOptions' => ['class' => 'green'],
+                        ],
+                        [
+                            'attribute' => 'degree',
+                            'contentOptions' => ['class' => 'green'],
+                        ],
+                        [
+                            'attribute' => 'branch',
+                            'contentOptions' => ['class' => 'green'],
+                        ],
+                        [
+                            'attribute' => 'institution',
+                            'contentOptions' => ['class' => 'green'],
+                        ],
+                        [
+                            'attribute' => 'country.title',
+                            'header' => Yii::t('andahrm/person', 'Country'),
+                            'contentOptions' => ['class' => 'green'],
+                        ],
                     ],
-                    [
-                        'attribute' => 'year_end',
-                        'value' => 'yearEndBuddhist',
-                        'contentOptions' => ['class' => 'green'],
-                    ],
-                    [
-                        'attribute' => 'level.title',
-                        'header' => Yii::t('andahrm/person', 'Level'),
-                        'contentOptions' => ['class' => 'green'],
-                    ],
-                    [
-                        'attribute' => 'degree',
-                        'contentOptions' => ['class' => 'green'],
-                    ],
-                    [
-                        'attribute' => 'branch',
-                        'contentOptions' => ['class' => 'green'],
-                    ],
-                    [
-                        'attribute' => 'institution',
-                        'contentOptions' => ['class' => 'green'],
-                    ],
-                    [
-                        'attribute' => 'country.title',
-                        'header' => Yii::t('andahrm/person', 'Country'),
-                        'contentOptions' => ['class' => 'green'],
-                    ],                    
-                ],
-            ]);
-            ?>
+                ]);
+                ?>
             </div>
-                <?php XPanel::end(); ?>
+            <?php XPanel::end(); ?>
         </div>
     </div><!-- end row -->
 
+    <div class="row">
+        <div class="col-xs-12">
+            <?php
+            XPanel::begin([
+                'header' => Yii::t('andahrm/person', 'Position'),
+                'icon' => 'briefcase',
+            ])
+            ?>
+            <?= $this->render('print/_view-position', ['dataProvider' => $models['positions'],]) ?>
+        </div>
+    </div>
 </div>
-
+data-toggle="table"
+                           data-show-print="true"
 <?php
 $js[] = <<< JS
 
@@ -426,6 +427,9 @@ $.each($('.set-height-as-left'), function(){
         height: left_height+'px'
     });
 });
+        
+   $('table').attr('data-toggle','table').attr('data-show-print','true');
+        
         
    window.print();
         
