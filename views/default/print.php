@@ -16,7 +16,7 @@ use andahrm\setting\models\Helper;
 // use andahrm\setting\models\WidgetSettings;
 
 
-$this->title = Yii::t('andahrm/person', 'Print');
+$this->title = Yii::t('andahrm/person', 'Print') . ":" . $models['person']->fullname;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
 $this->params['breadcrumbs'][] = $this->title;
