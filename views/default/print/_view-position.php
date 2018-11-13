@@ -17,25 +17,7 @@ use yii\bootstrap\ActiveForm;
 /* @var $searchModel andahrm\positionSalary\models\PersonPositionSalarySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('andahrm/person', 'Position');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
-//$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
-$this->params['breadcrumbs'][] = $this->title;
 
-$modals['update-position'] = Modal::begin([
-            'header' => Yii::t('andahrm/person', 'Position'),
-            'size' => Modal::SIZE_LARGE
-        ]);
-Modal::end();
-
-$modalOptions = [
-    'form-buttons' => Html::resetButton('<i class="fa fa-recycle"></i> ' . Yii::t('andahrm', 'Reset'), ['class' => 'btn btn-default']) . Html::submitButton('<i class="fa fa-save"></i> ' . Yii::t('andahrm', 'Save'), ['class' => 'btn btn-primary btn-modal-save']),
-    'header-options' => [
-        'class' => 'bg-primary',
-        'style' => 'border-top-left-radius:5px; border-top-right-radius:5px;'
-    ]
-];
 
 $positions = [
     'PersonPositionSalary' => ['key' => 'position', 'label' => Yii::t('andahrm/person', 'Position New')],
@@ -203,58 +185,3 @@ GridView::widget([
 ]);
 ?>
 </div>
-    <?php
-    $js[] = "
-$(document).on('click', '#btn-reload-grid', function(e){
-    e.preventDefault();
-    $.pjax.reload({container: '#data-grid-pjax'});
-});
-";
-    $urlCreatePosition = Url::to(['/person/default/create-position'], true);
-    $modalId = $modals['update-position']->id;
-    $js[] = <<< Js
-    // $('.data-grid-container .btn-update-old').each(function(){
-    //   $(this).bind('click', function() {
-    //         aler($(this).attr('href'));
-    //     }); 
-    // });
-    // $(document).ready(function() {
-    // function bindUpdatePosition( id, position_id, edoc_id)
-    // {
-    //     alert(id+" "+position_id+" "+edoc_id);
-    // }
-    // });
-    
-    $(document).ready(function() {
-       $(document).on('click', '.btn-update-old', function(){
-           //console.log($(this).attr('href'));
-            // $("#{$modalId} .madal-body").load($(this).attr('href'));
-            $.get($(this).attr('href'),
-            function (data) {
-                //alert(data);
-                $("#{$modalId}").find('.modal-body').html(data);
-                //$("#{$modalId} .modal-content .madal-body").html(data);
-                //$("#{$modalId}").modal();
-            });
-        });
-    });
-    
-    
-    
-    
-Js;
-    $js[] = <<< Js
-    function callbackPosition(result){
-    //e.preventDefault();
-    //alert(555);
-        $.pjax.reload({container: '#data-grid-pjax'});
-        $("#{$modalId}").modal('hide');
-        $('#{$modalId}').on('hidden.bs.modal', function (e) {
-            $(this).find('.modal-body').html('');
-        })
-    }
-Js;
-    $this->registerJs(implode("\n", $js), $this::POS_END);
-
-
-    

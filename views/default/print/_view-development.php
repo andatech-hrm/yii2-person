@@ -13,13 +13,6 @@ use andahrm\development\models\DevelopmentActivityChar;
 /* @var $this yii\web\View */
 /* @var $searchModel andahrm\development\models\DevelopmentPersonSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = Yii::t('andahrm/person', 'Create Development New');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
-//$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
-$this->params['breadcrumbs'][] = $this->title;
-
 $user_id = $models['person']->user_id;
 ?>
 

@@ -16,10 +16,9 @@ use andahrm\setting\models\Helper;
 // use andahrm\setting\models\WidgetSettings;
 
 
-$this->title = Yii::t('andahrm/person', 'Information');
+$this->title = Yii::t('andahrm/person', 'Print');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/person', 'Person'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $models['person']->fullname, 'url' => ['view', 'id' => $models['person']->user_id]];
-//$this->params['breadcrumbs'][] = Yii::t('andahrm', 'Update');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php
@@ -153,7 +152,7 @@ $modalOptions = [
 
 
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-xs-12">
             <?php
             $addresses = [
                 ['key' => 'address-contact', 'label' => Yii::t('andahrm/person', 'Contact')],
@@ -211,7 +210,7 @@ $modalOptions = [
 
 
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-xs-12">
             <?php
             $parents = [
                 ['key' => 'people-father', 'label' => Yii::t('andahrm/person', 'Father')],
@@ -281,7 +280,7 @@ $modalOptions = [
     </div>
 
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-xs-12">
             <?php
             XPanel::begin([
                 'header' => Yii::t('andahrm/person', 'Childs'),
@@ -425,6 +424,18 @@ $modalOptions = [
             ])
             ?>
             <?= $this->render('print/_view-development', ['dataProvider' => $models['developments']['dataProvider'], 'searchModel' => $models['developments']['searchModel']]) ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <?php
+            XPanel::begin([
+                'header' => Yii::t('andahrm/person', 'Prestige'),
+                'icon' => 'trophy',
+            ])
+            ?>
+            <?= $this->render('print/_view-prestige', ['dataProvider' => $models['prestige']['dataProvider'], 'searchModel' => $models['prestige']['searchModel']]) ?>
         </div>
     </div>
 

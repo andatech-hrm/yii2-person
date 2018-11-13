@@ -342,6 +342,16 @@ class DefaultController extends Controller {
         $models['developments'] = ['searchModel' => $searchModel,
             'dataProvider' => $dataProvider];
 
+        ## Prestige
+        $searchModel = new \andahrm\insignia\models\InsigniaPersonSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->where(['user_id' => $id]);
+        $dataProvider->sort->defaultOrder = [
+            'yearly' => SORT_ASC
+        ];
+        $models['prestige'] = ['searchModel' => $searchModel,
+            'dataProvider' => $dataProvider];
+
 
         return $this->render('print', ['models' => $models]);
     }
