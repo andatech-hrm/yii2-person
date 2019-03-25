@@ -37,15 +37,13 @@ use andahrm\insignia\models\InsigniaPerson;
  * @property string $gender
  * @property string $tel
  * @property string $phone
- * @property string $birthday	
- * @property int $position_id
- * @property int $status
+ * @property string $birthday
  * @property integer $created_at
  * @property integer $created_by
  * @property integer $updated_at
  * @property integer $updated_by
  */
-class Person extends ActiveRecord {
+class Person_1 extends ActiveRecord {
 
     const GENDER_MALE = 'm';
     const GENDER_FEMAIL = 'f';
@@ -116,7 +114,7 @@ class Person extends ActiveRecord {
     public function rules() {
         return [
             [['user_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'birthday', 'citizen_id'], 'required'],
-            [['user_id', 'title_id', 'position_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
+            [['user_id', 'title_id', 'position_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['gender'], 'string'],
             //[['citizen_id'], 'match', 'pattern' => '/^\d{17}$/'],
             [['citizen_id'], 'match', 'pattern' => '/\b\d{1}[-]?\d{4}[-]?\d{5}[-]?\d{2}[-]?\d{1}$/'],
@@ -146,7 +144,6 @@ class Person extends ActiveRecord {
             'birthday' => Yii::t('andahrm/person', 'Birthday'),
             'age' => Yii::t('andahrm/person', 'Age'),
             'position_id' => Yii::t('andahrm/person', 'Position'),
-            'status' => Yii::t('andahrm/person', 'Status'),
             'created_at' => Yii::t('andahrm', 'Created At'),
             'created_by' => Yii::t('andahrm', 'Created By'),
             'updated_at' => Yii::t('andahrm', 'Updated At'),
@@ -562,30 +559,4 @@ class Person extends ActiveRecord {
 //    public static function getList($limit = 20){
 //        return ArrayHelper::map(self::find()->limit($limit)->all(),'user_id','fullname');
 //    }
-
-    const STATUS_RETIRED = '0';
-    const STATUS_ACTIVE = '1';
-
-    public static function itemsAlias($key) {
-        $items = [
-            'status' => [
-                self::STATUS_RETIRED => Yii::t('andahrm/person', 'Person Retired'),
-                self::STATUS_ACTIVE => Yii::t('andahrm/person', 'Active'),
-            ],
-        ];
-        return ArrayHelper::getValue($items, $key, []);
-    }
-
-    public function getStatusLabel() {
-        return ArrayHelper::getValue($this->getItemStatus(), $this->status);
-    }
-
-    public static function getItemStatus() {
-        return self::itemsAlias('status');
-    }
-
-    public function getRetired() {
-        return $this->hasOne(PersonRetired::className(), ['user_id' => 'user_id']);
-    }
-
 }

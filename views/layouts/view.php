@@ -66,6 +66,13 @@ $module = $this->context->module->id;
                             <?= Html::a($person->getSection(), ['/structure/section/view', 'id' => $person->sectionId]); ?>
                         </li>
                     <?php endif; ?>
+
+                    <?php if ($person->status == Person::STATUS_RETIRED):
+                        ?>
+                        <li>
+                            <?= Html::a($person->retired->becauseLabel, ['/person/retired/view', 'id' => $person->user_id], ['class' => 'text-danger']); ?>
+                        </li>
+                    <?php endif; ?>
                 </ul>
 
             <!-- <a class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Edit Profile</a> -->

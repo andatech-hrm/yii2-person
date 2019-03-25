@@ -108,12 +108,28 @@ class Model extends \yii\base\Object {
         return $this->_model->position_id;
     }
 
+    public function getStatus() {
+        return $this->_model->status;
+    }
+
+    public function getStatusLable() {
+        return $this->_model->status ? $this->_model->statusLabel : '';
+    }
+
+    public function getUser_Id() {
+        return $this->_model->user_id;
+    }
+
     public function getSection() {
         return $this->_model->position && $this->_model->position->section ? $this->_model->position->section->title : null;
     }
 
     public function getSectionId() {
         return $this->_model->position && $this->_model->position->section ? $this->_model->position->section_id : null;
+    }
+
+    public function getRetired() {
+        return $this->_model->retired;
     }
 
 }

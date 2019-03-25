@@ -232,6 +232,7 @@ $modalOptions = [
             <?php
             echo \yii\grid\GridView::widget([
                 'dataProvider' => new \yii\data\ArrayDataProvider(['allModels' => $items]),
+                //'showFooter' => true,
                 'summary' => false,
                 'columns' => [
                     [
