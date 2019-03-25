@@ -91,13 +91,17 @@ class PersonRetired extends \yii\db\ActiveRecord {
     const BECAUSE_MOVE_OUT = '1';
     const BECAUSE_RETIRED = '2';
     const BECAUSE_NO_CONTRACT = '3';
+    const BECAUSE_RESIGN = '4';
+    const BECAUSE_DIE = '5';
 
     public static function itemsAlias($key) {
         $items = [
             'because' => [
                 self::BECAUSE_MOVE_OUT => Yii::t('andahrm/person', 'Move Out'),
                 self::BECAUSE_RETIRED => Yii::t('andahrm/person', 'Retired'),
-                self::BECAUSE_NO_CONTRACT => Yii::t('andahrm/person', 'Did not renew the contract'),
+                self::BECAUSE_RETIRED => Yii::t('andahrm/person', 'Retired'),
+                self::BECAUSE_RESIGN => Yii::t('andahrm/person', 'Resign'),
+                self::BECAUSE_DIE => Yii::t('andahrm/person', 'Die'),
             ],
         ];
         return ArrayHelper::getValue($items, $key, []);

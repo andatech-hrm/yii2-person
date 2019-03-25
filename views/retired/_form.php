@@ -20,35 +20,38 @@ use andahrm\person\models\Person;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?=
-            $form->field($model, 'user_id')
-            ->widget(Select2::className(), [
-                'data' => Person::getList($model->user_id),
-                'options' => [
-                    'placeholder' => Yii::t('andahrm', 'Select'),
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'minimumInputLength' => 2, //ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
-                    'ajax' => [
-                        'url' => Url::to(['/person/default/person-list']),
-                        'dataType' => 'json', //รูปแบบการอ่านคือ json
-                        'data' => new JsExpression('function(params) { return {q:params.term};}')
+    <div class="row">
+        <?=
+                $form->field($model, 'user_id', ['options' => ['class' => 'form-group col-sm-6']])
+                ->widget(Select2::className(), [
+                    'data' => Person::getList($model->user_id),
+                    'options' => [
+                        'placeholder' => Yii::t('andahrm/person', 'Fullname'),
                     ],
-                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                    'templateResult' => new JsExpression('function (position) { return position.text; }'),
-                    'templateSelection' => new JsExpression('function (position) { return position.text; }'),
-                ],
-    ]);
-    ?>
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'minimumInputLength' => 2, //ต้องพิมพ์อย่างน้อย 3 อักษร ajax จึงจะทำงาน
+                        'ajax' => [
+                            'url' => Url::to(['/person/default/person-list']),
+                            'dataType' => 'json', //รูปแบบการอ่านคือ json
+                            'data' => new JsExpression('function(params) { return {q:params.term};}')
+                        ],
+                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                        'templateResult' => new JsExpression('function (position) { return position.text; }'),
+                        'templateSelection' => new JsExpression('function (position) { return position.text; }'),
+                    ],
+                ])->label(Yii::t('andahrm/person', 'Fullname'));
+        ?>
 
-    <?=
-    $form->field($model, 'retired_date')->widget(DatePicker::classname(), WidgetSettings::DatePicker([
-                    // 'pluginOptions' => [
-                    //   'format' => 'yyyy-mm-dd',
-                    // ]
-    ]));
-    ?>
+        <?=
+        $form->field($model, 'retired_date', ['options' => ['class' => 'form-group col-sm-6']])->widget(DatePicker::classname(), WidgetSettings::DatePicker([
+                        // 'pluginOptions' => [
+                        //   'format' => 'yyyy-mm-dd',
+                        // ]
+        ]));
+        ?>
+
+    </div>
 
     <?=
     $form->field($model, 'because')->radioList(PersonRetired::getItemBecause())
