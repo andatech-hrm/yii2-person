@@ -25,14 +25,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'user_id',
+            //'user_id',
             [
                 'attribute' => 'user_id',
                 'value' => 'user.fullname',
             ],
             [
                 'attribute' => 'last_position_id',
-                'value' => 'lastPosition.title',
+                'value' => function($model) {
+                    if (isset($model->lastPosition)) {
+                        return $model->lastPosition->title;
+                    }
+                }
             ],
             [
                 'attribute' => 'because',
@@ -46,11 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a('ดูรายละเอียด', ['view', 'id' => $model->user_id]);
                 }
             ],
-            //'created_at',
-            //'created_by',
-            //'updated_at',
-            //'updated_by',
-            //['class' => 'yii\grid\ActionColumn'],
+        //'created_at',
+        //'created_by',
+        //'updated_at',
+        //'updated_by',
+        //['class' => 'yii\grid\ActionColumn'],
         ],
     ]);
     ?>

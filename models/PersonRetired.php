@@ -68,15 +68,15 @@ class PersonRetired extends \yii\db\ActiveRecord {
      */
     public function attributeLabels() {
         return [
-            'user_id' => Yii::t('andahrm/person', 'User ID'),
+            'user_id' => Yii::t('andahrm/person', 'Fullname'),
             'last_position_id' => Yii::t('andahrm/person', 'Last Position ID'),
             'retired_date' => Yii::t('andahrm/person', 'Retired Date'),
             'because' => Yii::t('andahrm/person', 'Because'),
             'note' => Yii::t('andahrm/person', 'Note'),
-            'created_at' => Yii::t('andahrm/person', 'Created At'),
-            'created_by' => Yii::t('andahrm/person', 'Created By'),
-            'updated_at' => Yii::t('andahrm/person', 'Updated At'),
-            'updated_by' => Yii::t('andahrm/person', 'Updated By'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
         ];
     }
 
