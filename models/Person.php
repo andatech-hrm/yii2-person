@@ -125,6 +125,7 @@ class Person extends ActiveRecord {
             [['citizen_id'], 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Yii::$app->user->identityClass, 'targetAttribute' => ['user_id' => 'id']],
             [['full_address_contact', 'phone'], 'safe'],
+            [['status'], 'default', 'value' => self::STATUS_ACTIVE]
         ];
     }
 

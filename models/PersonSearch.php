@@ -19,7 +19,7 @@ class PersonSearch extends Person {
      */
     public function rules() {
         return [
-            [['user_id', 'title_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
+            [['user_id', 'title_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['citizen_id', 'firstname_th', 'lastname_th', 'firstname_en', 'lastname_en', 'gender', 'tel', 'phone', 'birthday', 'fullname', 'full_address_contact'], 'safe'],
         ];
     }
@@ -102,6 +102,8 @@ class PersonSearch extends Person {
                 ->orFilterWhere(['like', 'local_tambol.name', $this->full_address_contact])
                 ->orFilterWhere(['like', 'local_amphur.name', $this->full_address_contact])
                 ->orFilterWhere(['like', 'local_province.name', $this->full_address_contact]);
+
+        $query->andWhere(['!=', 'person.status', Person::STATUS_RETIRED]);
 
         $query->orderBy('user_id');
 
