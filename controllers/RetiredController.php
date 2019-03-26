@@ -88,17 +88,25 @@ class RetiredController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id) {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->user_id]);
-        }
-
-        return $this->render('update', [
-                    'model' => $model,
-        ]);
-    }
+//    public function actionUpdate($id) {
+//        $model = $this->findModel($id);
+//
+//       if ($model->load(Yii::$app->request->post())) {
+//            if ($modelPerson = Person::findOne(['user_id' => $model->user_id])) {
+//                //$model->last_position_id = $modelPerson->position_id;
+//                $modelPerson->status = 0;
+//                $modelPerson->position_id = null;
+//
+//                if ($model->save() && $modelPerson->save()) {
+//                    return $this->redirect(['view', 'id' => $model->user_id]);
+//                }
+//            }
+//        }
+//
+//        return $this->render('update', [
+//                    'model' => $model,
+//        ]);
+//    }
 
     /**
      * Deletes an existing PersonRetired model.
