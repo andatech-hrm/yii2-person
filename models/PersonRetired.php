@@ -99,7 +99,7 @@ class PersonRetired extends \yii\db\ActiveRecord {
             'because' => [
                 self::BECAUSE_MOVE_OUT => Yii::t('andahrm/person', 'Move Out'),
                 self::BECAUSE_RETIRED => Yii::t('andahrm/person', 'Retired'),
-                self::BECAUSE_RETIRED => Yii::t('andahrm/person', 'Did not renew the contract'),
+                self::BECAUSE_NO_CONTRACT => Yii::t('andahrm/person', 'Did not renew the contract'),
                 self::BECAUSE_RESIGN => Yii::t('andahrm/person', 'Resign'),
                 self::BECAUSE_DIE => Yii::t('andahrm/person', 'Die'),
             ],
