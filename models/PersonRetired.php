@@ -115,4 +115,8 @@ class PersonRetired extends \yii\db\ActiveRecord {
         return self::itemsAlias('because');
     }
 
+    public function getPosition() {
+        return $this->hasOne(Position::className(), ['id' => 'last_position_id']);
+    }
+
 }
